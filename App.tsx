@@ -1,37 +1,35 @@
 import React from 'react';
-import {Image, StyleSheet, Text, View} from 'react-native';
 import MainMenuView from './components/MainMenuView';
+import NewGame from './components/NewGame';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import CardDecks from './components/CardDecks';
+import JoinGame from './components/JoinGame';
+import Lobby from './components/Lobby';
+import Profile from './components/Profile';
+import GameView from './components/GameView';
+import WelcomeView from './components/WelcomeView';
+
+
+const Stack = createNativeStackNavigator();
+
+
 
 function App(): JSX.Element {
   return (
-    <View style={styles.mainView}>
-      <View style={styles.logoContainer}>
-        <Image source={require('./src/drinkIQ_logo.png')}/>
-        <Text style={styles.welcomeMessage}>Welcome to drinkIQ!</Text>
-      </View>
-      <MainMenuView/>
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="WelcomeView">
+      <Stack.Screen name="WelcomeView" component={WelcomeView} />
+        <Stack.Screen name="MainMenuView" component={MainMenuView} />
+        <Stack.Screen name="NewGame" component={NewGame} />
+        <Stack.Screen name="CardDecks" component={CardDecks} />
+        <Stack.Screen name="JoinGame" component={JoinGame} />
+        <Stack.Screen name="Lobby" component={Lobby} />
+        <Stack.Screen name="Profile" component={Profile} />
+        <Stack.Screen name="GameView" component={GameView} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
-}
-
-const styles = StyleSheet.create({
-  mainView: {
-    display: 'flex',
-    backgroundColor: '#d3d3d3',
-    flex: 1,
-  },
-  logoContainer: {
-    alignItems: 'center',
-    marginTop: 100,
-    flex: 1,
-  },
-  welcomeMessage: {
-    color: 'blue',
-    fontWeight: 'bold',
-    fontSize: 30,
-    textAlign: 'center',
-  },
-
-});
+};
 
 export default App;
