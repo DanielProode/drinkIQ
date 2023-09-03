@@ -3,24 +3,28 @@ import { StyleSheet, Text, TouchableHighlight, View } from 'react-native';
 
 function Lobby( { navigation }: {navigation: any}): JSX.Element {
 
+    let gameCode = 0;
 
     function generateCode() {
-        const randomInt = (min: number, max: number) => 
+        const randomInt = (min: number, max: number) =>
         Math.floor(Math.random() * (max - min + 1)) + min;
 
         // In the future, check if active game already exists with generated code
 
-        return randomInt(100000, 999999);
+        gameCode = randomInt(100000, 999999);
     }
+
+    generateCode();
 
   return (
     <View style={styles.joinGameView}>
     <Text style={styles.roomCodeText}>ROOM CODE:</Text>
-    <Text style={styles.codeText}>#{generateCode()}</Text>
+    <Text style={styles.codeText}>#{gameCode}</Text>
     <TouchableHighlight
             activeOpacity={0.6}
             underlayColor={'#d3d3d3'}
-            onPress={ () => navigation.navigate('GameView') }
+            onPress={ () =>
+                navigation.navigate('GameView', {gameCode: gameCode}) }
             style={styles.startGameButton}>
                 <Text>START GAME</Text>
     </TouchableHighlight>
