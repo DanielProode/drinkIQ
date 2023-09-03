@@ -2,6 +2,9 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Button from './res/Button';
 
+
+
+
 function Lobby( { navigation }: {navigation: any}): JSX.Element {
 
     let gameCode = 0;
@@ -24,7 +27,7 @@ function Lobby( { navigation }: {navigation: any}): JSX.Element {
     <View style={styles.buttonView}>
     <Button
         onPress={ () =>
-        navigation.navigate('GameView', {gameCode: gameCode}) }
+        navigation.navigate('GameView', {params: {gameCode: gameCode}}) }
         text="START GAME"
         />
         </View>
