@@ -45,8 +45,9 @@ function JoinGame( { navigation }: {navigation: any}): JSX.Element {
 }
 const styles = StyleSheet.create({
     joinGameView: {
-        marginTop: 100,
         alignItems: 'center',
+        backgroundColor: '#1E1E1E',
+        flex: 1,
     },
     gameCodeInput: {
         marginTop: 50,
@@ -56,9 +57,12 @@ const styles = StyleSheet.create({
         padding: 10,
         borderColor: 'gray',
         textAlign: 'center',
+        color: 'white',
     },
     enterCodeText: {
         fontSize: 30,
+        marginTop: 200,
+        color: 'white',
     },
     startGameButton: {
         padding: 10,

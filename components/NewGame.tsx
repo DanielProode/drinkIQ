@@ -33,8 +33,7 @@ const styles = StyleSheet.create({
     },
     newGameView: {
       alignItems: 'center',
-    },
-    mainView: {
+      backgroundColor: '#1E1E1E',
       flex: 1,
     },
     buttonContainer: {

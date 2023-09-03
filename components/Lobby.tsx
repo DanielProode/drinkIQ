@@ -36,8 +36,9 @@ function Lobby( { navigation }: {navigation: any}): JSX.Element {
 
 const styles = StyleSheet.create({
     joinGameView: {
-        marginTop: 100,
         alignItems: 'center',
+        backgroundColor: '#1E1E1E',
+        flex: 1,
     },
     gameCodeInput: {
         marginTop: 50,
@@ -50,9 +51,12 @@ const styles = StyleSheet.create({
     },
     roomCodeText: {
         fontSize: 50,
+        marginTop: 200,
+        color: 'white',
     },
     codeText: {
         fontSize: 40,
+        color: 'white',
     },
     startGameButton: {
         padding: 10,
