@@ -11,8 +11,18 @@ import Profile from './components/Profile';
 import GameView from './components/GameView';
 import WelcomeView from './components/WelcomeView';
 
+type RootStackParamList = {
+  GameView: { gameCode: number };
+  WelcomeView: undefined;
+  MainMenuView: undefined;
+  NewGame: undefined;
+  CardDecks: undefined;
+  Lobby: undefined;
+  JoinGame: undefined;
+  Profile: undefined;
+};
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 
 
@@ -27,7 +37,7 @@ function App(): JSX.Element {
         <Stack.Screen name="JoinGame" component={JoinGame} />
         <Stack.Screen name="Lobby" component={Lobby} />
         <Stack.Screen name="Profile" component={Profile} />
-        <Stack.Screen name="GameView" component={GameView} />
+        <Stack.Screen name="GameView" component={GameView} initialParams={{ gameCode: 491241 }}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
