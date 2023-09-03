@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
       alignItems: 'center',
     },
     mainView: {
-        flex: 1,
+      flex: 1,
     },
     buttonContainer: {
       height: 50,

@@ -18,7 +18,7 @@ const Stack = createNativeStackNavigator();
 function App(): JSX.Element {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="WelcomeView">
+      <Stack.Navigator initialRouteName="WelcomeView" screenOptions={{ headerTitle: '', headerTransparent: true, headerTintColor: '#A5AFB9' }}>
       <Stack.Screen name="WelcomeView" component={WelcomeView} />
         <Stack.Screen name="MainMenuView" component={MainMenuView} />
         <Stack.Screen name="NewGame" component={NewGame} />
