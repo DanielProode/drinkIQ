@@ -3,6 +3,7 @@ import MainMenuView from './components/MainMenuView';
 import NewGame from './components/NewGame';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import 'react-native-gesture-handler';
 import CardDecks from './components/CardDecks';
 import JoinGame from './components/JoinGame';
 import Lobby from './components/Lobby';

@@ -1,20 +1,19 @@
 import React from 'react';
-import {Button, Image, ImageBackground, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
+import {Button, Image, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
 
 // Navigation prop temporarily as any
 // https://stackoverflow.com/questions/63132548/react-navigation-5-error-binding-element-navigation-implicitly-has-an-any-ty
 
 
-const image = require('../src/trivia_bg.png');
+
 
 
 function MainMenuView( { navigation }: {navigation: any}): JSX.Element {
 
   return (
     <View style={styles.mainView}>
-        <ImageBackground source={image} style={styles.backgroundImage}>
-        <View style={styles.logoContainer}>
         <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
+        <View style={styles.logoContainer}>
         <Text style={styles.welcomeMessage}>Welcome to drinkIQ!</Text>
       </View>
         <View style={styles.bodyContainer}>
@@ -47,14 +46,14 @@ function MainMenuView( { navigation }: {navigation: any}): JSX.Element {
                 </View>
             </TouchableHighlight>
         </View>
-        </ImageBackground>
     </View>
   );
 }
 const styles = StyleSheet.create({
     mainView: {
         flex: 1,
-        backgroundColor: 'grey',
+        alignItems: 'center',
+        backgroundColor: '#1E1E1E',
     },
     backgroundImage: {
         flex: 1,
@@ -76,8 +75,8 @@ const styles = StyleSheet.create({
       welcomeMessage: {
         fontSize: 30,
         textAlign: 'center',
-        color: 'lightgray',
-        fontFamily: 'Knewave-Regular',
+        fontFamily: 'Basic',
+        color: 'white',
       },
     bodyContainer: {
         marginTop: 20,

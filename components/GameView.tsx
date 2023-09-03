@@ -15,12 +15,13 @@ function GameView ({route}: {route: any}) {
 }
 const styles = StyleSheet.create({
     gameView: {
-        marginTop: 100,
         alignItems: 'center',
         flex: 1,
+        backgroundColor: '#1E1E1E',
     },
     gameText: {
         fontSize: 50,
+        marginTop: 200,
     },
     gameCode: {
         fontSize: 20,
