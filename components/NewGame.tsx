@@ -13,7 +13,7 @@ function NewGame( { navigation }: {navigation: any}): JSX.Element {
             navigation.navigate('Lobby');
         }}
         title="HOST GAME"
-        color="#AAAAAA"/>
+        color="#FFFFFF"/>
        </View>
         <View style={styles.buttonContainer}>
             <Button onPress={() => {
@@ -21,7 +21,7 @@ function NewGame( { navigation }: {navigation: any}): JSX.Element {
                 navigation.navigate('JoinGame');
             }}
             title="JOIN GAME"
-            color="#AAAAAA"/>
+            color="#FFFFFA"/>
         </View>
       </View>
 
