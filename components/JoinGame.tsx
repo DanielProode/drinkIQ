@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { TextInput } from 'react-native';
+import Button from './res/Button';
 
 function JoinGame( { navigation }: {navigation: any}): JSX.Element {
 
-    const [ code, getCode ] = useState('');
     const [ number, setNumber ] = React.useState('');
 
     const onChanged = (text: string) => {
@@ -26,19 +26,18 @@ function JoinGame( { navigation }: {navigation: any}): JSX.Element {
         style={styles.gameCodeInput}
         onChangeText = {(text)=> onChanged(text)}
         value={number}
-        onSubmitEditing={(value) => getCode(value.nativeEvent.text)}
+        onSubmitEditing={(value) => setNumber(value.nativeEvent.text)}
         placeholder="#XXXXXX"
         keyboardType="numeric"
         maxLength={6}
         />
-        <Text>Game code is: {code}</Text>
-        <TouchableHighlight
-            activeOpacity={0.6}
-            underlayColor={'#d3d3d3'}
-            onPress={ () => navigation.navigate('GameView') }
-            style={styles.startGameButton}>
-                <Text>JOIN GAME</Text>
-        </TouchableHighlight>
+        <Text style={styles.gameCode}>Game code is: {number}</Text>
+        <View style={styles.buttonContainer}>
+        <Button
+            onPress={ () =>
+                navigation.navigate('GameView', {gameCode: number}) }
+            text="JOIN GAME"/>
+        </View>
     </View>
 
   );
@@ -50,7 +49,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     gameCodeInput: {
-        marginTop: 50,
+        marginTop: 20,
         width: 120,
         borderWidth: 2,
         borderRadius: 10,
@@ -63,6 +62,12 @@ const styles = StyleSheet.create({
         fontSize: 30,
         marginTop: 200,
         color: 'white',
+    },
+    buttonContainer: {
+        marginTop: 30,
+    },
+    gameCode: {
+        color: '#FFFFFF80',
     },
     startGameButton: {
         padding: 10,

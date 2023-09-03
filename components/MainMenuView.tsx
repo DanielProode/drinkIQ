@@ -1,5 +1,6 @@
 import React from 'react';
-import {Button, Image, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
+import { Image, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import Button from './res/Button';
 
 // Navigation prop temporarily as any
 // https://stackoverflow.com/questions/63132548/react-navigation-5-error-binding-element-navigation-implicitly-has-an-any-ty
@@ -12,6 +13,8 @@ function MainMenuView( { navigation }: {navigation: any}): JSX.Element {
 
   return (
     <View style={styles.mainView}>
+        <Image style={styles.cheersIcon}
+                source={require('../src/cheers_icon.png')}/>
         <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
         <View style={styles.logoContainer}>
         <Text style={styles.welcomeMessage}>Welcome to drinkIQ!</Text>
@@ -22,16 +25,14 @@ function MainMenuView( { navigation }: {navigation: any}): JSX.Element {
                     console.log('New Game Button pressed!');
                     navigation.navigate('NewGame');
                 }}
-                title="New game"
-                color="#AAAAAA"/>
+                text="New game"/>
             </View>
             <View style={styles.cardButtonContainer}>
                 <Button onPress={() => {
                     console.log('Card Decks Button pressed!');
                     navigation.navigate('CardDecks');
                 }}
-                title="Card Decks"
-                color="#AAAAAA"/>
+                text="Card Decks"/>
             </View>
         </View>
         <View style={styles.settingsButtonContainer}>
@@ -55,6 +56,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#1E1E1E',
     },
+    cheersIcon: {
+        position: 'absolute',
+        resizeMode: 'contain',
+        width: 250,
+        height: 250,
+        right: 20,
+        top: 20,
+        opacity: 0.3,
+    },
     backgroundImage: {
         flex: 1,
         width: '100%',
@@ -63,8 +73,8 @@ const styles = StyleSheet.create({
     },
     drinkIQLogo: {
         fontFamily: 'Knewave',
-        marginTop: 100,
-        fontSize: 80,
+        marginTop: 150,
+        fontSize: 60,
         color: 'white',
     },
     logoContainer: {

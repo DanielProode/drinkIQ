@@ -22,12 +22,14 @@ const styles = StyleSheet.create({
     gameText: {
         fontSize: 50,
         marginTop: 200,
+        color: 'white',
     },
     gameCode: {
         fontSize: 20,
         position: 'absolute',
         bottom: 20,
         right: 20,
+        color: 'white',
     },
   });
 export default GameView;

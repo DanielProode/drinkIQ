@@ -9,6 +9,8 @@ function WelcomeView( { navigation }: {navigation: any}): JSX.Element {
   return (
     <View style={styles.welcomeView}>
         {visibility ? (<TermsAndConditions visibility={setVisibility} />) : null}
+        <Image style={styles.cheersIcon}
+                source={require('../src/cheers_icon.png')}/>
         <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
         <View style={styles.contentView}>
             <Text style={styles.welcomeText}>Log in To start playing!</Text>
@@ -31,10 +33,15 @@ function WelcomeView( { navigation }: {navigation: any}): JSX.Element {
             </TouchableOpacity>
             </View>
         </View>
-        <Text style={styles.outerText}>By signing up you agree with the
-        <Text onPress={()=>
-        setVisibility(!visibility)} style={styles.innerText}> drinkIQ Terms and Conditions.</Text>
-        </Text>
+        <TouchableOpacity
+        activeOpacity={0.7}
+        style={styles.touchableTerms}
+        onPress={ () => setVisibility(!visibility) }>
+            <Text style={styles.outerText}>By signing up you agree with the
+            <Text
+            style={styles.innerText}> drinkIQ Terms and Conditions.</Text>
+            </Text>
+        </TouchableOpacity>
     </View>
 
   );
@@ -46,10 +53,19 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         flex: 1,
     },
+    cheersIcon: {
+        position: 'absolute',
+        resizeMode: 'contain',
+        width: 250,
+        height: 250,
+        right: 20,
+        top: 20,
+        opacity: 0.3,
+    },
     drinkIQLogo: {
         fontFamily: 'Knewave',
-        marginTop: 100,
-        fontSize: 80,
+        marginTop: 150,
+        fontSize: 60,
         color: 'white',
     },
     contentView: {
@@ -61,12 +77,16 @@ const styles = StyleSheet.create({
         fontFamily: 'Basic',
         color: 'white',
     },
+    touchableTerms: {
+        flex: 1,
+        alignItems: 'center',
+    },
     googleLogo: {
         height: 50,
         width: 315,
     },
     googleLogoContainer: {
-        marginTop: 40,
+        marginTop: 20,
     },
     appleLogoContainer: {
         marginTop: 20,

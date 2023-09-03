@@ -1,5 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import Button from './res/Button';
 
 function Lobby( { navigation }: {navigation: any}): JSX.Element {
 
@@ -20,14 +21,13 @@ function Lobby( { navigation }: {navigation: any}): JSX.Element {
     <View style={styles.joinGameView}>
     <Text style={styles.roomCodeText}>ROOM CODE:</Text>
     <Text style={styles.codeText}>#{gameCode}</Text>
-    <TouchableHighlight
-            activeOpacity={0.6}
-            underlayColor={'#d3d3d3'}
-            onPress={ () =>
-                navigation.navigate('GameView', {gameCode: gameCode}) }
-            style={styles.startGameButton}>
-                <Text>START GAME</Text>
-    </TouchableHighlight>
+    <View style={styles.buttonView}>
+    <Button
+        onPress={ () =>
+        navigation.navigate('GameView', {gameCode: gameCode}) }
+        text="START GAME"
+        />
+        </View>
     </View>
 
   );
@@ -57,6 +57,9 @@ const styles = StyleSheet.create({
     codeText: {
         fontSize: 40,
         color: 'white',
+    },
+    buttonView: {
+        marginTop: 50,
     },
     startGameButton: {
         padding: 10,
