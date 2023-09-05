@@ -27,7 +27,7 @@ function Lobby( { navigation }: {navigation: any}): JSX.Element {
     <View style={styles.buttonView}>
     <Button
         onPress={ () =>
-        navigation.navigate('GameView', {params: {gameCode: gameCode}}) }
+            navigation.navigate('GameView', {gameCode: gameCode}) }
         text="START GAME"
         />
         </View>

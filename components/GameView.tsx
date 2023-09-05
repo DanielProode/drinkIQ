@@ -1,52 +1,73 @@
-import { Route, useRoute } from '@react-navigation/native';
-import React from 'react';
-import { Image, ImageSourcePropType, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import { RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import React, { useEffect } from 'react';
+import { Image, StyleSheet, Text, TouchableHighlight, View, ImageSourcePropType} from 'react-native';
+import Button from './res/Button';
 
-let cardCount = 5;
 
 export type Props = {
-  baseCardCount: number;
-  baseCardImage?: ImageSourcePropType;
-  gameCode: number;
+    route: RouteProp<{ GameView: {  gameCode: number;
+                                    baseCardCount: number;
+                                    baseCardImage:  ImageSourcePropType;}}>;
+    navigation: StackNavigationProp<any>;
 
 };
 
 let cardImageArray = [
-  require('../src/card1_icon.png'), 
-  require('../src/card2_icon.png'), 
-  require('../src/card3_icon.png'), 
-  require('../src/card4_icon.png'), 
-  require('../src/card5_icon.png')];
+    require('../src/card1_icon.png'),
+    require('../src/card2_icon.png'),
+    require('../src/card3_icon.png'),
+    require('../src/card4_icon.png'),
+    require('../src/card5_icon.png')];
 
 
-  const GameView: React.FC<Props> = ({
-      gameCode,
-      baseCardCount = 5,
-      baseCardImage = cardImageArray[4],
-    }) => {
-      const [cardCount, setCardCount] = React.useState(baseCardCount,);
+  const GameView = ({ route, navigation }: Props) => {
+    const { gameCode, baseCardCount, baseCardImage } = route.params;
 
-      const onDecrement = () => 
-        setCardCount( cardCount > 0 ? cardCount - 1 : 0,)
-        console.log("howdy!");
+    const [cardCount, setCardCount] = React.useState(baseCardCount);
+    const [cardImage, setCardImage] = React.useState(baseCardImage);
 
-      
+    useEffect(() => {
+        if (cardCount < 5 && cardCount > 0) {
+            setCardImage(cardImageArray[cardCount - 1]);
+        }
+    }, [cardCount]);
+
+    const onDecrement = () => {
+        setCardCount( cardCount > 0 ? prev => prev - 1 : 0);
+    };
+
 
 
   return (
     <View style={styles.gameView}>
       <Text style={styles.gameText}>Main Game</Text>
-      <TouchableHighlight 
-        style={styles.cardViewTouchable}
-        onPress={ onDecrement}>
-      <Image style={styles.cardView} source={baseCardImage}/>
-      </TouchableHighlight>
-      
+      <Text style={styles.cardsLeft}>Cards Left: {cardCount}</Text>
+      {cardCount > 0 ?
+      <View style={styles.cardViewContainer}>
+        <TouchableHighlight
+            style={styles.cardViewTouchable}
+            onPress={
+                onDecrement
+                 }>
+        <Image style={styles.cardView} source={cardImage}/>
+        </TouchableHighlight>
+        </View>
+      :
+        <>
+            <Text style={styles.gameText}>GAME OVER!</Text>
+            <Button
+                onPress={ () =>
+                navigation.goBack() }
+                style={styles.lobbyButton}
+                text="BACK TO LOBBY"/>
+        </>
+      }
       <Text style={styles.gameCode}>#{gameCode}</Text>
     </View>
 
   );
-}
+};
 
 const styles = StyleSheet.create({
     gameView: {
@@ -59,6 +80,13 @@ const styles = StyleSheet.create({
         marginTop: 100,
         color: 'white',
     },
+    cardsLeft: {
+        fontSize: 20,
+        color: 'white',
+    },
+    lobbyButton: {
+        marginTop: 40,
+    },
     gameCode: {
         fontSize: 20,
         position: 'absolute',
@@ -66,12 +94,19 @@ const styles = StyleSheet.create({
         right: 20,
         color: 'white',
     },
+    cardViewContainer: {
+        marginTop: 50,
+        width: 220,  // Fixed width
+        height: 300, // Fixed height
+    },
     cardViewTouchable: {
-      backgroundColor: 'white',
+        width: '100%', // Take up all available width
+        height: '100%', // Take up all available height
+        alignItems: 'center',     // Center horizontally
     },
     cardView: {
-      resizeMode: 'contain',
-      width: 250,
+        flex: 1,
+        resizeMode: 'contain',
     },
   });
 export default GameView;
