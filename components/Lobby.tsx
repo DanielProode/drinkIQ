@@ -1,73 +1,98 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { Image, ImageSourcePropType, StyleSheet, Text, View} from 'react-native';
 import Button from './res/Button';
+import React from 'react';
 
 
+export type Props = {
+    route: RouteProp<{ Lobby: { gameCode: number;
+                                avatar: ImageSourcePropType;
+                                drink: ImageSourcePropType;
+                                    }}>;
+    navigation: StackNavigationProp<any>;
+
+};
 
 
-function Lobby( { navigation }: {navigation: any}): JSX.Element {
+  const Lobby = ({ route, navigation }: Props) => {
+    const { gameCode, avatar, drink  } = route.params;
 
-    let gameCode = 0;
-
-    function generateCode() {
-        const randomInt = (min: number, max: number) =>
-        Math.floor(Math.random() * (max - min + 1)) + min;
-
-        // In the future, check if active game already exists with generated code
-
-        gameCode = randomInt(100000, 999999);
-    }
-
-    generateCode();
-
-  return (
-    <View style={styles.joinGameView}>
-    <Text style={styles.roomCodeText}>ROOM CODE:</Text>
-    <Text style={styles.codeText}>#{gameCode}</Text>
-    <View style={styles.buttonView}>
-    <Button
-        onPress={ () =>
-            navigation.navigate('GameView', {gameCode: gameCode}) }
-        text="START GAME"
-        />
+return (
+<View style={styles.gameView}>
+    <Text style={styles.gameText}>Game Lobby</Text>
+    <View style={styles.profileBackground}>
+            <Image style={styles.avatar} source={avatar}/>
         </View>
-    </View>
+        <View style={styles.drinkContainer}>
+            <Image style={styles.drink} source={drink} />
+        </View>
+        <View style={styles.lobbyButton}>
+        <Button
+            onPress={ () =>
+            navigation.goBack() }
+            style={styles.lobbyButton}
+            text="BACK TO LOBBY"/>
+        </View>
+    <Text style={styles.gameCode}>#{gameCode}</Text>
+</View>
 
   );
-}
-
+};
 
 const styles = StyleSheet.create({
-    joinGameView: {
+    gameView: {
         alignItems: 'center',
-        backgroundColor: '#1E1E1E',
         flex: 1,
+        backgroundColor: '#1E1E1E',
     },
-    gameCodeInput: {
-        marginTop: 50,
-        width: 120,
-        borderWidth: 2,
-        borderRadius: 10,
-        padding: 10,
-        borderColor: 'gray',
-        textAlign: 'center',
+    avatarContainer: {
+
     },
-    roomCodeText: {
+    avatar: {
+        flex: 1,
+        resizeMode: 'contain',
+        width: '70%', // Take up all available width
+        height: '70%', // Take up all available height
+        alignSelf: 'center',
+    },
+    drink: {
+        flex: 1,
+        resizeMode: 'contain',
+        width: '70%', // Take up all available width
+        height: '70%', // Take up all available height
+        alignSelf: 'center',
+    },
+    drinkContainer: {
+        flex: 1,
+        width: 50,
+        height: 50,
+        position: 'absolute',
+        top: 260,
+        right: 120,
+    },
+    profileBackground: {
+        width: '28.3%',
+        aspectRatio: 1 / 1,
+        backgroundColor: '#d8d8d8',
+        borderRadius: 40,
+        overflow: 'hidden',
+        marginTop: 20,
+    },
+    gameText: {
         fontSize: 50,
-        marginTop: 200,
+        marginTop: 100,
         color: 'white',
     },
-    codeText: {
-        fontSize: 40,
+    lobbyButton: {
+        marginTop: 40,
+    },
+    gameCode: {
+        fontSize: 20,
+        position: 'absolute',
+        bottom: 20,
+        right: 20,
         color: 'white',
-    },
-    buttonView: {
-        marginTop: 50,
-    },
-    startGameButton: {
-        padding: 10,
-        backgroundColor: '#DDDDDD',
-        marginTop: 50,
     },
   });
 export default Lobby;

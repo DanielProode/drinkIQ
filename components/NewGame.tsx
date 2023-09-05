@@ -1,27 +1,52 @@
 //import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
 import Button from './res/Button';
 
 
 function NewGame( { navigation }: {navigation: any}): JSX.Element {
 
+  const [ number, setNumber ] = React.useState('');
+
+    const onChanged = (text: string) => {
+        let newText = '';
+        let numbers = '0123456789';
+
+        for (var i = 0; i < text.length; i++) {
+            if (numbers.indexOf(text[i]) > -1 ) {
+                newText = newText + text[i];
+            }
+        }
+        setNumber(newText);
+    };
+
   return (
     <View style={styles.newGameView}>
-      <View style={styles.hostGameButton}>
+      <Text style={styles.enterCodeText}>ENTER GAME CODE:</Text>
+    <TextInput
+        style={styles.gameCodeInput}
+        onChangeText = {(text)=> onChanged(text)}
+        value={number}
+        onSubmitEditing={(value) => setNumber(value.nativeEvent.text)}
+        placeholder="#XXXXXX"
+        keyboardType="numeric"
+        maxLength={6}
+        placeholderTextColor="#FFFFFF80"
+        />
+        <View style={styles.buttonContainer}>
+        <Button
+            onPress={ () =>
+                navigation.navigate('JoinGame', {gameCode: number}) }
+            text="JOIN GAME"/>
+        </View>
+        <Text style={styles.hostGameText}>...or Host a game yourself!</Text>
+        <View style={styles.hostGameButton}>
         <Button onPress={() => {
             console.log('Host Game Button pressed!');
-            navigation.navigate('Lobby');
+            navigation.navigate('HostGame');
         }}
         text="HOST GAME"/>
        </View>
-        <View style={styles.joinGameButton}>
-            <Button onPress={() => {
-                console.log('Join Game Button pressed!');
-                navigation.navigate('JoinGame');
-            }}
-            text="JOIN GAME"/>
-        </View>
       </View>
 
   );
@@ -30,22 +55,45 @@ const styles = StyleSheet.create({
     settingsButton: {
         height: 50,
     },
+    enterCodeText: {
+      fontSize: 30,
+      marginTop: 200,
+      color: 'white',
+  },
     newGameView: {
       alignItems: 'center',
       backgroundColor: '#1E1E1E',
       flex: 1,
     },
+    buttonContainer: {
+      marginTop: 30,
+  },
+    gameCodeInput: {
+      marginTop: 20,
+      width: 120,
+      borderWidth: 2,
+      borderRadius: 10,
+      padding: 10,
+      borderColor: 'gray',
+      textAlign: 'center',
+      fontFamily: 'CarterOne-Regular',
+      color: 'white',
+  },
     hostGameButton: {
       alignItems: 'center',
       height: 50,
       width: 100,
+      marginTop: 20,
+    },
+    hostGameText: {
+      color: 'white',
       marginTop: 200,
     },
     joinGameButton: {
       alignItems: 'center',
       height: 50,
       width: 100,
-      marginTop: 50,
+      marginTop: 250,
     },
     cardButtonContainer: {
 

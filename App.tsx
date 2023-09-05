@@ -1,25 +1,27 @@
 import React from 'react';
 import MainMenuView from './components/MainMenuView';
 import NewGame from './components/NewGame';
+import Lobby from './components/Lobby';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import 'react-native-gesture-handler';
 import CardDecks from './components/CardDecks';
 import JoinGame from './components/JoinGame';
-import Lobby from './components/Lobby';
+import HostGame from './components/HostGame';
 import Profile from './components/Profile';
 import GameView from './components/GameView';
 import WelcomeView from './components/WelcomeView';
 import { ImageSourcePropType } from 'react-native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 type RootStackParamList = {
   GameView: { gameCode: number, baseCardCount: number, baseCardImage: ImageSourcePropType };
+  Lobby: { gameCode: number, avatar: ImageSourcePropType, drink: ImageSourcePropType };
   WelcomeView: undefined;
   MainMenuView: undefined;
   NewGame: undefined;
   CardDecks: undefined;
-  Lobby: undefined;
-  JoinGame: undefined;
+  HostGame: undefined;
+  JoinGame: { gameCode: number };
   Profile: undefined;
 };
 
@@ -36,10 +38,10 @@ function App(): JSX.Element {
         <Stack.Screen name="NewGame" component={NewGame} />
         <Stack.Screen name="CardDecks" component={CardDecks} />
         <Stack.Screen name="JoinGame" component={JoinGame} />
-        <Stack.Screen name="Lobby" component={Lobby} />
+        <Stack.Screen name="HostGame" component={HostGame} />
         <Stack.Screen name="Profile" component={Profile} />
-        <Stack.Screen name="GameView" component={GameView} initialParams={{ gameCode: 100000, baseCardCount: 10, baseCardImage: require('./src/card5_icon.png') }}
-                />
+        <Stack.Screen name="GameView" component={GameView} />
+        <Stack.Screen name="Lobby" component={Lobby} />
       </Stack.Navigator>
     </NavigationContainer>
   );
