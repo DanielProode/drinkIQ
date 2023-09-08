@@ -8,6 +8,8 @@ function NewGame( { navigation }: {navigation: any}): JSX.Element {
 
   const [ number, setNumber ] = React.useState('');
 
+  const [disabled,setDisabled] = React.useState(true)
+
     const onChanged = (text: string) => {
         let newText = '';
         let numbers = '0123456789';
@@ -18,6 +20,12 @@ function NewGame( { navigation }: {navigation: any}): JSX.Element {
             }
         }
         setNumber(newText);
+
+        if (text.length == 6) {
+          setDisabled(false);
+        } else {
+          setDisabled(true);
+        }
     };
 
   return (
@@ -35,9 +43,11 @@ function NewGame( { navigation }: {navigation: any}): JSX.Element {
         />
         <View style={styles.buttonContainer}>
         <Button
+
             onPress={ () =>
                 navigation.navigate('JoinGame', {gameCode: number}) }
-            text="JOIN GAME"/>
+            text="JOIN GAME"
+            disabled={disabled}/>
         </View>
         <Text style={styles.hostGameText}>...or Host a game yourself!</Text>
         <View style={styles.hostGameButton}>

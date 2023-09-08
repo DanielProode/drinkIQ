@@ -30,6 +30,13 @@ return (
         <View style={styles.lobbyButton}>
         <Button
             onPress={ () =>
+                navigation.navigate('GameView', {gameCode: gameCode, avatar: avatar, drink: drink}) }
+            style={styles.lobbyButton}
+            text="START GAME"/>
+        </View>
+        <View style={styles.lobbyButton}>
+        <Button
+            onPress={ () =>
             navigation.goBack() }
             style={styles.lobbyButton}
             text="BACK TO LOBBY"/>

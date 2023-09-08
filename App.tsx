@@ -14,7 +14,7 @@ import { ImageSourcePropType } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 type RootStackParamList = {
-  GameView: { gameCode: number, baseCardCount: number, baseCardImage: ImageSourcePropType };
+  GameView: { gameCode: number, avatar: ImageSourcePropType, drink: ImageSourcePropType };
   Lobby: { gameCode: number, avatar: ImageSourcePropType, drink: ImageSourcePropType };
   WelcomeView: undefined;
   MainMenuView: undefined;

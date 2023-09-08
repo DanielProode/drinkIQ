@@ -115,12 +115,27 @@ const Selection = ({ gameCode, navigation, hostGame }: SelectionProps) => {
             </View>
             <View style={styles.joinButton}>
             {hostGame
-            ? <Button
-                onPress={ () => {
-                navigation.navigate('Lobby', {gameCode: newGameCode, avatar: avatar, drink: drink});
-                }}
-                text="HOST GAME"
-            />
+            ? 
+                <View style={styles.selectDeck}>
+
+                    <Text style={styles.selectDeckText}>Select game deck</Text>
+
+                    <View >
+                        
+                    
+                    <TouchableOpacity style={styles.deckButtonContainer}>
+                        <Image  style={styles.deckImage} source={require('../src/avatar_1.png')}/>
+                    </TouchableOpacity>
+
+                    </View>
+
+                    <Button
+                    onPress={ () => {
+                    navigation.navigate('Lobby', {gameCode: newGameCode, avatar: avatar, drink: drink});
+                    }}
+                    text="HOST GAME"
+                />
+                </View>
 
             : <Button
                 onPress={ () =>
@@ -152,12 +167,38 @@ const styles = StyleSheet.create({
         top: 200,
         right: 80,
     },
+    selectDeck: {
+        flex: 1,
+    },
+    selectDeckText: {
+        color: 'white',
+        fontFamily: 'Basic',
+        marginTop: 30,
+        fontSize: 20,
+        alignSelf: 'center',
+    },
+    deckImage: {
+        flex: 1,
+        resizeMode: 'contain',
+        width: '70%', // Take up all available width
+        height: '70%', // Take up all available height
+        alignSelf: 'center',
+    },
     avatar: {
         flex: 1,
         resizeMode: 'contain',
         width: '70%', // Take up all available width
         height: '70%', // Take up all available height
         alignSelf: 'center',
+    },
+    deckButtonContainer: {
+        width: 100,
+        height: 100,
+        alignSelf: 'center',
+        aspectRatio: 1 / 1,
+        backgroundColor: '#d8d8d8',
+        marginTop: 20,
+        marginBottom: 20,
     },
     drink: {
         flex: 1,
@@ -237,8 +278,6 @@ const styles = StyleSheet.create({
         fontSize: 20,
     },
     joinButton: {
-        color: 'black',
-        marginTop: 20,
     },
   });
 export default Selection;

@@ -3,11 +3,12 @@ import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-nati
 
 const width = Dimensions.get('window').width;
 
-function Button({ text, onPress}: any): JSX.Element {
+function Button({ text, onPress, disabled}: any): JSX.Element {
 
   return (
-    <TouchableOpacity onPress={onPress}>
-      <View style={styles.btnContainer}>
+    <TouchableOpacity onPress={onPress}
+                      disabled={disabled}>
+      <View style={ disabled ? styles.btnDisabledContainer : styles.btnContainer}>
         <Text style={styles.btnText}> {text} </Text>
       </View>
     </TouchableOpacity>
@@ -21,6 +22,12 @@ const styles = StyleSheet.create({
         width: width / 1.3,
         borderRadius: 5,
     },
+    btnDisabledContainer: {
+      backgroundColor: '#FFFFFF50',
+      paddingVertical: 8,
+      width: width / 1.3,
+      borderRadius: 5,
+  },
     btnText: {
         color: '#1E1E1E',
         fontSize: 16,

@@ -7,11 +7,15 @@ import Button from './res/Button';
 
 export type Props = {
     route: RouteProp<{ GameView: {  gameCode: number;
-                                    baseCardCount: number;
-                                    baseCardImage:  ImageSourcePropType;}}>;
+                                    avatar: ImageSourcePropType;
+                                    drink: ImageSourcePropType;}}>;
     navigation: StackNavigationProp<any>;
 
 };
+
+const baseCardCount = 48;
+
+const baseCardImage = require('../src/card5_icon.png');
 
 let cardImageArray = [
     require('../src/card1_icon.png'),
@@ -19,10 +23,11 @@ let cardImageArray = [
     require('../src/card3_icon.png'),
     require('../src/card4_icon.png'),
     require('../src/card5_icon.png')];
+    
 
 
   const GameView = ({ route, navigation }: Props) => {
-    const { gameCode, baseCardCount, baseCardImage } = route.params;
+    const { gameCode, avatar, drink } = route.params;
 
     const [cardCount, setCardCount] = React.useState(baseCardCount);
     const [cardImage, setCardImage] = React.useState(baseCardImage);
@@ -42,6 +47,12 @@ let cardImageArray = [
   return (
     <View style={styles.gameView}>
       <Text style={styles.gameText}>Main Game</Text>
+      <View style={styles.profileBackground}>
+            <Image style={styles.avatar} source={avatar}/>
+        </View>
+        <View style={styles.drinkContainer}>
+            <Image style={styles.drink} source={drink} />
+        </View>
       <Text style={styles.cardsLeft}>Cards Left: {cardCount}</Text>
       {cardCount > 0 ?
       <View style={styles.cardViewContainer}>
@@ -81,8 +92,39 @@ const styles = StyleSheet.create({
         color: 'white',
     },
     cardsLeft: {
+        marginTop: 30,
         fontSize: 20,
         color: 'white',
+    },
+    profileBackground: {
+      width: '28.3%',
+      aspectRatio: 1 / 1,
+      backgroundColor: '#d8d8d8',
+      borderRadius: 40,
+      overflow: 'hidden',
+      marginTop: 20,
+  },
+    avatar: {
+      flex: 1,
+      resizeMode: 'contain',
+      width: '70%', // Take up all available width
+      height: '70%', // Take up all available height
+      alignSelf: 'center',
+  },
+    drink: {
+        flex: 1,
+        resizeMode: 'contain',
+        width: '70%', // Take up all available width
+        height: '70%', // Take up all available height
+        alignSelf: 'center',
+    },
+    drinkContainer: {
+      flex: 1,
+      width: 50,
+      height: 50,
+      position: 'absolute',
+      top: 260,
+      right: 120,
     },
     lobbyButton: {
         marginTop: 40,
