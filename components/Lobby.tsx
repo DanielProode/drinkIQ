@@ -39,7 +39,7 @@ return (
             onPress={ () =>
             navigation.goBack() }
             style={styles.lobbyButton}
-            text="BACK TO LOBBY"/>
+            text="BACK TO SELECTION"/>
         </View>
     <Text style={styles.gameCode}>#{gameCode}</Text>
 </View>

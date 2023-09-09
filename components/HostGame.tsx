@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Selection from './Selection';
 import { StackNavigationProp } from '@react-navigation/stack';
 

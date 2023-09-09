@@ -23,8 +23,6 @@ let cardImageArray = [
     require('../src/card3_icon.png'),
     require('../src/card4_icon.png'),
     require('../src/card5_icon.png')];
-    
-
 
   const GameView = ({ route, navigation }: Props) => {
     const { gameCode, avatar, drink } = route.params;

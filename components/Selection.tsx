@@ -2,6 +2,7 @@ import React from 'react';
 import { Image, ImageSourcePropType, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Button from './res/Button';
 import { StackNavigationProp } from '@react-navigation/stack';
+import CardDeckSelection from './CardDeckSelection';
 
 export type SelectionProps = {
     gameCode: number;
@@ -12,6 +13,7 @@ export type SelectionProps = {
 
 const defaultAvatar = require('../src/avatar_1.png');
 const defaultDrink = require('../src/avatar_3.png');
+const defaultCardDeck = require('../src/card_deck1.png');
 
 const avatarIcons1 = [
     require('../src/avatar_1.png'),
@@ -41,10 +43,11 @@ const drinkIcons2 = [
 
 
 const Selection = ({ gameCode, navigation, hostGame }: SelectionProps) => {
-    const [avatar, setAvatar] = React.useState(defaultAvatar);
-    const [drink, setDrink] = React.useState(defaultDrink);
-
-    const [newGameCode, setGameCode] = React.useState(gameCode);
+    const [ avatar, setAvatar ] = React.useState(defaultAvatar);
+    const [ drink, setDrink ] = React.useState(defaultDrink);
+    const [ visibility, setVisibility ] = React.useState(false);
+    const  [ newGameCode, setGameCode ] = React.useState(gameCode);
+    const  [ cardDeck, setCardDeck ] = React.useState(defaultCardDeck);
 
 
     const randomInt = (min: number, max: number) =>
@@ -83,18 +86,20 @@ const Selection = ({ gameCode, navigation, hostGame }: SelectionProps) => {
 
   return (
     <View style={styles.joinGameView}>
+        {visibility ? (<CardDeckSelection visibility={setVisibility} />) : null}
         <View style={styles.logoView}>
         <Image style={styles.cheersIcon}
                 source={require('../src/cheers_icon.png')}/>
         <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
         </View>
+        <View style={styles.avatarAndDrinkContainer}>
         <View style={styles.profileBackground}>
             <Image style={styles.avatar} source={avatar}/>
         </View>
         <View style={styles.drinkContainer}>
             <Image style={styles.drink} source={drink} />
         </View>
-
+        </View>
         {hostGame ? <></>
         : <Text style={styles.gameCode}>#{gameCode}</Text>}
         <View style={styles.viewContainer}>
@@ -115,16 +120,15 @@ const Selection = ({ gameCode, navigation, hostGame }: SelectionProps) => {
             </View>
             <View style={styles.joinButton}>
             {hostGame
-            ? 
+            ?
                 <View style={styles.selectDeck}>
 
                     <Text style={styles.selectDeckText}>Select game deck</Text>
 
                     <View >
-                        
-                    
-                    <TouchableOpacity style={styles.deckButtonContainer}>
-                        <Image  style={styles.deckImage} source={require('../src/avatar_1.png')}/>
+                    <TouchableOpacity   style={styles.deckButtonContainer}
+                                        onPress={() => setVisibility(!visibility)}>
+                        <Image  style={styles.deckImage} source={cardDeck}/>
                     </TouchableOpacity>
 
                     </View>
@@ -160,12 +164,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#1E1E1E',
     },
     drinkContainer: {
-        flex: 1,
         width: 50,
         height: 50,
-        position: 'absolute',
-        top: 200,
-        right: 80,
+        bottom: 40,
+        right: '-15%',
+    },
+    avatarAndDrinkContainer: {
+        height: 60,
     },
     selectDeck: {
         flex: 1,
@@ -173,15 +178,15 @@ const styles = StyleSheet.create({
     selectDeckText: {
         color: 'white',
         fontFamily: 'Basic',
-        marginTop: 30,
+        marginTop: 10,
         fontSize: 20,
         alignSelf: 'center',
     },
     deckImage: {
         flex: 1,
         resizeMode: 'contain',
-        width: '70%', // Take up all available width
-        height: '70%', // Take up all available height
+        width: '90%', // Take up all available width
+        height: '90%', // Take up all available height
         alignSelf: 'center',
     },
     avatar: {
@@ -192,8 +197,8 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     deckButtonContainer: {
-        width: 100,
-        height: 100,
+        width: 80,
+        height: 80,
         alignSelf: 'center',
         aspectRatio: 1 / 1,
         backgroundColor: '#d8d8d8',
@@ -213,7 +218,6 @@ const styles = StyleSheet.create({
         width: 80,
         height: 80,
         right: -30,
-        top: 20,
         opacity: 0.3,
     },
     avatarCircles1: {
@@ -242,12 +246,10 @@ const styles = StyleSheet.create({
         borderRadius: 40,
     },
     profileBackground: {
-        width: '28.3%',
+        width: '20.0%',
         aspectRatio: 1 / 1,
         backgroundColor: '#d8d8d8',
-        borderRadius: 40,
-        overflow: 'hidden',
-        marginTop: 20,
+        borderRadius: 20,
     },
     drinkIQLogo: {
         fontFamily: 'Knewave',
@@ -257,13 +259,13 @@ const styles = StyleSheet.create({
     },
     gameCode: {
         fontFamily: 'CarterOne-Regular',
-        marginTop: 5,
+        marginTop: 20,
         fontSize: 18,
         color: 'white',
     },
     viewContainer: {
         flex: 1,
-        marginTop: 20,
+        marginTop: 30,
         alignItems: 'center',
     },
     selectAvatarText: {
@@ -274,7 +276,7 @@ const styles = StyleSheet.create({
     selectDrinkText: {
         color: 'white',
         fontFamily: 'Basic',
-        marginTop: 40,
+        marginTop: 10,
         fontSize: 20,
     },
     joinButton: {
