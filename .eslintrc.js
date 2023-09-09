@@ -1,8 +1,9 @@
 module.exports = {
   root: true,
-  extends: '@react-native',
+  extends: [
+    'universe/native',
+  ],
   rules: {
-    // rules...
-    "prettier/prettier": 0
-}
+    'prettier/prettier': 0,
+  },
 };
