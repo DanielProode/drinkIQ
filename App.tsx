@@ -1,17 +1,17 @@
-import React from 'react';
-import MainMenuView from './components/MainMenuView';
-import NewGame from './components/NewGame';
-import Lobby from './components/Lobby';
+
 import { NavigationContainer } from '@react-navigation/native';
-import 'react-native-gesture-handler';
-import CardDecks from './components/CardDecks';
-import JoinGame from './components/JoinGame';
-import HostGame from './components/HostGame';
-import Profile from './components/Profile';
-import GameView from './components/GameView';
-import WelcomeView from './components/WelcomeView';
-import { ImageSourcePropType } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { ImageSourcePropType } from 'react-native';
+
+import CardDecks from './screens/CardDecks';
+import GameView from './screens/GameView';
+import HostGame from './screens/HostGame';
+import JoinGame from './screens/JoinGame';
+import Lobby from './screens/Lobby';
+import MainMenuView from './screens/MainMenuView';
+import NewGame from './screens/NewGame';
+import Profile from './screens/Profile';
+import WelcomeView from './screens/WelcomeView';
 
 type RootStackParamList = {
   GameView: { gameCode: number, avatar: ImageSourcePropType, drink: ImageSourcePropType };
@@ -27,9 +27,8 @@ type RootStackParamList = {
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
+export default function App(): JSX.Element {
 
-
-function App(): JSX.Element {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="WelcomeView" screenOptions={{ headerTitle: '', headerTransparent: true, headerTintColor: '#A5AFB9' }}>
@@ -46,5 +45,3 @@ function App(): JSX.Element {
     </NavigationContainer>
   );
 };
-
-export default App;
