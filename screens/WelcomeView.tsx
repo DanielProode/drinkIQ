@@ -1,12 +1,15 @@
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { useState, useCallback } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, Text, Pressable, View } from 'react-native';
 
 import TermsAndConditions from './TermsAndConditions';
+interface WelcomeViewProps {
+  navigation: NativeStackNavigationProp<any>;
+}
 
-export default function WelcomeView({ navigation }: { navigation: any }): JSX.Element {
-  const [visibility, setVisibility] = useState(false);
+export default function WelcomeView({ navigation }: WelcomeViewProps) {
   const [fontsLoaded, fontError] = useFonts({
     'Basic': require('../assets/fonts/Basic.ttf'),
     'Cabin-Bold': require('../assets/fonts/Cabin-Bold.ttf'),
@@ -16,6 +19,12 @@ export default function WelcomeView({ navigation }: { navigation: any }): JSX.El
     'CarterOne-Regular': require('../assets/fonts/CarterOne-Regular.ttf'),
     'Knewave': require('../assets/fonts/Knewave.ttf'),
   });
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const toggleModal = () => {
+    setIsModalVisible(!isModalVisible);
+  }
+
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded || fontError) {
       await SplashScreen.hideAsync();
@@ -28,40 +37,37 @@ export default function WelcomeView({ navigation }: { navigation: any }): JSX.El
 
   return (
     <View style={styles.welcomeView} onLayout={onLayoutRootView}>
-      {visibility ? (<TermsAndConditions visibility={setVisibility} />) : null}
+      <TermsAndConditions isVisible={isModalVisible} onClose={toggleModal} />
       <Image style={styles.cheersIcon}
         source={require('../assets/images/cheers_icon.png')} />
       <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
       <View style={styles.contentView}>
         <Text style={styles.welcomeText}>Log in To start playing!</Text>
         <View style={styles.googleLogoContainer}>
-          <TouchableOpacity
-            activeOpacity={0.7}
+          <Pressable
             onPress={() => navigation.navigate('MainMenuView')}>
             <Image
               style={styles.googleLogo}
               source={require('../assets/images/google_icon.png')} />
-          </TouchableOpacity>
+          </Pressable>
         </View>
         <View style={styles.appleLogoContainer}>
-          <TouchableOpacity
-            activeOpacity={0.7}
+          <Pressable
             onPress={() => navigation.navigate('MainMenuView')}>
             <Image
               style={styles.appleLogo}
               source={require('../assets/images/apple_icon.png')} />
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </View>
-      <TouchableOpacity
-        activeOpacity={0.7}
+      <Pressable
         style={styles.touchableTerms}
-        onPress={() => setVisibility(!visibility)}>
+        onPress={toggleModal}>
         <Text style={styles.outerText}>By signing up you agree with the
           <Text
             style={styles.innerText}> drinkIQ Terms and Conditions.</Text>
         </Text>
-      </TouchableOpacity>
+      </Pressable>
     </View>
   );
 }
