@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { Keyboard, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import Button from '../components/Button';
 
@@ -40,8 +40,9 @@ export default function NewGame({ navigation }: { navigation: any }): JSX.Elemen
       />
       <View style={styles.buttonContainer}>
         <Button
-          onPress={() =>
-            navigation.navigate('JoinGame', { gameCode: number })}
+          onPress={() => {
+            Keyboard.dismiss();
+            navigation.navigate('JoinGame', { gameCode: number })}}
           text="JOIN GAME"
           disabled={disabled} />
       </View>

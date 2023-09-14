@@ -1,7 +1,9 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import Selection from './Selection';
+
 
 export type HostGameProps = {
   navigation: NativeStackNavigationProp<any>;
@@ -9,9 +11,26 @@ export type HostGameProps = {
 
 export default function HostGame({ navigation }: HostGameProps) {
 
+  const [newGameCode, setGameCode] = useState(0);
+
+  const randomInt = (min: number, max: number) =>
+  Math.floor(Math.random() * (max - min + 1)) + min;
+
+// In the future, check if active game already exists with generated code
+
+  const generateGameCode = () => {
+    const generatedGameCode = randomInt(100000, 999999);
+    setGameCode(generatedGameCode);
+  };
+
+  if (newGameCode === 0) {
+    generateGameCode();
+  }
+
+
   return (
     <View style={styles.joinGameView}>
-      <Selection gameCode={0} navigation={navigation} hostGame/>
+      <Selection gameCode={newGameCode} navigation={navigation} hostGame/>
     </View>
   );
 };
