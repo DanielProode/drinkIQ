@@ -60,9 +60,6 @@ export default function NewGame({ navigation }: { navigation: any }): JSX.Elemen
 }
 
 const styles = StyleSheet.create({
-  settingsButton: {
-    height: 50,
-  },
   enterCodeText: {
     fontSize: 30,
     marginTop: 200,
@@ -96,11 +93,5 @@ const styles = StyleSheet.create({
   hostGameText: {
     color: 'white',
     marginTop: 200,
-  },
-  joinGameButton: {
-    alignItems: 'center',
-    height: 50,
-    width: 100,
-    marginTop: 250,
   },
 });

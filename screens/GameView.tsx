@@ -18,7 +18,7 @@ export type Props = {
 
 const baseCardCount = 48;
 const baseCardImage = require('../assets/images/card5_icon.png');
-let cardImageArray = [
+const cardImageArray = [
   require('../assets/images/card1_icon.png'),
   require('../assets/images/card2_icon.png'),
   require('../assets/images/card3_icon.png'),
@@ -102,15 +102,15 @@ const styles = StyleSheet.create({
   avatar: {
     flex: 1,
     resizeMode: 'contain',
-    width: '70%', // Take up all available width
-    height: '70%', // Take up all available height
+    width: '70%',
+    height: '70%',
     alignSelf: 'center',
   },
   drink: {
     flex: 1,
     resizeMode: 'contain',
-    width: '70%', // Take up all available width
-    height: '70%', // Take up all available height
+    width: '70%',
+    height: '70%',
     alignSelf: 'center',
   },
   drinkContainer: {
@@ -133,13 +133,13 @@ const styles = StyleSheet.create({
   },
   cardViewContainer: {
     marginTop: 50,
-    width: 220,  // Fixed width
-    height: 300, // Fixed height
+    width: 220,
+    height: 300,
   },
   cardViewTouchable: {
-    width: '100%', // Take up all available width
-    height: '100%', // Take up all available height
-    alignItems: 'center',     // Center horizontally
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
   },
   cardView: {
     flex: 1,

@@ -1,9 +1,10 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useState } from 'react';
-import { Keyboard, Image, ImageSourcePropType, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, ImageSourcePropType, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
+import Button from '../components/Button';
 import CardDeckSelection from '../components/CardDeckSelection';
-import Button from '../components/Button';;
+
 
 export type SelectionProps = {
   gameCode: number;
@@ -110,7 +111,7 @@ export default function Selection({ gameCode, navigation, hostGame }: SelectionP
         <View style={styles.drinkCircles2}>
           {RenderCircles(drinkIcons2, true)}
         </View>
-        <View style={styles.joinButton}>
+        <View>
           {hostGame
             ?
             <View style={styles.selectDeck}>
@@ -280,7 +281,5 @@ const styles = StyleSheet.create({
     fontFamily: 'Basic',
     marginTop: 10,
     fontSize: 20,
-  },
-  joinButton: {
   },
 });

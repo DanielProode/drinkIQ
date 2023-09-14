@@ -1,5 +1,4 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { useState } from 'react';
 import { Image, ImageSourcePropType, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import Button from './Button';
@@ -87,22 +86,6 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     borderRadius: 20,
-  },
-  button: {
-    marginTop: 20,
-  },
-  scrollView: {
-    flexGrow: 1,
-    width: '100%',
-    justifyContent: 'center',
-  },
-  closeButton: {
-    position: 'absolute',
-    fontFamily: 'Basic',
-    color: 'white',
-    fontSize: 40,
-    right: 15,
-    top: 5,
   },
   selectedCardDeckContainer: {
     borderColor: '#4c6cd4',

@@ -161,8 +161,8 @@ const styles = StyleSheet.create({
   avatar: {
     flex: 1,
     resizeMode: 'contain',
-    width: '80%', // Take up all available width
-    height: '80%', // Take up all available height
+    width: '80%',
+    height: '80%',
     alignSelf: 'center',
   },
   name: {
@@ -174,8 +174,8 @@ const styles = StyleSheet.create({
   drink: {
     position: 'absolute',
     resizeMode: 'contain',
-    width: '45%', // Take up all available width
-    height: '45%', // Take up all available height
+    width: '45%',
+    height: '45%',
     alignSelf: 'flex-end',
     bottom: 0,
   },
@@ -188,30 +188,6 @@ const styles = StyleSheet.create({
     borderColor: '#3395EF',
     borderWidth: 1,
     borderRadius: 10,
-  },
-  drinkContainer: {
-    flex: 1,
-    width: 50,
-    height: 50,
-    position: 'absolute',
-    top: 260,
-    right: 120,
-  },
-  profileBackground: {
-    width: '28.3%',
-    aspectRatio: 1 / 1,
-    backgroundColor: '#d8d8d8',
-    borderRadius: 40,
-    overflow: 'hidden',
-    marginTop: 20,
-  },
-  gameText: {
-    fontSize: 50,
-    marginTop: 100,
-    color: 'white',
-  },
-  lobbyButton: {
-    marginTop: 40,
   },
   gameCode: {
     fontSize: 20,

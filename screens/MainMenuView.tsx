@@ -15,7 +15,7 @@ export default function MainMenuView({ navigation }: { navigation: any }): JSX.E
         <Text style={styles.welcomeMessage}>Welcome to drinkIQ!</Text>
       </View>
       <View style={styles.bodyContainer}>
-        <View style={styles.buttonContainer}>
+        <View >
           <Button onPress={() => {
             navigation.navigate('NewGame');
           }}
@@ -54,12 +54,6 @@ const styles = StyleSheet.create({
     top: 20,
     opacity: 0.3,
   },
-  backgroundImage: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
-  },
   drinkIQLogo: {
     fontFamily: 'Knewave',
     marginTop: 150,
@@ -82,15 +76,8 @@ const styles = StyleSheet.create({
   },
   cardButtonContainer: {
     marginTop: 20,
-    
-  },
-  buttonContainer: {
   },
   settingsButtonContainer: {
     marginTop: 20,
-  },
-  profilePicture: {
-    width: 70,
-    height: 70,
   },
 });

@@ -1,19 +1,13 @@
 import { useState } from 'react';
-import { Appearance, Dimensions, Pressable, StyleSheet, Switch, Text, View } from 'react-native';
+import { Dimensions, Pressable, StyleSheet, Switch, Text, View } from 'react-native';
 
 const width = Dimensions.get('window').width;
 
-export default function Button({ text, onPress, marginTop }: any): JSX.Element {
-
-    const colorScheme = Appearance.getColorScheme();
+export default function Button({ text, marginTop }: any) {
 
     const [isEnabled, setIsEnabled] = useState(false);
 
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
-
-    colorScheme === 'dark';
-
-    console.log(colorScheme);
 
 
     
@@ -52,12 +46,6 @@ const styles = StyleSheet.create({
   switchButton: {
     right: 5,
     position: 'absolute',
-  },
-  btnDisabledContainer: {
-    backgroundColor: '#FFFFFF50',
-    paddingVertical: 8,
-    width: width / 1.3,
-    borderRadius: 5,
   },
   btnText: {
     color: '#1E1E1E',
