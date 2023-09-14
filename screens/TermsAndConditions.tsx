@@ -1,12 +1,15 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Modal, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-export default function TermsAndConditions(props: { visibility: any; }): JSX.Element {
-  const { visibility } = props;
+interface TermsAndConditionsProps {
+  isVisible: boolean;
+  onClose: () => void;
+}
 
+export default function TermsAndConditions({ isVisible, onClose }: TermsAndConditionsProps) {
   return (
-    <View style={styles.termsView}>
+    <Modal animationType="fade" visible={isVisible}>
       <View style={styles.termsView}>
-        <Text style={styles.closeButton} onPress={() => visibility(false)}>X</Text>
+        <Text style={styles.closeButton} onPress={onClose}>X</Text>
         <View style={styles.termsTextView} >
           <ScrollView>
             <Text style={styles.text}>Terms and conditions</Text>
@@ -16,7 +19,7 @@ export default function TermsAndConditions(props: { visibility: any; }): JSX.Ele
           </ScrollView>
         </View>
       </View>
-    </View>
+    </Modal>
   );
 }
 
