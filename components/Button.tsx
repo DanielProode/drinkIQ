@@ -1,15 +1,21 @@
-import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
 
 const width = Dimensions.get('window').width;
 
-export default function Button({ text, onPress, disabled }: any): JSX.Element {
+export default function Button({ text, onPress, disabled, marginTop }: any): JSX.Element {
   return (
-    <TouchableOpacity onPress={onPress}
+    <View style={{marginTop}}>
+    <Pressable 
+    style={({ pressed }) => [
+      { opacity: pressed ? 0.5 : 1.0 }
+    ]}
+      onPress={onPress}
       disabled={disabled}>
       <View style={disabled ? styles.btnDisabledContainer : styles.btnContainer}>
         <Text style={styles.btnText}> {text} </Text>
       </View>
-    </TouchableOpacity>
+    </Pressable>
+    </View>
   );
 }
 

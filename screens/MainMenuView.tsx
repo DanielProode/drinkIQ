@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
 
@@ -15,33 +15,26 @@ export default function MainMenuView({ navigation }: { navigation: any }): JSX.E
         <Text style={styles.welcomeMessage}>Welcome to drinkIQ!</Text>
       </View>
       <View style={styles.bodyContainer}>
-        <View style={styles.buttonContainer}>
+        <View >
           <Button onPress={() => {
-            console.log('New Game Button pressed!');
             navigation.navigate('NewGame');
           }}
             text="New game" />
         </View>
         <View style={styles.cardButtonContainer}>
           <Button onPress={() => {
-            console.log('Card Decks Button pressed!');
             navigation.navigate('CardDecks');
           }}
             text="Card Decks" />
         </View>
+        <View style={styles.settingsButtonContainer}>
+      <Button onPress={() => {
+            navigation.navigate('Settings');
+          }}
+            text="Settings" />
       </View>
-      <View style={styles.settingsButtonContainer}>
-        <TouchableHighlight
-          activeOpacity={0.6}
-          underlayColor="#DDEDDD"
-          onPress={() => navigation.navigate('Profile')}>
-          <View>
-            <Image
-              style={styles.profilePicture}
-              source={require('../assets/images/profile_icon.png')} />
-          </View>
-        </TouchableHighlight>
       </View>
+      
     </View>
   );
 }
@@ -61,12 +54,6 @@ const styles = StyleSheet.create({
     top: 20,
     opacity: 0.3,
   },
-  backgroundImage: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
-  },
   drinkIQLogo: {
     fontFamily: 'Knewave',
     marginTop: 150,
@@ -85,21 +72,12 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   bodyContainer: {
-    marginTop: 20,
+    flex: 4,
   },
   cardButtonContainer: {
     marginTop: 20,
   },
-  buttonContainer: {
-    marginTop: 50,
-  },
   settingsButtonContainer: {
-    marginTop: 'auto',
-    marginLeft: 'auto',
-    padding: 30,
-  },
-  profilePicture: {
-    width: 70,
-    height: 70,
+    marginTop: 20,
   },
 });

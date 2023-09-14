@@ -49,23 +49,18 @@ const styles = StyleSheet.create({
   card: {
     flex: 1,
     resizeMode: 'contain',
-    width: '100%', // Take up all available width
-    height: '100%', // Take up all available height
+    width: '100%',
+    height: '100%',
   },
   cardsView: {
     flex: 1,
     marginTop: 50,
-    width: '100%', // Take up all available width
-    alignItems: 'center',     // Center horizontally
+    width: '100%',
+    alignItems: 'center',
   },
   cardViewTouchable: {
     width: 400,
     height: 400,
     alignItems: 'center',
-  },
-  cardText: {
-    marginTop: 50,
-    color: 'white',
-    fontSize: 50,
   },
 });

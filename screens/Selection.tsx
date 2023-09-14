@@ -1,9 +1,10 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useState } from 'react';
-import { Image, ImageSourcePropType, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, ImageSourcePropType, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-import CardDeckSelection from './CardDeckSelection';
-import Button from '../components/Button';;
+import Button from '../components/Button';
+import CardDeckSelection from '../components/CardDeckSelection';
+
 
 export type SelectionProps = {
   gameCode: number;
@@ -19,46 +20,38 @@ const avatarIcons1 = [
   require('../assets/images/avatar_1.png'),
   require('../assets/images/avatar_2.png'),
   require('../assets/images/avatar_3.png'),
-  require('../assets/images/avatar_2.png'),
-  require('../assets/images/avatar_1.png')];
+  require('../assets/images/avatar_4.png'),
+  require('../assets/images/avatar_5.png')];
 const avatarIcons2 = [
-  require('../assets/images/avatar_2.png'),
-  require('../assets/images/avatar_3.png'),
-  require('../assets/images/avatar_2.png'),
-  require('../assets/images/avatar_1.png')];
+  require('../assets/images/avatar_6.png'),
+  require('../assets/images/avatar_7.png'),
+  require('../assets/images/avatar_8.png'),
+  require('../assets/images/avatar_9.png')];
 const drinkIcons1 = [
-  require('../assets/images/avatar_1.png'),
-  require('../assets/images/avatar_2.png'),
-  require('../assets/images/avatar_3.png'),
-  require('../assets/images/avatar_3.png'),
-  require('../assets/images/avatar_1.png')];
+  require('../assets/images/drink_1.png'),
+  require('../assets/images/drink_2.png'),
+  require('../assets/images/drink_3.png'),
+  require('../assets/images/drink_4.png'),
+  require('../assets/images/drink_5.png')];
 const drinkIcons2 = [
-  require('../assets/images/avatar_2.png'),
-  require('../assets/images/avatar_3.png'),
-  require('../assets/images/avatar_2.png'),
-  require('../assets/images/avatar_3.png')];
+  require('../assets/images/drink_6.png'),
+  require('../assets/images/drink_7.png'),
+  require('../assets/images/drink_8.png'),
+  require('../assets/images/drink_9.png')];
 
 export default function Selection({ gameCode, navigation, hostGame }: SelectionProps) {
   const [avatar, setAvatar] = useState(defaultAvatar);
   const [drink, setDrink] = useState(defaultDrink);
   const [visibility, setVisibility] = useState(false);
-  const [newGameCode, setGameCode] = useState(gameCode);
-  const [cardDeck, setCardDeck] = useState(defaultCardDeck);
-  const randomInt = (min: number, max: number) =>
-    Math.floor(Math.random() * (max - min + 1)) + min;
+  const [playableDeck, setCardDeck] = useState(defaultCardDeck);
 
-  // In the future, check if active game already exists with generated code
-
-  const generateGameCode = () => {
-    const generatedGameCode = randomInt(10000, 999999);
-    setGameCode(generatedGameCode);
-  };
-
-  if (newGameCode === 0) {
-    generateGameCode();
+  function handleCardDeck(deck: ImageSourcePropType) {
+    console.log(deck);
+    setCardDeck(deck);
+    console.log(playableDeck);
   }
 
-  const RenderCircles = (myArray: Array<ImageSourcePropType>, isDrink: boolean) => {
+  const RenderCircles = (myArray: ImageSourcePropType[], isDrink: boolean) => {
 
     return myArray.map((item, index) => {
       return (
@@ -80,7 +73,13 @@ export default function Selection({ gameCode, navigation, hostGame }: SelectionP
 
   return (
     <View style={styles.joinGameView}>
-      {visibility ? (<CardDeckSelection visibility={setVisibility} />) : null}
+      {visibility ? 
+      <>
+      <View style={styles.opacity}/>
+
+      <CardDeckSelection handleCardDeck={handleCardDeck} visibility={setVisibility} />
+      </>
+      : null}
       <View style={styles.logoView}>
         <Image style={styles.cheersIcon}
           source={require('../assets/images/cheers_icon.png')} />
@@ -112,7 +111,7 @@ export default function Selection({ gameCode, navigation, hostGame }: SelectionP
         <View style={styles.drinkCircles2}>
           {RenderCircles(drinkIcons2, true)}
         </View>
-        <View style={styles.joinButton}>
+        <View>
           {hostGame
             ?
             <View style={styles.selectDeck}>
@@ -120,24 +119,26 @@ export default function Selection({ gameCode, navigation, hostGame }: SelectionP
               <Text style={styles.selectDeckText}>Select game deck</Text>
 
               <View >
-                <TouchableOpacity style={styles.deckButtonContainer}
+                <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.5 : 1.0 }, styles.deckButtonContainer]}
                   onPress={() => setVisibility(!visibility)}>
-                  <Image style={styles.deckImage} source={cardDeck} />
-                </TouchableOpacity>
+                  <Image style={styles.deckImage} source={playableDeck} />
+                </Pressable>
 
               </View>
 
               <Button
                 onPress={() => {
-                  navigation.navigate('Lobby', { gameCode, avatar, drink });
+                  navigation.navigate('Lobby', { gameCode, avatar, drink, playableDeck, hostGame  });
                 }}
                 text="HOST GAME"
               />
             </View>
 
             : <Button
-              onPress={() =>
-                navigation.navigate('Lobby', { gameCode, avatar, drink })}
+              marginTop={20}
+              onPress={() =>{
+                navigation.navigate('Lobby', { gameCode, avatar, drink, playableDeck, hostGame })}
+              }
               text="JOIN GAME" />
           }
         </View>
@@ -165,6 +166,13 @@ const styles = StyleSheet.create({
   avatarAndDrinkContainer: {
     height: 60,
   },
+  opacity: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    zIndex: 1,
+    backgroundColor: '#00000099',
+  },
   selectDeck: {
     flex: 1,
   },
@@ -178,31 +186,33 @@ const styles = StyleSheet.create({
   deckImage: {
     flex: 1,
     resizeMode: 'contain',
-    width: '90%', // Take up all available width
-    height: '90%', // Take up all available height
+    width: '100%',
+    height: '100%',
     alignSelf: 'center',
+    borderColor: 'white',
+    borderWidth: 1,
+    borderRadius: 10,
   },
   avatar: {
     flex: 1,
     resizeMode: 'contain',
-    width: '70%', // Take up all available width
-    height: '70%', // Take up all available height
+    width: '70%',
+    height: '70%',
     alignSelf: 'center',
   },
   deckButtonContainer: {
-    width: 80,
-    height: 80,
+    width: 100,
     alignSelf: 'center',
     aspectRatio: 1 / 1,
-    backgroundColor: '#d8d8d8',
     marginTop: 20,
     marginBottom: 20,
+    borderRadius: 10,
   },
   drink: {
     flex: 1,
     resizeMode: 'contain',
-    width: '70%', // Take up all available width
-    height: '70%', // Take up all available height
+    width: '70%',
+    height: '70%',
     alignSelf: 'center',
   },
   cheersIcon: {
@@ -271,7 +281,5 @@ const styles = StyleSheet.create({
     fontFamily: 'Basic',
     marginTop: 10,
     fontSize: 20,
-  },
-  joinButton: {
   },
 });

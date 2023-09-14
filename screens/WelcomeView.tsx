@@ -121,10 +121,6 @@ const styles = StyleSheet.create({
     height: 50,
     width: 315,
   },
-  googleLogin: {
-    marginTop: 100,
-    fontSize: 20,
-  },
   innerText: {
     fontFamily: 'Cabin-Bold',
     color: '#FFFFFF95',

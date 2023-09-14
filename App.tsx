@@ -10,19 +10,19 @@ import JoinGame from './screens/JoinGame';
 import Lobby from './screens/Lobby';
 import MainMenuView from './screens/MainMenuView';
 import NewGame from './screens/NewGame';
-import Profile from './screens/Profile';
+import Settings from './screens/Settings';
 import WelcomeView from './screens/WelcomeView';
 
 type RootStackParamList = {
   GameView: { gameCode: number, avatar: ImageSourcePropType, drink: ImageSourcePropType };
-  Lobby: { gameCode: number, avatar: ImageSourcePropType, drink: ImageSourcePropType };
+  Lobby: { gameCode: number, avatar: ImageSourcePropType, drink: ImageSourcePropType, playableDeck: ImageSourcePropType, hostGame: boolean };
   WelcomeView: undefined;
   MainMenuView: undefined;
   NewGame: undefined;
   CardDecks: undefined;
   HostGame: undefined;
   JoinGame: { gameCode: number };
-  Profile: undefined;
+  Settings: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -38,7 +38,7 @@ export default function App() {
         <Stack.Screen name="CardDecks" component={CardDecks} />
         <Stack.Screen name="JoinGame" component={JoinGame} />
         <Stack.Screen name="HostGame" component={HostGame} />
-        <Stack.Screen name="Profile" component={Profile} />
+        <Stack.Screen name="Settings" component={Settings} />
         <Stack.Screen name="GameView" component={GameView} />
         <Stack.Screen name="Lobby" component={Lobby} />
       </Stack.Navigator>
