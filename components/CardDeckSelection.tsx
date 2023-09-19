@@ -2,8 +2,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Image, ImageSourcePropType, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import Button from './Button';
+import { useState } from 'react';
 
-export default function CardDeckSelection(props: { visibility: any; handleCardDeck: any }): JSX.Element {
+export default function CardDeckSelection(props: { visibility: any; handleCardDeck: any }) {
 
   const { visibility } = props;
 
@@ -19,15 +20,28 @@ export default function CardDeckSelection(props: { visibility: any; handleCardDe
     require('../assets/images/card_deck5.png'),
     require('../assets/images/card_deck6.png'),
   ];
+
+
+  const [selectedCardIndex, setSelectedCardIndex] = useState(-1);
+
   const RenderCardDecks = (myArray: ImageSourcePropType[], owned: boolean) => {
     return myArray.map((cardDeck, index) => {
+      const isSelected = selectedCardIndex === index;
+
       return (
         <View style={styles.cardsContainer} key={index}>
         <Pressable
           key={index}
-          style={({ pressed }) => [{ opacity: pressed ? 0.5 : 1.0 }, styles.cardDeckContainer]}
+          style={({ pressed }) => [
+            { opacity: pressed ? 0.5 : 1.0 },
+            styles.cardDeckContainer,
+            isSelected && owned && styles.cardDeckContainerSelected,
+            ]}
           onPress={() => {
             handleCardDeck(cardDeck)
+
+            setSelectedCardIndex(index);
+            
           }
           } >
           <Image style={styles.cardDeck} source={cardDeck} />
@@ -87,10 +101,6 @@ const styles = StyleSheet.create({
     bottom: 0,
     borderRadius: 20,
   },
-  selectedCardDeckContainer: {
-    borderColor: '#4c6cd4',
-    borderWidth: 2,
-  },
   cardDeck: {
     flex: 1,
     resizeMode: 'contain',
@@ -107,6 +117,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
     borderWidth: 1,
     borderColor: '#FFFFFF',
+  },
+  cardDeckContainerSelected: {
+    borderColor: 'blue',
   },
   viewContainer: {
     flexDirection: 'row',

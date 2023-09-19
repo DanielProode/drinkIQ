@@ -75,7 +75,7 @@ export default function Selection({ gameCode, navigation, hostGame }: SelectionP
     <View style={styles.joinGameView}>
       {visibility ? 
       <>
-      <View style={styles.opacity}/>
+      <View style={styles.backgroundBlur}/>
 
       <CardDeckSelection handleCardDeck={handleCardDeck} visibility={setVisibility} />
       </>
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
   avatarAndDrinkContainer: {
     height: 60,
   },
-  opacity: {
+  backgroundBlur: {
     position: 'absolute',
     width: '100%',
     height: '100%',

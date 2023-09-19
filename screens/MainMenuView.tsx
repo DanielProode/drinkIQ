@@ -5,7 +5,7 @@ import Button from '../components/Button';
 // Navigation prop temporarily as any
 // https://stackoverflow.com/questions/63132548/react-navigation-5-error-binding-element-navigation-implicitly-has-an-any-ty
 
-export default function MainMenuView({ navigation }: { navigation: any }): JSX.Element {
+export default function MainMenuView({ navigation }: { navigation: any }) {
   return (
     <View style={styles.mainView}>
       <Image style={styles.cheersIcon}

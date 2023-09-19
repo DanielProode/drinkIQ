@@ -2,7 +2,7 @@ import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
 
 const width = Dimensions.get('window').width;
 
-export default function Button({ text, onPress, disabled, marginTop }: any) {
+export default function AnswerButton({ text, onPress, marginTop, correct, answered }: any) {
   return (
     <View style={{marginTop}}>
     <Pressable 
@@ -10,27 +10,45 @@ export default function Button({ text, onPress, disabled, marginTop }: any) {
       { opacity: pressed ? 0.5 : 1.0 }
     ]}
       onPress={onPress}
-      disabled={disabled}>
-      <View style={disabled ? styles.btnDisabledContainer : styles.btnContainer}>
+      disabled={answered}>
+        { 
+        answered ? 
+
+        <View style={correct ? styles.correctAnswer : styles.wrongAnswer}>
         <Text style={styles.btnText}> {text} </Text>
       </View>
+
+      :
+
+      <View style={styles.answer}>
+      <Text style={styles.btnText}> {text} </Text>
+    </View>
+
+    }
+      
     </Pressable>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  btnContainer: {
-    backgroundColor: '#FFFFFF',
+  correctAnswer: {
+    backgroundColor: 'green',
     paddingVertical: 8,
     width: width / 1.3,
     borderRadius: 5,
   },
-  btnDisabledContainer: {
-    backgroundColor: '#FFFFFF50',
+  wrongAnswer: {
+    backgroundColor: 'red',
     paddingVertical: 8,
     width: width / 1.3,
     borderRadius: 5,
+  },
+  answer: {
+    backgroundColor: '#FFFFFF',
+    paddingVertical: 8,
+    width: width / 1.3,
+    borderRadius: 5, 
   },
   btnText: {
     color: '#1E1E1E',

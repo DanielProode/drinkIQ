@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
 
-export default function Settings(): JSX.Element {
+export default function Settings() {
 
 
   

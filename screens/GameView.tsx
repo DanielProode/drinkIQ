@@ -1,9 +1,10 @@
 import { RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useState, useEffect } from 'react';
-import { Image, StyleSheet, Text, TouchableHighlight, View, ImageSourcePropType } from 'react-native';
+import { Image, StyleSheet, Text, TouchableHighlight, View, ImageSourcePropType, Pressable } from 'react-native';
 
 import Button from '../components/Button';
+import Card from '../components/Card';
 
 export type Props = {
   route: RouteProp<{
@@ -16,7 +17,7 @@ export type Props = {
   navigation: NativeStackNavigationProp<any>;
 };
 
-const baseCardCount = 48;
+const baseCardCount = 10;
 const baseCardImage = require('../assets/images/card5_icon.png');
 const cardImageArray = [
   require('../assets/images/card1_icon.png'),
@@ -25,10 +26,29 @@ const cardImageArray = [
   require('../assets/images/card4_icon.png'),
   require('../assets/images/card5_icon.png')];
 
+const questionArray = [
+  {question: "Kaja Kallase vanus?", answer1: 44, answer2: 42, answer3: 40, answer4: 46, correct: 2},
+  {question: "Kes oli Eesti peaminister aastal 2021?", answer1: "Mart Helme", answer2: "Siim Kallas", answer3: "Edgar Savisaar", answer4: "Jüri Ratas", correct: 4},
+  {question: "Mis on Eesti rahvuslill?", answer1: "Maikelluke", answer2: "Kullerkupp", answer3: "Sinilill", answer4: "Nartsiss", correct: 3},
+  {question: "Milline on Eesti kõrgeim mägi?", answer1: "Toomemägi", answer2: "Suur Munamägi", answer3: "Hiiemägi", answer4: "Panga pank", correct: 2},
+  {question: "Mis on Eesti rahvustoit?", answer1: "Karask", answer2: "Verivorst", answer3: "Kama", answer4: "Hapukapsasupp", correct: 3},
+  {question: "Kus asub Eesti suurim rahvuspark?", answer1: "Matsalu Rahvuspark", answer2: "Lahemaa Rahvuspark", answer3: "Soomaa Rahvuspark", answer4: "Vilsandi Rahvuspark", correct: 3},
+  {question: "Milline on Eesti kõige suurem järv?", answer1: "Pühajärv", answer2: "Peipsi järv", answer3: "Tartu järv", answer4: "Võrtsjärv", correct: 2},
+  {question: "Kes on Eesti kuulsaim helilooja?", answer1: "Veljo Tormis", answer2: "Arvo Pärt", answer3: "Rudolf Tobias", answer4: "Eduard Tubin", correct: 2},
+  {question: "Mis on Eesti rahvusloom?", answer1: "Ilves", answer2: "Karu", answer3: "Rebane", answer4: "Hunt", correct: 4},
+  {question: "Milline on Eesti rahvuspäev?", answer1: "Uue aasta päev", answer2: "Mihklipäev", answer3: "Eesti Vabariigi aastapäev", answer4: "Jaanipäev", correct: 3}  
+]
+
 export default function GameView({ route, navigation }: Props) {
   const { gameCode, avatar, drink } = route.params;
   const [cardCount, setCardCount] = useState(baseCardCount);
   const [cardImage, setCardImage] = useState(baseCardImage);
+  const [cardVisibility, setCardVisibility] = useState(false);
+
+  function handleCardVisibility(state: boolean) {
+    setCardVisibility(state);
+ }
+
 
   useEffect(() => {
     if (cardCount < 5 && cardCount > 0) {
@@ -41,24 +61,25 @@ export default function GameView({ route, navigation }: Props) {
   };
 
   return (
-    <View style={styles.gameView}>
-      <Text style={styles.gameText}>Main Game</Text>
-      <View style={styles.profileBackground}>
-        <Image style={styles.avatar} source={avatar} />
-      </View>
-      <View style={styles.drinkContainer}>
-        <Image style={styles.drink} source={drink} />
-      </View>
+    <>
+        {cardVisibility && <Card visibility={handleCardVisibility} questionElement={questionArray[cardCount]} />}
+    <View style={styles.gameBackground}>
+      <View style={styles.gameView}>
+
+      
+
       <Text style={styles.cardsLeft}>Cards Left: {cardCount}</Text>
       {cardCount > 0 ?
         <View style={styles.cardViewContainer}>
-          <TouchableHighlight
+          <Pressable
             style={styles.cardViewTouchable}
-            onPress={
-              onDecrement
+            onPress={ () => { onDecrement()
+                              handleCardVisibility(true)
+                              }
+              
             }>
             <Image style={styles.cardView} source={cardImage} />
-          </TouchableHighlight>
+          </Pressable>
         </View>
         :
         <>
@@ -71,15 +92,25 @@ export default function GameView({ route, navigation }: Props) {
         </>
       }
       <Text style={styles.gameCode}>#{gameCode}</Text>
+      </View>
     </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  gameView: {
+  gameBackground: {
     alignItems: 'center',
     flex: 1,
     backgroundColor: '#1E1E1E',
+  },
+  gameView: {
+    flex: 1,
+    alignItems: 'center',
+    marginTop: 100,
+    width: '80%',
+    height: '80%',
+
   },
   gameText: {
     fontSize: 50,
@@ -88,16 +119,9 @@ const styles = StyleSheet.create({
   },
   cardsLeft: {
     marginTop: 30,
-    fontSize: 20,
+    fontSize: 25,
     color: 'white',
-  },
-  profileBackground: {
-    width: '28.3%',
-    aspectRatio: 1 / 1,
-    backgroundColor: '#d8d8d8',
-    borderRadius: 40,
-    overflow: 'hidden',
-    marginTop: 20,
+    fontFamily: 'Basic',
   },
   avatar: {
     flex: 1,
@@ -132,7 +156,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   cardViewContainer: {
-    marginTop: 50,
+    marginTop: 130,
     width: 220,
     height: 300,
   },

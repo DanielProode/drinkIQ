@@ -40,6 +40,7 @@ const joinedPlayers = [
   { id: 7, name: "Jevgeni", avatar: require('../assets/images/avatar_9.png'), drink: require('../assets/images/drink_8.png')},
   { id: 8, name: "Mart", avatar: require('../assets/images/avatar_7.png'), drink: require('../assets/images/drink_9.png')},
   
+  
 ]
 
 
@@ -60,31 +61,29 @@ export default function Lobby({ route, navigation }: Props) {
   }
 
 
-  const ShowPlayers: React.FC<ShowPlayersProps> = ({ playerArray }) => {
-
-    return playerArray.map((player) => {
-
-
-
-      return (
-        <Pressable
-          style={styles.playerContainer}
-          key={player.id}
-          onPress={() => {
-            console.log(player.name)
+  const ShowPlayers = ({ playerArray }: ShowPlayersProps) => {
+    return (
+      <>
+        {playerArray.map((player) => (
+          <Pressable
+            style={styles.playerContainer}
+            key={player.id}
+            onPress={() => {
+              console.log(player.name);
               // Check other player's profile
-          }
-          } >
-          <View style={styles.avatarCircle}>
-          <Image style={styles.avatar} source={player.avatar} />
-          <Image style={styles.drink} source={player.drink} />
-          </View>
-          
-          <Text style={styles.name}>{player.name}</Text>
-        </Pressable>
-      );
-    });
+            }}
+          >
+            <View style={styles.avatarCircle}>
+              <Image style={styles.avatar} source={player.avatar} />
+              <Image style={styles.drink} source={player.drink} />
+            </View>
+            <Text style={styles.name}>{player.name}</Text>
+          </Pressable>
+        ))}
+      </>
+    );
   };
+  
 
   return (
     <View style={styles.gameView}>
