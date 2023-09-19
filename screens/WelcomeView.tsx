@@ -5,6 +5,7 @@ import { useState, useCallback } from 'react';
 import { Image, StyleSheet, Text, Pressable, View } from 'react-native';
 
 import TermsAndConditions from './TermsAndConditions';
+import Button from '../components/Button';
 interface WelcomeViewProps {
   navigation: NativeStackNavigationProp<any>;
 }
@@ -44,20 +45,14 @@ export default function WelcomeView({ navigation }: WelcomeViewProps) {
       <View style={styles.contentView}>
         <Text style={styles.welcomeText}>Log in To start playing!</Text>
         <View style={styles.googleLogoContainer}>
-          <Pressable
-            onPress={() => navigation.navigate('MainMenuView')}>
-            <Image
-              style={styles.googleLogo}
-              source={require('../assets/images/google_icon.png')} />
-          </Pressable>
+          <Button
+            onPress={() => navigation.navigate('Login')}
+            text="LOGIN" />
         </View>
         <View style={styles.appleLogoContainer}>
-          <Pressable
-            onPress={() => navigation.navigate('MainMenuView')}>
-            <Image
-              style={styles.appleLogo}
-              source={require('../assets/images/apple_icon.png')} />
-          </Pressable>
+        <Button
+            onPress={() => navigation.navigate('Register')}
+            text="REGISTER" />
         </View>
       </View>
       <Pressable
