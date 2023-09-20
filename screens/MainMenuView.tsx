@@ -1,8 +1,13 @@
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Image, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
 
-export default function MainMenuView({ navigation }: { navigation: any }): JSX.Element {
+interface MainMenuViewProps {
+  navigation: NativeStackNavigationProp<any>;
+}
+
+export default function MainMenuView({ navigation }: MainMenuViewProps) {
 
   return (
     <View style={styles.mainView}>
@@ -26,13 +31,12 @@ export default function MainMenuView({ navigation }: { navigation: any }): JSX.E
             text="Card Decks" />
         </View>
         <View style={styles.settingsButtonContainer}>
-      <Button onPress={() => {
+          <Button onPress={() => {
             navigation.navigate('Settings');
           }}
             text="Settings" />
+        </View>
       </View>
-      </View>
-      
     </View>
   );
 }

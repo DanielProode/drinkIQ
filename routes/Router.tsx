@@ -1,9 +1,9 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { ImageSourcePropType } from 'react-native';
+import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
-import { useFonts } from 'expo-font';
+import { ImageSourcePropType } from 'react-native';
 
 import { useAuth } from '../context/authContext';
 import LoadingScreen from '../components/LoadingScreen';
@@ -56,7 +56,6 @@ export default function Router() {
         if ((fontsLoaded && user !== null) || fontError) {
           await SplashScreen.hideAsync();
           setIsReady(true)
-          console.log('ready to render app')
         }
       } catch (error) {
         console.warn('Error loading fonts:', error);
@@ -66,7 +65,6 @@ export default function Router() {
   }, [fontsLoaded, fontError, user]);
 
   if (!isReady || (!fontsLoaded && !fontError)) {
-    console.log('waiting')
     return <LoadingScreen />
   }
 
