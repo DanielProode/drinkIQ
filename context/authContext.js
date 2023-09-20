@@ -6,7 +6,7 @@ import { FIREBASE_AUTH } from '../firebaseConfig';
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(null);
   const auth = FIREBASE_AUTH;
 
   const signUp = (email, password) => {
@@ -17,7 +17,7 @@ const AuthProvider = ({ children }) => {
     return signInWithEmailAndPassword(auth, email, password);
   };
 
-  const logOut = async () => {
+  const logOut = () => {
     return signOut(auth)
   };
 

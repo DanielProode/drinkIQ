@@ -32,30 +32,30 @@ type RootStackParamList = {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function Router() {
-  const {user} = useAuth()
+  const { user } = useAuth()
 
   return (
     <NavigationContainer>
-        <Stack.Navigator screenOptions={{ headerTitle: '', headerTransparent: true, headerTintColor: '#A5AFB9' }}>
-          {user == null ? (
-            <>
-              <Stack.Screen name="WelcomeView" component={WelcomeView} />
-              <Stack.Screen name="Login" component={Login} />
-              <Stack.Screen name="Register" component={Register} />
-            </>
-          ) : (
-            <>
-              <Stack.Screen name="MainMenuView" component={MainMenuView} />
-              <Stack.Screen name="NewGame" component={NewGame} />
-              <Stack.Screen name="CardDecks" component={CardDecks} />
-              <Stack.Screen name="JoinGame" component={JoinGame} />
-              <Stack.Screen name="HostGame" component={HostGame} />
-              <Stack.Screen name="Settings" component={Settings} />
-              <Stack.Screen name="GameView" component={GameView} />
-              <Stack.Screen name="Lobby" component={Lobby} />
-            </>
-          )}
-        </Stack.Navigator>
+      <Stack.Navigator screenOptions={{ headerTitle: '', headerTransparent: true, headerTintColor: '#A5AFB9' }}>
+        {user == null ? (
+          <>
+            <Stack.Screen name="WelcomeView" component={WelcomeView} />
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Register" component={Register} />
+          </>
+        ) : (
+          <>
+            <Stack.Screen name="MainMenuView" component={MainMenuView} />
+            <Stack.Screen name="NewGame" component={NewGame} />
+            <Stack.Screen name="CardDecks" component={CardDecks} />
+            <Stack.Screen name="JoinGame" component={JoinGame} />
+            <Stack.Screen name="HostGame" component={HostGame} />
+            <Stack.Screen name="Settings" component={Settings} />
+            <Stack.Screen name="GameView" component={GameView} />
+            <Stack.Screen name="Lobby" component={Lobby} />
+          </>
+        )}
+      </Stack.Navigator>
     </NavigationContainer>
   );
 };
