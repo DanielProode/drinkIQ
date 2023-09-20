@@ -1,36 +1,11 @@
-import { useFonts } from 'expo-font';
-import * as SplashScreen from 'expo-splash-screen';
-import { useCallback } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
 
-// Navigation prop temporarily as any
-// https://stackoverflow.com/questions/63132548/react-navigation-5-error-binding-element-navigation-implicitly-has-an-any-ty
-
 export default function MainMenuView({ navigation }: { navigation: any }): JSX.Element {
-  const [fontsLoaded, fontError] = useFonts({
-    'Basic': require('../assets/fonts/Basic.ttf'),
-    'Cabin-Bold': require('../assets/fonts/Cabin-Bold.ttf'),
-    'Cabin-Medium': require('../assets/fonts/Cabin-Medium.ttf'),
-    'Cabin-Regular': require('../assets/fonts/Cabin-Regular.ttf'),
-    'Cabin-SemiBold': require('../assets/fonts/Cabin-SemiBold.ttf'),
-    'CarterOne-Regular': require('../assets/fonts/CarterOne-Regular.ttf'),
-    'Knewave': require('../assets/fonts/Knewave.ttf'),
-  });
-
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded || fontError) {
-      await SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded, fontError]);
-
-  if (!fontsLoaded && !fontError) {
-    return <></>;
-  }
 
   return (
-    <View style={styles.mainView} onLayout={onLayoutRootView}>
+    <View style={styles.mainView}>
       <Image style={styles.cheersIcon}
         source={require('../assets/images/cheers_icon.png')} />
       <Text style={styles.drinkIQLogo}>DRINKIQ</Text>

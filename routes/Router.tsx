@@ -1,8 +1,12 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ImageSourcePropType } from 'react-native';
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect, useState } from 'react';
+import { useFonts } from 'expo-font';
 
 import { useAuth } from '../context/authContext';
+import LoadingScreen from '../components/LoadingScreen';
 import CardDecks from '../screens/CardDecks';
 import GameView from '../screens/GameView';
 import HostGame from '../screens/HostGame';
@@ -31,8 +35,40 @@ type RootStackParamList = {
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
+SplashScreen.preventAutoHideAsync();
+
 export default function Router() {
   const { user } = useAuth()
+  const [isReady, setIsReady] = useState(false);
+  const [fontsLoaded, fontError] = useFonts({
+    'Basic': require('../assets/fonts/Basic.ttf'),
+    'Cabin-Bold': require('../assets/fonts/Cabin-Bold.ttf'),
+    'Cabin-Medium': require('../assets/fonts/Cabin-Medium.ttf'),
+    'Cabin-Regular': require('../assets/fonts/Cabin-Regular.ttf'),
+    'Cabin-SemiBold': require('../assets/fonts/Cabin-SemiBold.ttf'),
+    'CarterOne-Regular': require('../assets/fonts/CarterOne-Regular.ttf'),
+    'Knewave': require('../assets/fonts/Knewave.ttf'),
+  });
+
+  useEffect(() => {
+    async function loadResourcesAsync() {
+      try {
+        if ((fontsLoaded && user !== null) || fontError) {
+          await SplashScreen.hideAsync();
+          setIsReady(true)
+          console.log('ready to render app')
+        }
+      } catch (error) {
+        console.warn('Error loading fonts:', error);
+      }
+    }
+    loadResourcesAsync();
+  }, [fontsLoaded, fontError, user]);
+
+  if (!isReady || (!fontsLoaded && !fontError)) {
+    console.log('waiting')
+    return <LoadingScreen />
+  }
 
   return (
     <NavigationContainer>

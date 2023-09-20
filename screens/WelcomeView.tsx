@@ -1,7 +1,5 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useFonts } from 'expo-font';
-import * as SplashScreen from 'expo-splash-screen';
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { Image, StyleSheet, Text, Pressable, View } from 'react-native';
 
 import TermsAndConditions from './TermsAndConditions';
@@ -11,33 +9,14 @@ interface WelcomeViewProps {
 }
 
 export default function WelcomeView({ navigation }: WelcomeViewProps) {
-  const [fontsLoaded, fontError] = useFonts({
-    'Basic': require('../assets/fonts/Basic.ttf'),
-    'Cabin-Bold': require('../assets/fonts/Cabin-Bold.ttf'),
-    'Cabin-Medium': require('../assets/fonts/Cabin-Medium.ttf'),
-    'Cabin-Regular': require('../assets/fonts/Cabin-Regular.ttf'),
-    'Cabin-SemiBold': require('../assets/fonts/Cabin-SemiBold.ttf'),
-    'CarterOne-Regular': require('../assets/fonts/CarterOne-Regular.ttf'),
-    'Knewave': require('../assets/fonts/Knewave.ttf'),
-  });
   const [isModalVisible, setIsModalVisible] = useState(false);
-
+  
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible);
   }
 
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded || fontError) {
-      await SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded, fontError]);
-
-  if (!fontsLoaded && !fontError) {
-    return <></>;
-  }
-
   return (
-    <View style={styles.welcomeView} onLayout={onLayoutRootView}>
+    <View style={styles.welcomeView}>
       <TermsAndConditions isVisible={isModalVisible} onClose={toggleModal} />
       <Image style={styles.cheersIcon}
         source={require('../assets/images/cheers_icon.png')} />
