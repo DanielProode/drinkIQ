@@ -39,7 +39,7 @@ SplashScreen.preventAutoHideAsync();
 
 export default function Router() {
   const { user, userLoaded } = useAuth()
-  const [fontsLoaded, fontError] = useFonts({
+  const [fontsLoaded] = useFonts({
     'Basic': require('../assets/fonts/Basic.ttf'),
     'Cabin-Bold': require('../assets/fonts/Cabin-Bold.ttf'),
     'Cabin-Medium': require('../assets/fonts/Cabin-Medium.ttf'),
@@ -52,7 +52,7 @@ export default function Router() {
   useEffect(() => {
     async function loadResourcesAsync() {
       try {
-        if ((fontsLoaded && userLoaded) || fontError) {
+        if (fontsLoaded && userLoaded) {
           await SplashScreen.hideAsync();
         }
       } catch (error) {
@@ -60,9 +60,9 @@ export default function Router() {
       }
     }
     loadResourcesAsync();
-  }, [fontsLoaded, fontError, userLoaded]);
+  }, [fontsLoaded, userLoaded]);
 
-  if (!userLoaded || (!fontsLoaded && !fontError)) {
+  if (!userLoaded || !fontsLoaded) {
     return <LoadingScreen />
   }
 
