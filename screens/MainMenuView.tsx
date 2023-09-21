@@ -1,11 +1,14 @@
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Image, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
 
-// Navigation prop temporarily as any
-// https://stackoverflow.com/questions/63132548/react-navigation-5-error-binding-element-navigation-implicitly-has-an-any-ty
+interface MainMenuViewProps {
+  navigation: NativeStackNavigationProp<any>;
+}
 
-export default function MainMenuView({ navigation }: { navigation: any }): JSX.Element {
+export default function MainMenuView({ navigation }: MainMenuViewProps) {
+
   return (
     <View style={styles.mainView}>
       <Image style={styles.cheersIcon}
@@ -28,13 +31,12 @@ export default function MainMenuView({ navigation }: { navigation: any }): JSX.E
             text="Card Decks" />
         </View>
         <View style={styles.settingsButtonContainer}>
-      <Button onPress={() => {
+          <Button onPress={() => {
             navigation.navigate('Settings');
           }}
             text="Settings" />
+        </View>
       </View>
-      </View>
-      
     </View>
   );
 }
