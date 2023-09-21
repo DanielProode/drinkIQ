@@ -1,42 +1,22 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useFonts } from 'expo-font';
-import * as SplashScreen from 'expo-splash-screen';
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { Image, StyleSheet, Text, Pressable, View } from 'react-native';
 
 import TermsAndConditions from './TermsAndConditions';
+import Button from '../components/Button';
 interface WelcomeViewProps {
   navigation: NativeStackNavigationProp<any>;
 }
 
 export default function WelcomeView({ navigation }: WelcomeViewProps) {
-  const [fontsLoaded, fontError] = useFonts({
-    'Basic': require('../assets/fonts/Basic.ttf'),
-    'Cabin-Bold': require('../assets/fonts/Cabin-Bold.ttf'),
-    'Cabin-Medium': require('../assets/fonts/Cabin-Medium.ttf'),
-    'Cabin-Regular': require('../assets/fonts/Cabin-Regular.ttf'),
-    'Cabin-SemiBold': require('../assets/fonts/Cabin-SemiBold.ttf'),
-    'CarterOne-Regular': require('../assets/fonts/CarterOne-Regular.ttf'),
-    'Knewave': require('../assets/fonts/Knewave.ttf'),
-  });
   const [isModalVisible, setIsModalVisible] = useState(false);
-
+  
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible);
   }
 
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded || fontError) {
-      await SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded, fontError]);
-
-  if (!fontsLoaded && !fontError) {
-    return <></>;
-  }
-
   return (
-    <View style={styles.welcomeView} onLayout={onLayoutRootView}>
+    <View style={styles.welcomeView}>
       <TermsAndConditions isVisible={isModalVisible} onClose={toggleModal} />
       <Image style={styles.cheersIcon}
         source={require('../assets/images/cheers_icon.png')} />
@@ -44,20 +24,14 @@ export default function WelcomeView({ navigation }: WelcomeViewProps) {
       <View style={styles.contentView}>
         <Text style={styles.welcomeText}>Log in To start playing!</Text>
         <View style={styles.googleLogoContainer}>
-          <Pressable
-            onPress={() => navigation.navigate('MainMenuView')}>
-            <Image
-              style={styles.googleLogo}
-              source={require('../assets/images/google_icon.png')} />
-          </Pressable>
+          <Button
+            onPress={() => navigation.navigate('Login')}
+            text="LOGIN" />
         </View>
         <View style={styles.appleLogoContainer}>
-          <Pressable
-            onPress={() => navigation.navigate('MainMenuView')}>
-            <Image
-              style={styles.appleLogo}
-              source={require('../assets/images/apple_icon.png')} />
-          </Pressable>
+        <Button
+            onPress={() => navigation.navigate('Register')}
+            text="REGISTER" />
         </View>
       </View>
       <Pressable
