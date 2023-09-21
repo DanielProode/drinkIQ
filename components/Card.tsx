@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Image, ImageSourcePropType, Pressable, StyleSheet, Text, View } from 'react-native';
-import AnswerButton from './AnswerButton';
+import { StyleSheet, Text, View } from 'react-native';
 
+import AnswerButton from './AnswerButton';
 import Button from './Button';
 
 export default function Card(props: { visibility: any, questionElement: any }){

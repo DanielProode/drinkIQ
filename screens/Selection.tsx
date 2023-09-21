@@ -14,8 +14,10 @@ export type SelectionProps = {
 };
 
 const defaultAvatar = require('../assets/images/avatar_1.png');
-const defaultDrink = require('../assets/images/avatar_3.png');
 const defaultCardDeck = require('../assets/images/card_deck1.png');
+const defaultDrink = require('../assets/images/drink_1.png');
+
+
 const avatarIcons1 = [
   require('../assets/images/avatar_1.png'),
   require('../assets/images/avatar_2.png'),
@@ -46,9 +48,7 @@ export default function Selection({ gameCode, navigation, hostGame }: SelectionP
   const [playableDeck, setCardDeck] = useState(defaultCardDeck);
 
   function handleCardDeck(deck: ImageSourcePropType) {
-    console.log(deck);
     setCardDeck(deck);
-    console.log(playableDeck);
   }
 
   const RenderCircles = (myArray: ImageSourcePropType[], isDrink: boolean) => {
@@ -77,7 +77,7 @@ export default function Selection({ gameCode, navigation, hostGame }: SelectionP
       <>
       <View style={styles.backgroundBlur}/>
 
-      <CardDeckSelection handleCardDeck={handleCardDeck} visibility={setVisibility} />
+      <CardDeckSelection selectedDeck={playableDeck} handleCardDeck={handleCardDeck} visibility={setVisibility} />
       </>
       : null}
       <View style={styles.logoView}>

@@ -1,50 +1,55 @@
 import { LinearGradient } from 'expo-linear-gradient';
+import { useState } from 'react';
 import { Image, ImageSourcePropType, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import Button from './Button';
-import { useState } from 'react';
 
-export default function CardDeckSelection(props: { visibility: any; handleCardDeck: any }) {
+
+
+export default function CardDeckSelection(props: { visibility: any; handleCardDeck: any; selectedDeck: any; }) {
 
   const { visibility } = props;
 
   const { handleCardDeck } = props;
 
+  const { selectedDeck } = props;
+
   const ownedCardDecks = [
-    require('../assets/images/card_deck1.png'),
-    require('../assets/images/card_deck2.png'),
-    require('../assets/images/card_deck3.png'),
+    {image: require('../assets/images/card_deck1.png'), index: 1},
+    {image: require('../assets/images/card_deck2.png'), index: 2},
+    {image: require('../assets/images/card_deck3.png'), index: 3},
   ];
   const availableCardDecks = [
-    require('../assets/images/card_deck4.png'),
-    require('../assets/images/card_deck5.png'),
-    require('../assets/images/card_deck6.png'),
+    {image: require('../assets/images/card_deck4.png'), index: 4},
+    {image: require('../assets/images/card_deck5.png'), index: 5},
+    {image: require('../assets/images/card_deck6.png'), index: 6},
   ];
 
 
   const [selectedCardIndex, setSelectedCardIndex] = useState(-1);
 
-  const RenderCardDecks = (myArray: ImageSourcePropType[], owned: boolean) => {
-    return myArray.map((cardDeck, index) => {
-      const isSelected = selectedCardIndex === index;
+  const RenderCardDecks = (myArray: { image: ImageSourcePropType; index: number; }[], owned: boolean) => {
+    return myArray.map((cardDeck) => {
+      
+      const isSelected = selectedCardIndex === cardDeck.index;
 
       return (
-        <View style={styles.cardsContainer} key={index}>
+        <View style={styles.cardsContainer} key={cardDeck.index}>
         <Pressable
-          key={index}
+          key={cardDeck.index}
           style={({ pressed }) => [
             { opacity: pressed ? 0.5 : 1.0 },
             styles.cardDeckContainer,
-            isSelected && owned && styles.cardDeckContainerSelected,
+            isSelected && styles.cardDeckContainerSelected,
             ]}
           onPress={() => {
-            handleCardDeck(cardDeck)
+            handleCardDeck(cardDeck.image)
 
-            setSelectedCardIndex(index);
+            setSelectedCardIndex(cardDeck.index);
             
           }
           } >
-          <Image style={styles.cardDeck} source={cardDeck} />
+          <Image style={styles.cardDeck} source={cardDeck.image} />
           
         </Pressable>
         {!owned && (
