@@ -8,8 +8,7 @@ export default function Settings(): JSX.Element {
 
   const handleLogout = async () => {
     try {
-      const response = await logOut();
-      console.log(response)
+      await logOut();
     } catch (error: any) {
       console.log(error.message);
     }

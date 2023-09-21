@@ -18,8 +18,7 @@ export default function Register() {
         setError('Passwords do not match');
         return;
       }
-      const response = await signUp(email, password);
-      console.log(response)
+      await signUp(email, password);
     } catch (error: any) {
       setError(error.message);
     }

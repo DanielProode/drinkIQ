@@ -2,20 +2,20 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { ImageSourcePropType } from 'react-native';
 
-import { useAuth } from '../context/authContext';
 import LoadingScreen from '../components/LoadingScreen';
+import { useAuth } from '../context/authContext';
 import CardDecks from '../screens/CardDecks';
 import GameView from '../screens/GameView';
 import HostGame from '../screens/HostGame';
 import JoinGame from '../screens/JoinGame';
 import Lobby from '../screens/Lobby';
 import Login from '../screens/Login'
-import Register from '../screens/Register'
-import NewGame from '../screens/NewGame';
 import MainMenuView from '../screens/MainMenuView';
+import NewGame from '../screens/NewGame';
+import Register from '../screens/Register'
 import Settings from '../screens/Settings';
 import WelcomeView from '../screens/WelcomeView';
 
@@ -38,8 +38,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 SplashScreen.preventAutoHideAsync();
 
 export default function Router() {
-  const { user } = useAuth()
-  const [isReady, setIsReady] = useState(false);
+  const { user, userLoaded } = useAuth()
   const [fontsLoaded, fontError] = useFonts({
     'Basic': require('../assets/fonts/Basic.ttf'),
     'Cabin-Bold': require('../assets/fonts/Cabin-Bold.ttf'),
@@ -53,18 +52,17 @@ export default function Router() {
   useEffect(() => {
     async function loadResourcesAsync() {
       try {
-        if ((fontsLoaded && user !== null) || fontError) {
+        if ((fontsLoaded && userLoaded) || fontError) {
           await SplashScreen.hideAsync();
-          setIsReady(true)
         }
       } catch (error) {
         console.warn('Error loading fonts:', error);
       }
     }
     loadResourcesAsync();
-  }, [fontsLoaded, fontError, user]);
+  }, [fontsLoaded, fontError, userLoaded]);
 
-  if (!isReady || (!fontsLoaded && !fontError)) {
+  if (!userLoaded || (!fontsLoaded && !fontError)) {
     return <LoadingScreen />
   }
 

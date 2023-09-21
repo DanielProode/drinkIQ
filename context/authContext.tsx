@@ -8,7 +8,8 @@ interface AuthProviderProps {
 };
 
 interface AuthContextType {
-  user: User | null | undefined;
+  user: User | null;
+  userLoaded: boolean;
   signUp: (email: string, password: string) => void;
   signIn: (email: string, password: string) => void;
   logOut: () => void;
@@ -17,7 +18,8 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState< User | null | undefined >(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [userLoaded, setIsUserLoaded] = useState(false);
   const auth = FIREBASE_AUTH;
 
   const signUp = (email: string, password: string) => {
@@ -34,12 +36,9 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser);
-        console.log(currentUser);
-      } else {
-        setUser(undefined);
-      }
+      setUser(currentUser);
+      setIsUserLoaded(true);
+      console.log(currentUser);
     });
     return () => {
       unsubscribe();
@@ -47,7 +46,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, signUp, signIn, logOut }}>
+    <AuthContext.Provider value={{ user, userLoaded, signUp, signIn, logOut }}>
       {children}
     </AuthContext.Provider>
   );

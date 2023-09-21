@@ -13,8 +13,7 @@ export default function Login() {
   const handleLogin = async () => {
     setError('');
     try {
-      const response = await signIn(email, password);
-      console.log(response);
+      await signIn(email, password);
     } catch (error: any) {
       setError(error.message);
     }
