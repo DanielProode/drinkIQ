@@ -12,6 +12,7 @@ export default function CardDeckSelection(props: { visibility: any; handleCardDe
 
   const { handleCardDeck } = props;
 
+  // Logic to show border around initial selected deck in host "Choose a deck" view 
   const { selectedDeck } = props;
 
   const ownedCardDecks = [

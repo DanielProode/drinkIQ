@@ -1,7 +1,7 @@
 import { RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useState, useEffect } from 'react';
-import { Image, StyleSheet, Text, TouchableHighlight, View, ImageSourcePropType, Pressable } from 'react-native';
+import { Image, StyleSheet, Text, View, ImageSourcePropType, Pressable } from 'react-native';
 
 import Button from '../components/Button';
 import Card from '../components/Card';
@@ -62,9 +62,12 @@ export default function GameView({ route, navigation }: Props) {
 
   return (
     <>
-        {cardVisibility && <Card visibility={handleCardVisibility} questionElement={questionArray[cardCount]} />}
+        {cardVisibility && <Card visibility={handleCardVisibility} questionElement={questionArray[cardCount]} avatar={avatar} drink={drink} />}
     <View style={styles.gameBackground}>
       <View style={styles.gameView}>
+
+      <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
+      <Text style={styles.gameCode}>#{gameCode}</Text>
 
       
 
@@ -91,7 +94,6 @@ export default function GameView({ route, navigation }: Props) {
             text="BACK TO LOBBY" />
         </>
       }
-      <Text style={styles.gameCode}>#{gameCode}</Text>
       </View>
     </View>
     </>
@@ -107,10 +109,14 @@ const styles = StyleSheet.create({
   gameView: {
     flex: 1,
     alignItems: 'center',
-    marginTop: 100,
     width: '80%',
     height: '80%',
-
+  },
+  drinkIQLogo: {
+    fontFamily: 'Knewave',
+    marginTop: 50,
+    fontSize: 30,
+    color: 'white',
   },
   gameText: {
     fontSize: 50,
@@ -150,10 +156,8 @@ const styles = StyleSheet.create({
   },
   gameCode: {
     fontSize: 20,
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
     color: 'white',
+    fontFamily: 'Basic',
   },
   cardViewContainer: {
     marginTop: 130,

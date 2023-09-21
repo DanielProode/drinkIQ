@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { ImageBackground, Pressable, StyleSheet, Text, View, Image } from 'react-native';
 
 import AnswerButton from './AnswerButton';
 import Button from './Button';
 
-export default function Card(props: { visibility: any, questionElement: any }){
+export default function Card(props: { visibility: any, questionElement: any, avatar: any, drink: any }){
 
-  const { visibility, questionElement } = props;
+  const { visibility, questionElement, avatar, drink } = props;
 
   const answersArray = [questionElement.answer1, questionElement.answer2, questionElement.answer3, questionElement.answer4];
 
@@ -14,9 +14,12 @@ export default function Card(props: { visibility: any, questionElement: any }){
 
   const [ answered, setAnswered ] = useState(false);
 
+  const [ buttonPressed, setButtonPressed ] = useState(false);
+
   const [ answerCorrectness , setAnswerCorrectness ] = useState(Boolean);
 
 
+  const prefixes = ["a. ", "b. ", "c. ", "d. "];
 
   interface Answers {
     answer1: string,
@@ -44,14 +47,17 @@ export default function Card(props: { visibility: any, questionElement: any }){
     return (
       <>
         {answersArray.map((answer, index) => {
+          const text = prefixes[index] + answer
           return (
             <AnswerButton
-              marginTop={20}
-              text={answer}
+              marginTop={10}
+              text={text}
               key={index}
+              buttonPressed={buttonPressed}
               correct={checkAnswer(index)}
               answered={answered}
               onPress={() => {
+                setButtonPressed(true);
                 setAnswered(true);
                 setAnswerCorrectness(checkAnswer(index));
               }}
@@ -64,48 +70,66 @@ export default function Card(props: { visibility: any, questionElement: any }){
 
   return (
     <View style={styles.backgroundBlur}>
-    <View style={styles.cardView}>
-
+      <View style={styles.cardView}>
+        <ImageBackground source={require('../assets/images/estonian_background.jpg')} resizeMode="cover" style={styles.image}>
+        <View style={styles.avatarView}>
+          <Image style={styles.avatarImage} source={avatar}></Image>
+        </View>
         
+        <View style={styles.questionBox}>
 
-        <Text style={styles.questionText}>{questionElement.question}</Text>
 
-        <View style={styles.buttonView}>
+          <Text style={styles.questionText}>{answered ? 
+            
+          answerCorrectness ? "Choose who has to drink!" : "You drink!"
+
+          :
+
+          questionElement.question
+          
+          }</Text>
+        </View>
+        
+      <View style={styles.buttonView}>
         <ShowButtons answersArray={answersArray} />
-        
-        
+      </View>
 
+      <View style={styles.nextButtonContainer}>
 
+        { answered ? 
+          <Pressable style={({ pressed }) => [
+            { opacity: pressed ? 0.5 : 1.0 }, styles.nextButton
+          ]}
+                    onPress={() => visibility(false)}>
+            <Text style={styles.nextButtonText}>{'-->'}</Text>
+          </Pressable>
 
-</View>
+        :
+            <></>
+            }
+      </View>
 
-
+        </ImageBackground>
     </View>
 
-    <View style={styles.nextButtonContainer}>
-
-   
-
-    { answered ? <Button text={"NEXT CARD"} marginTop={20} onPress={() => visibility(false)} />: 
-        
-        <></>
-        
-        }
-
-        { answered && answerCorrectness ? 
-        <Text style={styles.answerResult}>Answer was correct!</Text>
-      
+    { answered && answerCorrectness ? 
+        <View style={styles.statusCircle}>
+          <Image style={styles.correctImage} source={require('../assets/images/correct.png')} />
+        </View>
       : 
       <></>
       }
 
         { answered && !answerCorrectness ? 
-        <Text style={styles.answerResult}>Answer was incorrect!</Text>
+        <View style={styles.statusCircle}>
+          <Image style={styles.wrongImage} source={require('../assets/images/wrong.png')} />
+        </View>
       
       : 
       <></>
       }
-    </View>
+
+
 
     </View>
 
@@ -116,16 +140,45 @@ export default function Card(props: { visibility: any, questionElement: any }){
 const styles = StyleSheet.create({
   cardView: {
     position: 'absolute',
-    alignItems: 'center',
     alignSelf: 'center',
-    top: 150, bottom: 150,
+    top: 120, bottom: 150,
     marginTop: 20,
     width: '85%',
     zIndex: 1,
-    headerBackVisible: false,
-    backgroundColor: 'grey',
+    backgroundColor: 'white',
     justifyContent: 'space-between',
     borderRadius: 20,
+    borderColor: 'white',
+    borderWidth: 10,
+  },
+  questionBox: {
+    marginTop: 80,
+    width: 280,
+    height: 140,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    borderWidth: 20,
+    borderColor: 'white',
+    alignSelf: 'center',
+    justifyContent: 'center',
+  },
+  avatarView: {
+    position: 'absolute',
+    zIndex: 3,
+    marginTop: 50,
+    backgroundColor: 'white',
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    borderColor: '#3395EF',
+    borderWidth: 3,
+  },
+  avatarImage: {
+    flex: 1,
+    resizeMode: 'contain',
+    width: '70%',
+    height: '70%',
+    alignSelf: 'center',
   },
   backgroundBlur: {
     position: 'absolute',
@@ -133,6 +186,9 @@ const styles = StyleSheet.create({
     height: '100%',
     zIndex: 1,
     backgroundColor: '#00000099',
+  },
+  image: {
+    flex: 1,
   },
   background: {
     position: 'absolute',
@@ -144,24 +200,64 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   questionText: {
-    marginTop: 130,
-    fontSize: 30,
+    fontSize: 24,
     fontFamily: 'Basic',
-    textAlign: 'center',
+    textAlign: 'left',
   },
   nextButtonContainer: {
-    position: 'absolute',
-    alignSelf: 'center',
-    marginTop: 200,
+    alignSelf: 'flex-end',
+    marginTop: 5,
+    marginRight: 10,
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
     zIndex: 2,
   },
+  nextButton: {
+    backgroundColor: 'white',
+    borderColor: '#D3D3D3',
+    flex: 1,
+    borderWidth: 1,
+    borderRadius: 50,
+  },
+  nextButtonText: {
+    fontFamily: 'Basic',
+    fontSize: 30,
+  },
   buttonView: {
-    marginBottom: 20,
+    marginTop: 20,
+    alignSelf: 'center',
   },
   answerResult: {
     alignSelf: 'center',
     fontFamily: 'Basic',
+    marginTop: 200,
     fontSize: 20,
-    marginTop: 10,
+    color: 'red',
+    zIndex: 3,
+  },
+  statusCircle: {
+    flex: 1,
+    position: 'absolute',
+    marginTop: 160,
+    zIndex: 3,
+    width: 130,
+    height: 130,
+    alignSelf: 'center',
+    justifyContent: 'flex-start',
+  },
+  correctImage: {
+    flex: 1,
+    resizeMode: 'contain',
+    width: '80%',
+    height: '80%',
+    alignSelf: 'center',
+  },
+  wrongImage: {
+    flex: 1,
+    resizeMode: 'contain',
+    width: '80%',
+    height: '80%',
+    alignSelf: 'center',
   },
 });
