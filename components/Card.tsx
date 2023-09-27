@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { ImageBackground, Pressable, StyleSheet, Text, View, Image } from 'react-native';
 
 import AnswerButton from './AnswerButton';
-import Button from './Button';
 
 export default function Card(props: { visibility: any, questionElement: any, avatar: any, drink: any }){
 
@@ -17,7 +16,6 @@ export default function Card(props: { visibility: any, questionElement: any, ava
   const [ buttonPressed, setButtonPressed ] = useState(false);
 
   const [ answerCorrectness , setAnswerCorrectness ] = useState(Boolean);
-
 
   const prefixes = ["a. ", "b. ", "c. ", "d. "];
 
@@ -48,6 +46,7 @@ export default function Card(props: { visibility: any, questionElement: any, ava
       <>
         {answersArray.map((answer, index) => {
           const text = prefixes[index] + answer
+          
           return (
             <AnswerButton
               marginTop={10}

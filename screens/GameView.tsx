@@ -17,7 +17,6 @@ export type Props = {
   navigation: NativeStackNavigationProp<any>;
 };
 
-const baseCardCount = 10;
 const baseCardImage = require('../assets/images/card5_icon.png');
 const cardImageArray = [
   require('../assets/images/card1_icon.png'),
@@ -41,7 +40,7 @@ const questionArray = [
 
 export default function GameView({ route, navigation }: Props) {
   const { gameCode, avatar, drink } = route.params;
-  const [cardCount, setCardCount] = useState(baseCardCount);
+  const [cardCount, setCardCount] = useState(10);
   const [cardImage, setCardImage] = useState(baseCardImage);
   const [cardVisibility, setCardVisibility] = useState(false);
 

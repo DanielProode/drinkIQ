@@ -25,14 +25,7 @@ export default function AnswerButton({ text, onPress, marginTop, correct, answer
         <View style={styles.answer}>
           <Text style={correct ? styles.btnTextCorrect : styles.btnTextWrong}> {text} </Text>
         </View>
-
-
-
-
-        
-
       :
-
         <View style={styles.answer}>
           <Text style={styles.btnTextCorrect}> {text} </Text>
         </View>

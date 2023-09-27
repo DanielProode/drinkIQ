@@ -43,8 +43,6 @@ const joinedPlayers = [
   
 ]
 
-
-
 export default function Lobby({ route, navigation }: Props) {
 
   const { gameCode, avatar, drink, playableDeck, hostGame } = route.params;
