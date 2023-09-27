@@ -2,7 +2,7 @@ import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
 
 const width = Dimensions.get('window').width;
 
-export default function Button({ text, onPress, disabled, marginTop }: any): JSX.Element {
+export default function Button({ text, onPress, disabled, marginTop }: any) {
   return (
     <View style={{marginTop}}>
     <Pressable 

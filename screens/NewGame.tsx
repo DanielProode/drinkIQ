@@ -4,7 +4,7 @@ import { Keyboard, StyleSheet, Text, TextInput, View } from 'react-native';
 import Button from '../components/Button';
 
 
-export default function NewGame({ navigation }: { navigation: any }): JSX.Element {
+export default function NewGame({ navigation }: { navigation: any }) {
   const [number, setNumber] = useState('');
   const [disabled, setDisabled] = useState(true)
   const onChanged = (text: string) => {

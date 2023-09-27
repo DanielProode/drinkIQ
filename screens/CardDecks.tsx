@@ -1,6 +1,6 @@
 import { Image, ScrollView, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
 
-export default function CardDecks(): JSX.Element {
+export default function CardDecks() {
   const cardDeck1 = require('../assets/images/card_deck1.png');
   const cardDeck2 = require('../assets/images/card_deck2.png');
   const cardDeck3 = require('../assets/images/card_deck3.png');

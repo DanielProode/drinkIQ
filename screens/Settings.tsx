@@ -22,7 +22,6 @@ export default function Settings(): JSX.Element {
       <Button marginTop={20} text="Notifications" />
       <Button marginTop={20} text="About" />
       <Button marginTop={20} text="Log Out" onPress={handleLogout} />
-      <Text>Welcome to the profile page!</Text>
     </View>
   );
 }

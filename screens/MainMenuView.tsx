@@ -2,6 +2,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Image, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
+import { useAuth } from '../context/authContext';
 
 interface MainMenuViewProps {
   navigation: NativeStackNavigationProp<any>;
@@ -9,13 +10,18 @@ interface MainMenuViewProps {
 
 export default function MainMenuView({ navigation }: MainMenuViewProps) {
 
+  const { user } = useAuth();
+
+  const userName = user?.email?.split('@')[0]
+
+
   return (
     <View style={styles.mainView}>
       <Image style={styles.cheersIcon}
         source={require('../assets/images/cheers_icon.png')} />
       <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
       <View style={styles.logoContainer}>
-        <Text style={styles.welcomeMessage}>Welcome to drinkIQ!</Text>
+        <Text style={styles.welcomeMessage}>Welcome to drinkIQ! {userName}</Text>
       </View>
       <View style={styles.bodyContainer}>
         <View >
