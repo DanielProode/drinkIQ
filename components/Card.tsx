@@ -1,140 +1,107 @@
 import { useState } from 'react';
-import { ImageBackground, Pressable, StyleSheet, Text, View, Image } from 'react-native';
+import { ImageBackground, Pressable, StyleSheet, Text, View, Image, ImageSourcePropType } from 'react-native';
 
 import AnswerButton from './AnswerButton';
+import { QuestionsArray } from './CardStack';
 
-export default function Card(props: { visibility: any, questionElement: any, avatar: any, drink: any }){
+interface CardProps {
+  onClose: () => void;
+  questionElement: QuestionsArray;
+  avatar: ImageSourcePropType;
+  drink: ImageSourcePropType;
+};
 
-  const { visibility, questionElement, avatar, drink } = props;
-
-  const answersArray = [questionElement.answer1, questionElement.answer2, questionElement.answer3, questionElement.answer4];
-
-  const correct = questionElement.correct;
-
-  const [ answered, setAnswered ] = useState(false);
-
-  const [ buttonPressed, setButtonPressed ] = useState(false);
-
-  const [ answerCorrectness , setAnswerCorrectness ] = useState(Boolean);
-
+export default function Card({ onClose, questionElement, avatar, drink }: CardProps) {
+  const [isAnswered, setIsAnswered] = useState(false);
+  const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number | null>(null);
+  const [isAnswerCorrect, setIsAnswerCorrect] = useState(false);
+  const correctAnswerIndex = questionElement.answers.findIndex((answer) => answer.isCorrect);
   const prefixes = ["a. ", "b. ", "c. ", "d. "];
 
-  interface Answers {
-    answer1: string,
-    answer2: string,
-    answer3: string,
-    answer4: string,
-  }
-  
-  interface ShowAnswersProps {
-    answersArray: Answers[];
-  }
+  const handleAnswerSelection = (answerIndex: number) => {
+    if (!isAnswered) {
+      setSelectedAnswerIndex(answerIndex);
+    };
 
-  const checkAnswer = (answer: number) => {
+    const selectedAnswer = questionElement.answers[answerIndex];
 
-    answer += 1;
-    if (answer === correct) {
-        return true;
+    if (!selectedAnswer.isCorrect) {
+      setIsAnswerCorrect(false);
     } else {
-        return false;
-          }
+      setIsAnswerCorrect(true);
+    };
+    setIsAnswered(true);
   };
 
-
-  const ShowButtons = ({ answersArray }: ShowAnswersProps) => {
-    return (
-      <>
-        {answersArray.map((answer, index) => {
-          const text = prefixes[index] + answer
-          
-          return (
-            <AnswerButton
-              marginTop={10}
-              text={text}
-              key={index}
-              buttonPressed={buttonPressed}
-              correct={checkAnswer(index)}
-              answered={answered}
-              onPress={() => {
-                setButtonPressed(true);
-                setAnswered(true);
-                setAnswerCorrectness(checkAnswer(index));
-              }}
-            />
-          );
-        })}
-      </>
-    );
-  };    
+  const renderAnswers = () => {
+    return questionElement.answers.map((answer, answerIndex) => {
+      const isSelected = answerIndex === selectedAnswerIndex;
+      const isCorrect = answerIndex === correctAnswerIndex;
+      const answerStyle = [
+        isSelected && (isCorrect ? { backgroundColor: '#3DD53A' } : { backgroundColor: '#F07070' }),
+        isAnswered && !isSelected && answer.isCorrect && { backgroundColor: '#3DD53A' },
+      ];
+      const textStyle = [
+        !isCorrect && isAnswered && { color: '#1E1E1E50' }
+      ];
+      return (
+        <AnswerButton
+          key={answerIndex}
+          isAnswered={isAnswered}
+          text={prefixes[answerIndex] + answer.text}
+          style={answerStyle}
+          textStyle={textStyle}
+          onPress={() => { 
+            handleAnswerSelection(answerIndex);
+            setIsAnswered(true);
+          }}
+        />
+      );
+    });
+  };
 
   return (
     <View style={styles.backgroundBlur}>
       <View style={styles.cardView}>
         <ImageBackground source={require('../assets/images/estonian_background.jpg')} resizeMode="cover" style={styles.image}>
-        <View style={styles.avatarView}>
-          <Image style={styles.avatarImage} source={avatar}></Image>
-        </View>
-        
-        <View style={styles.questionBox}>
-
-
-          <Text style={styles.questionText}>{answered ? 
-            
-          answerCorrectness ? "Choose who has to drink!" : "You drink!"
-
-          :
-
-          questionElement.question
-          
-          }</Text>
-        </View>
-        
-      <View style={styles.buttonView}>
-        <ShowButtons answersArray={answersArray} />
-      </View>
-
-      <View style={styles.nextButtonContainer}>
-
-        { answered ? 
-          <Pressable style={({ pressed }) => [
-            { opacity: pressed ? 0.5 : 1.0 }, styles.nextButton
-          ]}
-                    onPress={() => visibility(false)}>
-            <Text style={styles.nextButtonText}>{'-->'}</Text>
-          </Pressable>
-
-        :
-            <></>
-            }
-      </View>
-
+          <View style={styles.avatarView}>
+            <Image style={styles.avatarImage} source={avatar} />
+          </View>
+          <View style={styles.questionBox}>
+            <Text style={styles.questionText}>
+              {isAnswered && (isAnswerCorrect ? "Choose who has to drink!" : "You drink!")}
+              {!isAnswered && questionElement.question}
+            </Text>
+          </View>
+          <View style={styles.buttonView}>
+            {renderAnswers()}
+          </View>
+          <View style={styles.nextButtonContainer}>
+            {isAnswered &&
+              <Pressable
+                style={({ pressed }) => [
+                  { opacity: pressed ? 0.5 : 1.0 },
+                  styles.nextButton,
+                ]}
+                onPress={onClose}
+              >
+                <Text style={styles.nextButtonText}>{'-->'}</Text>
+              </Pressable>}
+          </View>
         </ImageBackground>
-    </View>
-
-    { answered && answerCorrectness ? 
+      </View>
+      {isAnswered && (
         <View style={styles.statusCircle}>
-          <Image style={styles.correctImage} source={require('../assets/images/correct.png')} />
+          {isAnswerCorrect ? (
+            <Image style={styles.correctImage} source={require('../assets/images/correct.png')} />
+          ) : (
+            <Image style={styles.wrongImage} source={require('../assets/images/wrong.png')} />
+          )}
         </View>
-      : 
-      <></>
-      }
-
-        { answered && !answerCorrectness ? 
-        <View style={styles.statusCircle}>
-          <Image style={styles.wrongImage} source={require('../assets/images/wrong.png')} />
-        </View>
-      
-      : 
-      <></>
-      }
-
-
-
+      )}
     </View>
-
-    
   );
-}
+};
 
 const styles = StyleSheet.create({
   cardView: {

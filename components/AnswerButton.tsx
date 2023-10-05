@@ -1,81 +1,39 @@
-import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, Pressable, StyleSheet, Text } from 'react-native';
+
+interface AnswerButtonProps {
+  text: string;
+  onPress: () => void;
+  isAnswered: boolean;
+  style: any;
+  textStyle: any;
+};
 
 const width = Dimensions.get('window').width;
 
-export default function AnswerButton({ text, onPress, marginTop, correct, answered, buttonPressed }: any) {
-  console.log(buttonPressed);
+export default function AnswerButton({ text, onPress, isAnswered, style, textStyle }: AnswerButtonProps) {
   return (
-    <View style={{marginTop}}>
-    <Pressable 
-    style={({ pressed }) => [
-      { opacity: pressed ? 0.5 : 1.0 }
-    ]}
+    <Pressable
+      style={({ pressed }) => [pressed && { opacity: 0.8 }, styles.button, style]}
       onPress={onPress}
-      disabled={answered}>
-        { 
-        answered ?
-
-        buttonPressed ? 
-        <View style={correct ? styles.correctAnswer : styles.wrongAnswer}>
-          <Text style={correct ? styles.btnTextCorrect : styles.btnTextWrong}> {text} </Text>
-        </View>
-
-      :
-
-        <View style={styles.answer}>
-          <Text style={correct ? styles.btnTextCorrect : styles.btnTextWrong}> {text} </Text>
-        </View>
-      :
-        <View style={styles.answer}>
-          <Text style={styles.btnTextCorrect}> {text} </Text>
-        </View>
-
-    }
-      
+      disabled={isAnswered}>
+      <Text style={[styles.text, textStyle]}>{text}</Text>
     </Pressable>
-    </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  correctAnswer: {
-    backgroundColor: '#3DD53A',
-    justifyContent: 'center',
-    width: width / 1.7,
-    height: 50,
-    borderRadius: 5,
-    borderColor: 'black',
-    borderWidth: 1,
-
-  },
-  wrongAnswer: {
-    backgroundColor: '#F07070',
-    justifyContent: 'center',
-    width: width / 1.7,
-    height: 50,
-    borderRadius: 5,
-    borderColor: 'black',
-    borderWidth: 1,
-  },
-  answer: {
+  button: {
     backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     width: width / 1.7,
     height: 50,
-    borderRadius: 5, 
+    borderRadius: 5,
     borderColor: '#D3D3D3',
     borderWidth: 1,
+    marginTop: 10,
   },
-  btnTextCorrect: {
+  text: {
     color: '#1E1E1E',
-    fontSize: 16,
-    textTransform: 'uppercase',
-    textAlign: 'left',
-    paddingLeft: 10,
-    fontFamily: 'Basic',
-  },
-  btnTextWrong: {
-    color: '#1E1E1E50',
     fontSize: 16,
     textTransform: 'uppercase',
     textAlign: 'left',
