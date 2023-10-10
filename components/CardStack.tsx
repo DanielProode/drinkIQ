@@ -67,13 +67,11 @@ export default function CardStack({ onGameOver, avatar, drink }: CardStackProps)
 
   const toggleCardVisibility = () => {
     setIsCardVisible(!isCardVisible);
+    if (cardCount === 0) onGameOver()
   }
 
   const onDecrement = () => {
-    if (cardCount > 0) {
-      setCardCount(cardCount - 1)
-    }
-    else onGameOver()
+    if (cardCount > 0) setCardCount(cardCount - 1)
   };
 
   if (isLoading) {

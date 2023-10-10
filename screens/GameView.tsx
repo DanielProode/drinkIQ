@@ -22,6 +22,7 @@ export default function GameView({ route, navigation }: Props) {
   const [isGameOver, setIsGameOver] = useState(false);
 
   const handleGameOver = () => {
+    console.log("Game over!");
     setIsGameOver(true);
   }
 
@@ -57,8 +58,6 @@ const styles = StyleSheet.create({
   gameView: {
     flex: 1,
     alignItems: 'center',
-    width: '80%',
-    height: '80%',
   },
   drinkIQLogo: {
     fontFamily: 'Knewave',
