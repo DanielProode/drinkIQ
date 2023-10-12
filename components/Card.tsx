@@ -28,8 +28,10 @@ export default function Card({ onClose, questionElement, avatar, drink }: CardPr
 
     if (!selectedAnswer.isCorrect) {
       setIsAnswerCorrect(false);
+      //handlePoints(1);
     } else {
       setIsAnswerCorrect(true);
+      //handlePoints(-1);
     };
     setIsAnswered(true);
   };

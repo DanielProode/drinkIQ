@@ -78,7 +78,7 @@ export default function CardStack({ onGameOver, avatar, drink }: CardStackProps)
   };
 
   const handlePoints = () => {
-
+    
   }
 
   if (isLoading) {
@@ -89,7 +89,7 @@ export default function CardStack({ onGameOver, avatar, drink }: CardStackProps)
     <>
       {isCardVisible && <Card handlePoints={handlePoints} onClose={toggleCardVisibility} questionElement={questionsArray[cardCount]} avatar={avatar} drink={drink} />}
       <Text style={styles.cardsLeft}>Cards Left: {cardCount}</Text>
-      <Text style={styles.cardsLeft}>Points: {points}</Text>
+      <Text style={styles.cardsLeft}>Points: {points - drinks}</Text>
       <Text style={styles.cardsLeft}>Drinks: {drinks}</Text>
       <View style={styles.cardViewContainer}>
         <Pressable
