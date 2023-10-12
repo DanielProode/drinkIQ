@@ -35,6 +35,8 @@ export default function CardStack({ onGameOver, avatar, drink }: CardStackProps)
   const [cardCount, setCardCount] = useState(10);
   const [cardImage, setCardImage] = useState(baseCardImage);
   const [isCardVisible, setIsCardVisible] = useState(false);
+  const [points, setPoints] = useState(0);
+  const [drinks, setDrinks] = useState(0);
   const [questionsArray, setQuestionsArray] = useState<QuestionsArray[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const db = FIREBASE_DB;
@@ -67,6 +69,7 @@ export default function CardStack({ onGameOver, avatar, drink }: CardStackProps)
 
   const toggleCardVisibility = () => {
     setIsCardVisible(!isCardVisible);
+
     if (cardCount === 0) onGameOver()
   }
 
@@ -74,14 +77,20 @@ export default function CardStack({ onGameOver, avatar, drink }: CardStackProps)
     if (cardCount > 0) setCardCount(cardCount - 1)
   };
 
+  const handlePoints = () => {
+
+  }
+
   if (isLoading) {
     return <LoadingScreen />
   }
 
   return (
     <>
-      {isCardVisible && <Card onClose={toggleCardVisibility} questionElement={questionsArray[cardCount]} avatar={avatar} drink={drink} />}
+      {isCardVisible && <Card handlePoints={handlePoints} onClose={toggleCardVisibility} questionElement={questionsArray[cardCount]} avatar={avatar} drink={drink} />}
       <Text style={styles.cardsLeft}>Cards Left: {cardCount}</Text>
+      <Text style={styles.cardsLeft}>Points: {points}</Text>
+      <Text style={styles.cardsLeft}>Drinks: {drinks}</Text>
       <View style={styles.cardViewContainer}>
         <Pressable
           style={styles.cardViewTouchable}

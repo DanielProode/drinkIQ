@@ -6,6 +6,7 @@ import { QuestionsArray } from './CardStack';
 
 interface CardProps {
   onClose: () => void;
+  handlePoints: () => void;
   questionElement: QuestionsArray;
   avatar: ImageSourcePropType;
   drink: ImageSourcePropType;
@@ -131,7 +132,7 @@ const styles = StyleSheet.create({
   avatarView: {
     position: 'absolute',
     zIndex: 3,
-    marginTop: 50,
+    marginTop: 30,
     backgroundColor: 'white',
     width: 80,
     height: 80,

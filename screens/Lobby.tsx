@@ -32,13 +32,7 @@ interface ShowPlayersProps {
 
 const joinedPlayers = [
   { id: 1, name: "Host Name", avatar: require('../assets/images/avatar_1.png'), drink: require('../assets/images/drink_1.png')},
-  { id: 2, name: "Kalle", avatar: require('../assets/images/avatar_2.png'), drink: require('../assets/images/drink_3.png')},
-  { id: 3, name: "Jüri", avatar: require('../assets/images/avatar_3.png'), drink: require('../assets/images/drink_4.png')},
-  { id: 4, name: "Pavel", avatar: require('../assets/images/avatar_4.png'), drink: require('../assets/images/drink_5.png')},
-  { id: 5, name: "Kaja", avatar: require('../assets/images/avatar_6.png'), drink: require('../assets/images/drink_6.png')},
-  { id: 6, name: "Edgar", avatar: require('../assets/images/avatar_5.png'), drink: require('../assets/images/drink_7.png')},
-  { id: 7, name: "Jevgeni", avatar: require('../assets/images/avatar_9.png'), drink: require('../assets/images/drink_8.png')},
-  { id: 8, name: "Mart", avatar: require('../assets/images/avatar_7.png'), drink: require('../assets/images/drink_9.png')},
+
   
   
 ]
