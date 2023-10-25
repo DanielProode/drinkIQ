@@ -1,8 +1,19 @@
+import { useState } from 'react';
 import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
 
 const width = Dimensions.get('window').width;
 
-export default function Button({ text, onPress, disabled, marginTop }: any) {
+let buttonWidth = 1.3;
+
+let buttonColor = '#FFFFFF';
+
+export default function Button({ text, onPress, disabled, marginTop, buttonWidthNumber, buttonBgColor }: any) {
+
+  if (buttonWidthNumber != null) buttonWidth = buttonWidthNumber;
+
+  if (buttonColor != null) buttonColor = buttonBgColor;
+  
+
   return (
     <View style={{marginTop}}>
     <Pressable 
@@ -11,8 +22,8 @@ export default function Button({ text, onPress, disabled, marginTop }: any) {
     ]}
       onPress={onPress}
       disabled={disabled}>
-      <View style={disabled ? styles.btnDisabledContainer : styles.btnContainer}>
-        <Text style={styles.btnText}> {text} </Text>
+      <View style={disabled ? {...styles.btnDisabledContainer, width: width / buttonWidth} : {...styles.btnContainer, width: width / buttonWidth, backgroundColor: buttonColor}}>
+        <Text style={disabled ? {...styles.btnText, color: '#FFFFFF30'} : styles.btnText }> {text} </Text>
       </View>
     </Pressable>
     </View>
@@ -21,20 +32,25 @@ export default function Button({ text, onPress, disabled, marginTop }: any) {
 
 const styles = StyleSheet.create({
   btnContainer: {
-    backgroundColor: '#FFFFFF',
     paddingVertical: 8,
-    width: width / 1.3,
-    borderRadius: 5,
+    borderRadius: 25,
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
+    height: 50,
+    justifyContent: 'center',
   },
   btnDisabledContainer: {
-    backgroundColor: '#FFFFFF50',
+    backgroundColor: '#FFFFFF30',
+    borderColor: '#FFFFFF30',
     paddingVertical: 8,
-    width: width / 1.3,
-    borderRadius: 5,
+    borderRadius: 25,
+    borderWidth: 2,
+    height: 50,
+    justifyContent: 'center',
   },
   btnText: {
-    color: '#1E1E1E',
-    fontSize: 16,
+    color: '#FFFFFF',
+    fontSize: 18,
     textTransform: 'uppercase',
     textAlign: 'center',
     fontFamily: 'Basic',

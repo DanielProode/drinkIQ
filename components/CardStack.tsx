@@ -1,5 +1,5 @@
 import { collection, getDocs } from 'firebase/firestore';
-import { useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { Pressable, View, Image, StyleSheet, Text, ImageSourcePropType } from 'react-native';
 
 import Card from './Card';
@@ -10,6 +10,10 @@ interface CardStackProps {
   onGameOver: () => void;
   avatar: ImageSourcePropType;
   drink: ImageSourcePropType;
+  points: number;
+  drinks: number;
+  setPoints: Dispatch<SetStateAction<number>>;
+  setDrinks: Dispatch<SetStateAction<number>>;
 };
 
 export interface QuestionsArray {
@@ -22,21 +26,19 @@ interface AnswersArray {
   isCorrect: boolean;
 };
 
-const baseCardImage = require('../assets/images/card5_icon.png');
+const baseCardImage = require('../assets/images/5_cards_straight.png');
 const cardImageArray = [
-  require('../assets/images/card1_icon.png'),
-  require('../assets/images/card2_icon.png'),
-  require('../assets/images/card3_icon.png'),
-  require('../assets/images/card4_icon.png'),
-  require('../assets/images/card5_icon.png')
+  require('../assets/images/1_card.png'),
+  require('../assets/images/2_cards.png'),
+  require('../assets/images/3_cards.png'),
+  require('../assets/images/4_cards.png'),
+  require('../assets/images/5_cards_straight.png')
 ];
 
-export default function CardStack({ onGameOver, avatar, drink }: CardStackProps) {
+export default function CardStack({ onGameOver, setPoints, setDrinks, points, drinks, avatar, drink }: CardStackProps) {
   const [cardCount, setCardCount] = useState(10);
   const [cardImage, setCardImage] = useState(baseCardImage);
   const [isCardVisible, setIsCardVisible] = useState(false);
-  const [points, setPoints] = useState(0);
-  const [drinks, setDrinks] = useState(0);
   const [questionsArray, setQuestionsArray] = useState<QuestionsArray[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const db = FIREBASE_DB;
@@ -77,8 +79,12 @@ export default function CardStack({ onGameOver, avatar, drink }: CardStackProps)
     if (cardCount > 0) setCardCount(cardCount - 1)
   };
 
-  const handlePoints = () => {
-    
+  function handlePoints (answerState: boolean) {
+    if (answerState) {
+      setPoints(points + 1);
+    } else {
+      setDrinks(drinks + 1);
+    }
   }
 
   if (isLoading) {
@@ -108,7 +114,7 @@ export default function CardStack({ onGameOver, avatar, drink }: CardStackProps)
 
 const styles = StyleSheet.create({
   cardViewContainer: {
-    marginTop: 130,
+    marginTop: 60,
     width: 220,
     height: 300,
   },

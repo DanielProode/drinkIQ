@@ -6,13 +6,13 @@ import { QuestionsArray } from './CardStack';
 
 interface CardProps {
   onClose: () => void;
-  handlePoints: () => void;
+  handlePoints: (answerState: boolean) => void;
   questionElement: QuestionsArray;
   avatar: ImageSourcePropType;
   drink: ImageSourcePropType;
 };
 
-export default function Card({ onClose, questionElement, avatar, drink }: CardProps) {
+export default function Card({ onClose, handlePoints, questionElement, avatar, drink }: CardProps) {
   const [isAnswered, setIsAnswered] = useState(false);
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number | null>(null);
   const [isAnswerCorrect, setIsAnswerCorrect] = useState(false);
@@ -28,10 +28,10 @@ export default function Card({ onClose, questionElement, avatar, drink }: CardPr
 
     if (!selectedAnswer.isCorrect) {
       setIsAnswerCorrect(false);
-      //handlePoints(1);
+      handlePoints(false);
     } else {
       setIsAnswerCorrect(true);
-      //handlePoints(-1);
+      handlePoints(true);
     };
     setIsAnswered(true);
   };
@@ -41,11 +41,11 @@ export default function Card({ onClose, questionElement, avatar, drink }: CardPr
       const isSelected = answerIndex === selectedAnswerIndex;
       const isCorrect = answerIndex === correctAnswerIndex;
       const answerStyle = [
-        isSelected && (isCorrect ? { backgroundColor: '#3DD53A' } : { backgroundColor: '#F07070' }),
-        isAnswered && !isSelected && answer.isCorrect && { backgroundColor: '#3DD53A' },
+        isSelected && (isCorrect ? { backgroundColor: '#A0E595' } : { backgroundColor: '#F07070' }),
+        isAnswered && !isSelected && answer.isCorrect && { backgroundColor: '#A0E595' },
       ];
       const textStyle = [
-        !isCorrect && isAnswered && { color: '#1E1E1E50' }
+        !isCorrect && isAnswered && { color: '#00000050' }
       ];
       return (
         <AnswerButton
@@ -88,7 +88,7 @@ export default function Card({ onClose, questionElement, avatar, drink }: CardPr
                 ]}
                 onPress={onClose}
               >
-                <Text style={styles.nextButtonText}>{'-->'}</Text>
+                <Text style={styles.nextButtonText}>{'→'}</Text>
               </Pressable>}
           </View>
         </ImageBackground>
@@ -191,7 +191,8 @@ const styles = StyleSheet.create({
   },
   nextButtonText: {
     fontFamily: 'Basic',
-    fontSize: 30,
+    fontSize: 38,
+    alignSelf: 'center',
   },
   buttonView: {
     marginTop: 20,

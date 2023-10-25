@@ -1,10 +1,18 @@
 import { useState } from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Pressable, TouchableWithoutFeedback, Keyboard } from 'react-native';
 
 import Button from '../components/Button';
 import { useAuth } from '../context/authContext';
+import TermsAndConditions from './TermsAndConditions';
 
 export default function Register() {
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  
+  const toggleModal = () => {
+    setIsModalVisible(!isModalVisible);
+  }
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
@@ -25,10 +33,15 @@ export default function Register() {
   };
 
   return (
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} >
     <View style={styles.container}>
-      <Text style={styles.title}>Sign Up</Text>
+      <TermsAndConditions isVisible={isModalVisible} onClose={toggleModal} />
+      <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
+
+      <View style={styles.textInputContainer}>
       <TextInput
         style={styles.input}
+        placeholderTextColor='#ABABAB80'
         placeholder='Email'
         autoCapitalize='none'
         onChangeText={(text) => setEmail(text)}
@@ -36,50 +49,106 @@ export default function Register() {
       />
       <TextInput
         style={styles.input}
+        placeholderTextColor='#ABABAB80'
         placeholder='Password'
         autoCapitalize='none'
+        textContentType="oneTimeCode" // Hacky solution to disable iOS password autofill
         onChangeText={(text) => setPassword(text)}
         value={password}
         secureTextEntry
+        autoCorrect={false}
       />
       <TextInput
         style={styles.input}
+        placeholderTextColor='#ABABAB80'
         placeholder='Confirm Password'
         autoCapitalize='none'
+        textContentType="oneTimeCode" // Hacky solution to disable iOS password autofill
         onChangeText={(text) => setPasswordConfirm(text)}
         value={passwordConfirm}
         secureTextEntry
+        autoCorrect={false}
       />
-      <Button text='Sign Up' onPress={handleSignUp} />
+      </View>
+      <View style={styles.buttonContainer}>
+      <Button style={styles.signupButton} text='Sign Up' onPress={handleSignUp} />
       {error ? <Text style={styles.error}>Sign Up failed: {error}</Text> : null}
+      </View>
+      <Pressable
+        style={styles.touchableTerms}
+        onPress={toggleModal}>
+        <Text style={styles.outerText}>By signing up you agree with the
+          <Text
+            style={styles.innerText}> drinkIQ Terms and Conditions.</Text>
+        </Text>
+      </Pressable>
     </View>
+    </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#1E1E1E',
   },
+  drinkIQLogo: {
+    marginTop: 100,
+    fontFamily: 'Knewave',
+    fontSize: 40,
+    color: 'white',
+  },
+  textInputContainer: {
+    marginTop: 150,
+    flex: 1,
+    width: '100%',
+    alignItems: 'center',
+  },
   title: {
-    fontSize: 24,
+    fontSize: 32,
     marginBottom: 20,
     color: 'white',
+    fontFamily: 'Basic',
   },
   input: {
     width: '80%',
     height: 40,
-    borderWidth: 1,
+    borderBottomWidth: 1,
     borderColor: '#ccc',
     borderRadius: 5,
     padding: 10,
-    marginBottom: 10,
-    backgroundColor: 'white'
+    marginBottom: 45,
+    fontFamily: 'Cabin-Regular',
+    fontSize: 18,
+    color: '#ABABAB',
+  },
+  buttonContainer: {
+    flex: 1,
+    alignItems: 'center',
   },
   error: {
     color: 'red',
     marginTop: 10,
+  },
+  signupButton: {
+    marginTop: 200,
+  },
+  touchableTerms: {
+    
+    alignItems: 'center',
+  },
+  innerText: {
+    fontFamily: 'Cabin-Bold',
+    color: '#FFFFFF95',
+  },
+  outerText: {
+    position: 'absolute',
+    bottom: 20,
+    width: 300,
+    textAlign: 'center',
+    marginBottom: 20,
+    color: '#FFFFFF95',
+    fontFamily: 'Cabin-Regular',
   },
 });

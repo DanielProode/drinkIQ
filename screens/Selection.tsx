@@ -22,8 +22,7 @@ const avatarIcons1 = [
   require('../assets/images/avatar_1.png'),
   require('../assets/images/avatar_2.png'),
   require('../assets/images/avatar_3.png'),
-  require('../assets/images/avatar_4.png'),
-  require('../assets/images/avatar_5.png')];
+  require('../assets/images/avatar_4.png'),];
 const avatarIcons2 = [
   require('../assets/images/avatar_6.png'),
   require('../assets/images/avatar_7.png'),
@@ -33,8 +32,7 @@ const drinkIcons1 = [
   require('../assets/images/drink_1.png'),
   require('../assets/images/drink_2.png'),
   require('../assets/images/drink_3.png'),
-  require('../assets/images/drink_4.png'),
-  require('../assets/images/drink_5.png')];
+  require('../assets/images/drink_4.png'),];
 const drinkIcons2 = [
   require('../assets/images/drink_6.png'),
   require('../assets/images/drink_7.png'),
@@ -96,19 +94,19 @@ export default function Selection({ gameCode, navigation, hostGame }: SelectionP
       {hostGame ? <></>
         : <Text style={styles.gameCode}>#{gameCode}</Text>}
       <View style={styles.viewContainer}>
-        <Text style={styles.selectAvatarText}>Select your avatar</Text>
-        <View style={styles.avatarCircles1}>
+        <Text style={styles.selectAvatarText}>Select your avatar:</Text>
+        <View style={styles.avatarCircles}>
           {RenderCircles(avatarIcons1, false)}
         </View>
-        <View style={styles.avatarCircles2}>
+        <View style={styles.avatarCircles}>
           {RenderCircles(avatarIcons2, false)}
         </View>
 
-        <Text style={styles.selectDrinkText}>Select your drink</Text>
-        <View style={styles.drinkCircles1}>
+        <Text style={styles.selectDrinkText}>Select your drink:</Text>
+        <View style={styles.drinkCircles}>
           {RenderCircles(drinkIcons1, true)}
         </View>
-        <View style={styles.drinkCircles2}>
+        <View style={styles.drinkCircles}>
           {RenderCircles(drinkIcons2, true)}
         </View>
         <View>
@@ -116,7 +114,7 @@ export default function Selection({ gameCode, navigation, hostGame }: SelectionP
             ?
             <View style={styles.selectDeck}>
 
-              <Text style={styles.selectDeckText}>Select game deck</Text>
+              <Text style={styles.selectDeckText}>Select game deck:</Text>
 
               <View >
                 <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.5 : 1.0 }, styles.deckButtonContainer]}
@@ -223,27 +221,21 @@ const styles = StyleSheet.create({
     right: -30,
     opacity: 0.3,
   },
-  avatarCircles1: {
+  avatarCircles: {
     flexDirection: 'row',
     gap: 18,
     marginTop: 20,
   },
-  avatarCircles2: {
-    flexDirection: 'row',
-    gap: 18,
-  },
-  drinkCircles1: {
+
+  drinkCircles: {
     flexDirection: 'row',
     gap: 18,
     marginTop: 20,
   },
-  drinkCircles2: {
-    flexDirection: 'row',
-    gap: 18,
-  },
+
   avatarCircle: {
-    width: 50,
-    height: 50,
+    width: 60,
+    height: 60,
     aspectRatio: 1 / 1,
     backgroundColor: '#d8d8d8',
     borderRadius: 40,
