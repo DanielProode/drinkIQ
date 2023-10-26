@@ -33,6 +33,7 @@ let userName: string;
 const joinedPlayers = [
   { id: 1, name: "Host Name", avatar: require('../assets/images/avatar_1.png'), drink: require('../assets/images/drink_1.png')},
   
+  
 ]
 
 export default function Lobby({ route, navigation }: Props) {

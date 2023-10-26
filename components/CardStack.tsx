@@ -26,13 +26,13 @@ interface AnswersArray {
   isCorrect: boolean;
 };
 
-const baseCardImage = require('../assets/images/5_cards_straight.png');
+const baseCardImage = require('../assets/images/card_stack_5.png');
 const cardImageArray = [
-  require('../assets/images/1_card.png'),
-  require('../assets/images/2_cards.png'),
-  require('../assets/images/3_cards.png'),
-  require('../assets/images/4_cards.png'),
-  require('../assets/images/5_cards_straight.png')
+  require('../assets/images/card_stack_1.png'),
+  require('../assets/images/card_stack_2.png'),
+  require('../assets/images/card_stack_3.png'),
+  require('../assets/images/card_stack_4.png'),
+  require('../assets/images/card_stack_5.png')
 ];
 
 export default function CardStack({ onGameOver, setPoints, setDrinks, points, drinks, avatar, drink }: CardStackProps) {
