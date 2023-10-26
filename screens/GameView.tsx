@@ -20,8 +20,11 @@ export type Props = {
 export default function GameView({ route, navigation }: Props) {
   const { gameCode, avatar, drink } = route.params;
   const [isGameOver, setIsGameOver] = useState(false);
+  const [correctAnswerCount, setCorrectAnswerCount] = useState<number>(0);
+  const [wrongAnswerCount, setWrongAnswerCount] = useState<number>(0);
 
   const handleGameOver = () => {
+    console.log("Game over!");
     setIsGameOver(true);
   }
 
@@ -34,13 +37,15 @@ export default function GameView({ route, navigation }: Props) {
           {isGameOver ? (
             <>
               <Text style={styles.gameText}>GAME OVER!</Text>
+              <Text style={styles.gameText}>Score: {correctAnswerCount - wrongAnswerCount} </Text>
+              <Text style={styles.gameText}>Drinks: {wrongAnswerCount} </Text>
               <Button
                 onPress={() => navigation.goBack()}
                 style={styles.lobbyButton}
                 text="BACK TO LOBBY" />
             </>
           ) : (
-            <CardStack onGameOver={handleGameOver} avatar={avatar} drink={drink} />
+            <CardStack onGameOver={handleGameOver} avatar={avatar} drink={drink} points={correctAnswerCount} drinks={wrongAnswerCount} setPoints={setCorrectAnswerCount} setDrinks={setWrongAnswerCount} />
           )}
         </View>
       </View>
@@ -57,8 +62,6 @@ const styles = StyleSheet.create({
   gameView: {
     flex: 1,
     alignItems: 'center',
-    width: '80%',
-    height: '80%',
   },
   drinkIQLogo: {
     fontFamily: 'Knewave',

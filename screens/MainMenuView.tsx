@@ -18,7 +18,8 @@ export default function MainMenuView({ navigation }: MainMenuViewProps) {
         source={require('../assets/images/cheers_icon.png')} />
       <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
       <View style={styles.logoContainer}>
-        <Text style={styles.welcomeMessage}>Welcome to drinkIQ {userName}</Text>
+        <Text style={styles.welcomeMessage}>Hi {userName}!</Text>
+        <Text style={styles.welcomeMessage}>Welcome to drinkIQ!</Text>
       </View>
       <View style={styles.bodyContainer}>
         <View >
@@ -78,6 +79,7 @@ const styles = StyleSheet.create({
   },
   bodyContainer: {
     flex: 4,
+    marginTop: 20,
   },
   cardButtonContainer: {
     marginTop: 20,

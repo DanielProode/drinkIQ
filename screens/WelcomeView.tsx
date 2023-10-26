@@ -22,16 +22,23 @@ export default function WelcomeView({ navigation }: WelcomeViewProps) {
         source={require('../assets/images/cheers_icon.png')} />
       <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
       <View style={styles.contentView}>
-        <Text style={styles.welcomeText}>Log in To start playing!</Text>
-        <View style={styles.googleLogoContainer}>
+        <Text style={styles.welcomeText}>Welcome!</Text>
+        <View style={styles.loginSignupButtonContainer}>
           <Button
             onPress={() => navigation.navigate('Login')}
-            text="LOGIN" />
-        </View>
-        <View style={styles.appleLogoContainer}>
+            text="LOG IN"
+            buttonWidthNumber={2.78} 
+            buttonBgColor='#6C8EC870'/>
         <Button
             onPress={() => navigation.navigate('Register')}
-            text="REGISTER" />
+            text="SIGN UP"
+            buttonWidthNumber={2.78} />
+        </View>
+        <View style={styles.buttonContainer}>
+        <Button
+            onPress={() => navigation.navigate('Register')}
+            text="JOIN GAME AS GUEST"
+            buttonWidthNumber={1.3} />
         </View>
       </View>
       <Pressable
@@ -68,6 +75,11 @@ const styles = StyleSheet.create({
     fontSize: 60,
     color: 'white',
   },
+  loginSignupButtonContainer: {
+    marginTop: 20,
+    gap: 20,
+    flexDirection: 'row',
+  },
   contentView: {
     marginTop: 150,
     alignItems: 'center',
@@ -85,10 +97,7 @@ const styles = StyleSheet.create({
     height: 50,
     width: 315,
   },
-  googleLogoContainer: {
-    marginTop: 20,
-  },
-  appleLogoContainer: {
+  buttonContainer: {
     marginTop: 20,
   },
   appleLogo: {
@@ -101,7 +110,7 @@ const styles = StyleSheet.create({
   },
   outerText: {
     position: 'absolute',
-    bottom: 0,
+    bottom: 20,
     width: 300,
     textAlign: 'center',
     marginBottom: 20,
