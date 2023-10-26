@@ -10,7 +10,7 @@ interface MainMenuViewProps {
 
 export default function MainMenuView({ navigation }: MainMenuViewProps) {
   const { user } = useAuth();
-  const userName = (user && user.username !== undefined) ? user.username : null
+  const userName = (user && user.username) ? user.username : null
 
   return (
     <View style={styles.mainView}>
