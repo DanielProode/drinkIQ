@@ -10,7 +10,7 @@ interface WelcomeViewProps {
 
 export default function WelcomeView({ navigation }: WelcomeViewProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  
+
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible);
   }
@@ -27,15 +27,15 @@ export default function WelcomeView({ navigation }: WelcomeViewProps) {
           <Button
             onPress={() => navigation.navigate('Login')}
             text="LOG IN"
-            buttonWidthNumber={2.78} 
-            buttonBgColor='#6C8EC870'/>
-        <Button
+            buttonWidthNumber={2.78}
+            buttonBgColor='#6C8EC870' />
+          <Button
             onPress={() => navigation.navigate('Register')}
             text="SIGN UP"
             buttonWidthNumber={2.78} />
         </View>
         <View style={styles.buttonContainer}>
-        <Button
+          <Button
             onPress={() => navigation.navigate('Register')}
             text="JOIN GAME AS GUEST"
             buttonWidthNumber={1.3} />

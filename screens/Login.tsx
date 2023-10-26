@@ -21,36 +21,32 @@ export default function Login() {
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} >
-    <View style={styles.container}>
-      <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
-      <View style={styles.textInputContainer}>
-
-      <TextInput
-        style={styles.input}
-        placeholderTextColor='#ABABAB80'
-        placeholder='Email'
-        autoCapitalize='none'
-        onChangeText={(text) => setEmail(text)}
-        value={email}
-      />
-      <TextInput
-        style={styles.input}
-        placeholderTextColor='#ABABAB80'
-        placeholder='Password'
-        autoCapitalize='none'
-        onChangeText={(text) => setPassword(text)}
-        value={password}
-        secureTextEntry
-      />
+      <View style={styles.container}>
+        <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
+        <View style={styles.textInputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholderTextColor='#ABABAB80'
+            placeholder='Email'
+            autoCapitalize='none'
+            onChangeText={(text) => setEmail(text)}
+            value={email}
+          />
+          <TextInput
+            style={styles.input}
+            placeholderTextColor='#ABABAB80'
+            placeholder='Password'
+            autoCapitalize='none'
+            onChangeText={(text) => setPassword(text)}
+            value={password}
+            secureTextEntry
+          />
+        </View>
+        <View style={styles.buttonContainer}>
+          <Button text='LOGIN' onPress={handleLogin} />
+          {error ? <Text style={styles.error}>Login failed: {error}</Text> : null}
+        </View>
       </View>
-      <View style={styles.buttonContainer}>
-
-      <Button text='LOGIN' onPress={handleLogin} />
-      {error ? <Text style={styles.error}>Login failed: {error}</Text> : null}
-
-      </View>
-
-    </View>
     </TouchableWithoutFeedback>
   );
 };

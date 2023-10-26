@@ -35,10 +35,10 @@ const joinedPlayers = [
 export default function Lobby({ route, navigation }: Props) {
   const { gameCode, avatar, drink, playableDeck, hostGame } = route.params;
   const { user } = useAuth();
+  const userName = (user && user.username) ? user.username : "";
   const updatedJoinedPlayers = [...joinedPlayers];
   const userToUpdate = updatedJoinedPlayers.find(player => player.id === 1);
-  const userName = (user && user.username) ? user.username : ""
-  
+
   if (userToUpdate) {
     userToUpdate.avatar = avatar;
     userToUpdate.drink = drink;
