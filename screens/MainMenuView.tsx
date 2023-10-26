@@ -9,11 +9,8 @@ interface MainMenuViewProps {
 }
 
 export default function MainMenuView({ navigation }: MainMenuViewProps) {
-
   const { user } = useAuth();
-
-  const userName = user?.email?.split('@')[0]
-
+  const userName = (user && user.username !== undefined) ? user.username : null
 
   return (
     <View style={styles.mainView}>
@@ -21,7 +18,7 @@ export default function MainMenuView({ navigation }: MainMenuViewProps) {
         source={require('../assets/images/cheers_icon.png')} />
       <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
       <View style={styles.logoContainer}>
-        <Text style={styles.welcomeMessage}>Welcome to drinkIQ! {userName}</Text>
+        <Text style={styles.welcomeMessage}>Welcome to drinkIQ {userName}</Text>
       </View>
       <View style={styles.bodyContainer}>
         <View >
