@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Keyboard, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Keyboard, StyleSheet, Text, TextInput, View, TouchableWithoutFeedback } from 'react-native';
 
 import Button from '../components/Button';
 
@@ -25,19 +25,30 @@ export default function NewGame({ navigation }: { navigation: any }) {
     }
   };
 
+
+
   return (
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} >
     <View style={styles.newGameView}>
-      <Text style={styles.enterCodeText}>ENTER GAME CODE:</Text>
+
+    <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
+
+    <View style={styles.gameCodeContainer}>
+      <Text style={styles.hashtag}>#</Text>
+
       <TextInput
         style={styles.gameCodeInput}
         onChangeText={(text) => onChanged(text)}
         value={number}
         onSubmitEditing={(value) => setNumber(value.nativeEvent.text)}
-        placeholder="#XXXXXX"
+        placeholder="XXXXXX"
         keyboardType="numeric"
         maxLength={6}
         placeholderTextColor="#FFFFFF80"
       />
+
+    </View>
+
       <View style={styles.buttonContainer}>
         <Button
           onPress={() => {
@@ -46,7 +57,7 @@ export default function NewGame({ navigation }: { navigation: any }) {
           text="JOIN GAME"
           disabled={disabled} />
       </View>
-      <Text style={styles.hostGameText}>...or Host a game yourself!</Text>
+      <Text style={styles.hostGameText}>OR</Text>
       <View style={styles.hostGameButton}>
         <Button onPress={() => {
           console.log('Host Game Button pressed!');
@@ -55,6 +66,7 @@ export default function NewGame({ navigation }: { navigation: any }) {
           text="HOST GAME" />
       </View>
     </View>
+    </TouchableWithoutFeedback>
 
   );
 }
@@ -63,6 +75,7 @@ const styles = StyleSheet.create({
   enterCodeText: {
     fontSize: 30,
     marginTop: 200,
+    fontFamily: 'CarterOne-Regular',
     color: 'white',
   },
   newGameView: {
@@ -70,28 +83,47 @@ const styles = StyleSheet.create({
     backgroundColor: '#1E1E1E',
     flex: 1,
   },
+  drinkIQLogo: {
+    fontFamily: 'Knewave',
+    marginTop: 50,
+    fontSize: 30,
+    color: 'white',
+  },
   buttonContainer: {
     marginTop: 30,
+  },
+  gameCodeContainer: {
+    marginTop: 100,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+  },
+  hashtag: {
+    color: 'gray',
+    fontSize: 40,
+    marginTop: 20,
   },
   gameCodeInput: {
     marginTop: 20,
     width: 120,
-    borderWidth: 2,
-    borderRadius: 10,
+    borderBottomWidth: 3,
     padding: 10,
     borderColor: 'gray',
     textAlign: 'center',
     fontFamily: 'CarterOne-Regular',
+    fontSize: 24,
     color: 'white',
   },
   hostGameButton: {
     alignItems: 'center',
     height: 50,
     width: 100,
-    marginTop: 20,
+    marginTop: 60,
   },
   hostGameText: {
+    fontFamily: 'CarterOne-Regular',
     color: 'white',
-    marginTop: 200,
+    fontSize: 40,
+    marginTop: 130,
   },
 });

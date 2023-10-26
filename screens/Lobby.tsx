@@ -3,6 +3,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Image, ImageSourcePropType, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
+import { useAuth } from '../context/authContext';
 
 export type Props = {
   route: RouteProp<{
@@ -16,7 +17,6 @@ export type Props = {
   }>;
   navigation: NativeStackNavigationProp<any>;
 };
-
 interface Player {
   id: number;
   name: string;
@@ -28,17 +28,10 @@ interface ShowPlayersProps {
   playerArray: Player[];
 }
 
-
+let userName: string;
 
 const joinedPlayers = [
   { id: 1, name: "Host Name", avatar: require('../assets/images/avatar_1.png'), drink: require('../assets/images/drink_1.png')},
-  { id: 2, name: "Kalle", avatar: require('../assets/images/avatar_2.png'), drink: require('../assets/images/drink_3.png')},
-  { id: 3, name: "Jüri", avatar: require('../assets/images/avatar_3.png'), drink: require('../assets/images/drink_4.png')},
-  { id: 4, name: "Pavel", avatar: require('../assets/images/avatar_4.png'), drink: require('../assets/images/drink_5.png')},
-  { id: 5, name: "Kaja", avatar: require('../assets/images/avatar_6.png'), drink: require('../assets/images/drink_6.png')},
-  { id: 6, name: "Edgar", avatar: require('../assets/images/avatar_5.png'), drink: require('../assets/images/drink_7.png')},
-  { id: 7, name: "Jevgeni", avatar: require('../assets/images/avatar_9.png'), drink: require('../assets/images/drink_8.png')},
-  { id: 8, name: "Mart", avatar: require('../assets/images/avatar_7.png'), drink: require('../assets/images/drink_9.png')},
   
   
 ]
@@ -47,16 +40,23 @@ export default function Lobby({ route, navigation }: Props) {
 
   const { gameCode, avatar, drink, playableDeck, hostGame } = route.params;
 
+  const { user } = useAuth();
+
+
+
+  if (user?.email) userName = user?.email?.split('@')[0]
+
+
   const updatedJoinedPlayers = [...joinedPlayers];
 
-  if (hostGame) {
-    const hostToUpdate = updatedJoinedPlayers.find(player => player.id === 1);
+    const userToUpdate = updatedJoinedPlayers.find(player => player.id === 1);
 
-    if (hostToUpdate) {
-      hostToUpdate.avatar = avatar;
-      hostToUpdate.drink = drink;
+    if (userToUpdate) {
+      userToUpdate.avatar = avatar;
+      userToUpdate.drink = drink;
+      userToUpdate.name = userName;
     }
-  }
+
 
 
   const ShowPlayers = ({ playerArray }: ShowPlayersProps) => {
@@ -90,6 +90,8 @@ export default function Lobby({ route, navigation }: Props) {
       <View style={styles.deckImageContainer}>
       <Image style={styles.deck} source={playableDeck} />
       </View>
+
+      <Text style={styles.waitingText}>Waiting in the lobby:</Text>
 
       <View style={styles.joinedPlayers}>
         <ShowPlayers playerArray={updatedJoinedPlayers} />
@@ -185,6 +187,12 @@ const styles = StyleSheet.create({
     borderColor: '#3395EF',
     borderWidth: 1,
     borderRadius: 10,
+  },
+  waitingText: {
+    color: 'white',
+    fontFamily: 'Basic',
+    marginTop: 10,
+    fontSize: 20,
   },
   gameCode: {
     fontSize: 20,
