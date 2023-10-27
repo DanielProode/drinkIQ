@@ -8,7 +8,9 @@ interface AuthProviderProps {
   children?: ReactNode;
 };
 
-interface CustomUser extends User {
+interface CustomUser {
+  uid: string;
+  email: string | null;
   username?: string;
   games_won?: number;
   total_drinks?: number;
@@ -46,16 +48,20 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const fetchUserData = async (userObject: User | null) => {
     if (userObject) {
+      const simpleUserObject = {
+        email: userObject.email,
+        uid: userObject.uid,
+      };
       const userDoc = doc(db, 'users', userObject.uid);
       try {
-          const docSnap = await getDoc(userDoc);
-          if (docSnap.exists()) {
-            const userData = docSnap.data();
-            setUser({ ...userObject, ...userData});
-          } else {
-            setUser(userObject);
-            console.log("User info document missing");
-          }
+        const docSnap = await getDoc(userDoc);
+        if (docSnap.exists()) {
+          const userData = docSnap.data();
+          setUser({ ...simpleUserObject, ...userData });
+        } else {
+          setUser(simpleUserObject);
+          console.log("User info document missing");
+        }
       } catch (error) {
         console.error('Error fetching user info: ', error);
       };
@@ -63,7 +69,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       setUser(null);
     };
     setIsUserLoaded(true);
-    console.log(user);
   };
 
   useEffect(() => {
@@ -74,6 +79,10 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       unsubscribe();
     }
   }, []);
+
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
 
   return (
     <AuthContext.Provider value={{ user, userLoaded, signUp, signIn, logOut }}>
