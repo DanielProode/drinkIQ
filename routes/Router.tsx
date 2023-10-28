@@ -7,8 +7,8 @@ import { ImageSourcePropType } from 'react-native';
 
 import LoadingScreen from '../components/LoadingScreen';
 import { useAuth } from '../context/authContext';
-import CardDecks from '../screens/CardDecks';
 import ActiveGame from '../screens/ActiveGame';
+import CardDecks from '../screens/CardDecks';
 import HostGame from '../screens/HostGame';
 import JoinGame from '../screens/JoinGame';
 import Lobby from '../screens/Lobby';
@@ -18,12 +18,10 @@ import NewGame from '../screens/NewGame';
 import Profile from '../screens/Profile';
 import Register from '../screens/Register'
 import Settings from '../screens/Settings';
-import WelcomeView from '../screens/WelcomeView';
 
 type RootStackParamList = {
   ActiveGame: { gameCode: number, avatar: ImageSourcePropType, drink: ImageSourcePropType };
   Lobby: { gameCode: number, avatar: ImageSourcePropType, drink: ImageSourcePropType, playableDeck: ImageSourcePropType, hostGame: boolean };
-  WelcomeView: undefined;
   Login: undefined;
   Register: undefined;
   MainMenu: undefined;
@@ -73,7 +71,6 @@ export default function Router() {
       <Stack.Navigator screenOptions={{ headerTitle: '', headerTransparent: true, headerTintColor: '#A5AFB9' }}>
         {user == null ? (
           <>
-            <Stack.Screen name="WelcomeView" component={WelcomeView} />
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Register" component={Register} />
           </>
