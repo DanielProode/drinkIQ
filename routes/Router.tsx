@@ -15,6 +15,7 @@ import Lobby from '../screens/Lobby';
 import Login from '../screens/Login'
 import MainMenuView from '../screens/MainMenuView';
 import NewGame from '../screens/NewGame';
+import Profile from '../screens/Profile';
 import Register from '../screens/Register'
 import Settings from '../screens/Settings';
 import WelcomeView from '../screens/WelcomeView';
@@ -31,6 +32,7 @@ type RootStackParamList = {
   HostGame: undefined;
   JoinGame: { gameCode: number };
   Settings: undefined;
+  Profile: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -83,6 +85,7 @@ export default function Router() {
             <Stack.Screen name="JoinGame" component={JoinGame} />
             <Stack.Screen name="HostGame" component={HostGame} />
             <Stack.Screen name="Settings" component={Settings} />
+            <Stack.Screen name="Profile" component={Profile} />
             <Stack.Screen name="GameView" component={GameView} />
             <Stack.Screen name="Lobby" component={Lobby} />
           </>
