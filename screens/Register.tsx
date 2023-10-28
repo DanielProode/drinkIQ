@@ -70,6 +70,7 @@ export default function Register() {
           <TextInput
             style={styles.input}
             placeholder='Password'
+            placeholderTextColor='#ABABAB80'
             autoCapitalize='none'
             textContentType="oneTimeCode" // Hacky solution to disable iOS password autofill
             onChangeText={(text) => setPassword(text)}

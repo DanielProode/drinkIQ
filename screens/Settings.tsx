@@ -1,9 +1,15 @@
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { StyleSheet, View } from 'react-native';
 
 import Button from '../components/Button';
 import { useAuth } from '../context/authContext';
 
-export default function Settings(): JSX.Element {
+
+interface SettingsProps {
+  navigation: NativeStackNavigationProp<any>;
+}
+
+export default function Settings({ navigation }: SettingsProps ) {
   const { logOut } = useAuth();
 
   const handleLogout = async () => {
@@ -16,7 +22,7 @@ export default function Settings(): JSX.Element {
 
   return (
     <View style={styles.settingsView}>
-      <Button text="Profile" />
+      <Button text="Profile" onPress={() => navigation.navigate('Profile')} />
       <Button marginTop={20} text="Light Mode" />
       <Button marginTop={20} text="Language" />
       <Button marginTop={20} text="Notifications" />
@@ -33,4 +39,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+
 });

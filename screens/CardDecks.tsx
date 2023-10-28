@@ -1,44 +1,68 @@
-import { Image, ScrollView, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import { Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useAuth } from '../context/authContext';
 
 export default function CardDecks() {
-  const cardDeck1 = require('../assets/images/card_deck1.png');
-  const cardDeck2 = require('../assets/images/card_deck2.png');
-  const cardDeck3 = require('../assets/images/card_deck3.png');
+
+  let deckOwned: boolean;
+
+  const cardDecks = [{
+    id: 'estonia',
+    name: 'Estonia card pack',
+    image: require('../assets/images/card_deck1.png'),
+  }, {
+    id: 'football',
+    name: 'Football card pack',
+    image: require('../assets/images/card_deck2.png'),
+  },{
+    id: 'birds',
+    name: 'Birds card pack',
+    image: require('../assets/images/card_deck3.png'),
+  }];
+
+  const { user } = useAuth();
+
+  const RenderDecks = (deckArray: {name: string; image: any; id: string }[]) => {
+
+    return deckArray.map((item, index) => {
+
+      deckOwned = false;
+
+      if (user?.packs_owned?.includes(item.id)) deckOwned = true;
+
+      return (
+        <Pressable
+        style={({ pressed }) => [
+          { opacity: pressed ? 0.5 : 1.0 }, styles.cardViewTouchable,
+          ]}
+          key={index}
+          onPress={() => {
+            console.log('Pressed ' + item.name)
+          }
+          }>
+            <View style={styles.cardView}>
+              <Image style={styles.cardImage} source={item.image} />
+              <View style={styles.cardInfo}>
+              <Text style={styles.deckTitle}>{item.name}</Text>
+              {deckOwned ? <></> : <Text style={styles.lockedText}>Locked</Text>}
+              </View>
+            </View>
+
+        </Pressable>
+      );
+    });
+  }
 
   return (
     <View style={styles.cardDeckView}>
       <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
       <View style={styles.buttonContainer}>
-      <Text style={styles.availableDecksText}>Available decks</Text>
-      <Text style={styles.newDecksText}>New decks</Text>
+      <Text style={styles.filterButton}>Filter button</Text>
+      <Text style={styles.searchButton}>Search button</Text>
       </View>
       <View style={styles.cardsView}>
        
         <ScrollView style={styles.scrollView}>
-          <TouchableHighlight
-            style={styles.cardViewTouchable}
-            onPress={() => console.log('Pressed deck1!')}>
-              <>
-            <Image style={styles.card} source={cardDeck1} />
-            <Text style={styles.deckTitle}>Deck 1</Text>
-            </>
-          </TouchableHighlight>
-          <TouchableHighlight
-            style={styles.cardViewTouchable}
-            onPress={() => console.log('Pressed deck2!')}>
-              <>
-            <Image style={styles.card} source={cardDeck2} />
-            <Text style={styles.deckTitle}>Deck 2</Text>
-            </>
-          </TouchableHighlight>
-          <TouchableHighlight
-            style={styles.cardViewTouchable}
-            onPress={() => console.log('Pressed deck3!')}>
-              <>
-            <Image style={styles.card} source={cardDeck3} />
-            <Text style={styles.deckTitle}>Deck 3</Text>
-            </>
-          </TouchableHighlight>
+          {RenderDecks(cardDecks)}
         </ScrollView>
       </View>
     </View>
@@ -61,19 +85,26 @@ const styles = StyleSheet.create({
   deckTitle: {
     fontFamily: 'Basic',
     color: 'white',
-    fontSize: 24,
+    fontSize: 20,
     alignSelf: 'flex-start',
     marginLeft: 20,
+    marginTop: 5,
   },
-  availableDecksText: {
+  lockedText: {
     fontFamily: 'Basic',
     color: 'white',
-    fontSize: 26,
+    fontSize: 20,
+    marginTop: 5,
   },
-  newDecksText: {
+  filterButton: {
     fontFamily: 'Basic',
     color: 'white',
-    fontSize: 26,
+    fontSize: 18,
+  },
+  searchButton: {
+    fontFamily: 'Basic',
+    color: 'white',
+    fontSize: 18,
   },
   scrollView: {
   },
@@ -90,9 +121,20 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: 'white',
   },
-  card: {
+  cardView: {
     width: '100%',
     height: '100%',
+  },
+  cardImage: {
+    width: '100%',
+    height: '75%',
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+  },
+  cardInfo: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginRight: 20,
   },
   cardsView: {
     flex: 1,
@@ -101,10 +143,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cardViewTouchable: {
-    borderRadius: 40,
-    width: 300,
+    width: 320,
     height: 150,
-    alignItems: 'center',
     marginBottom: 40,
+    backgroundColor: '#343333',
+    borderRadius: 20,
   },
 });

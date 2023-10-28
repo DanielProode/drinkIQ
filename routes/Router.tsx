@@ -8,29 +8,31 @@ import { ImageSourcePropType } from 'react-native';
 import LoadingScreen from '../components/LoadingScreen';
 import { useAuth } from '../context/authContext';
 import CardDecks from '../screens/CardDecks';
-import GameView from '../screens/GameView';
+import ActiveGame from '../screens/ActiveGame';
 import HostGame from '../screens/HostGame';
 import JoinGame from '../screens/JoinGame';
 import Lobby from '../screens/Lobby';
-import Login from '../screens/Login'
-import MainMenuView from '../screens/MainMenuView';
+import Login from '../screens/Login';
+import MainMenu from '../screens/MainMenu';
 import NewGame from '../screens/NewGame';
+import Profile from '../screens/Profile';
 import Register from '../screens/Register'
 import Settings from '../screens/Settings';
 import WelcomeView from '../screens/WelcomeView';
 
 type RootStackParamList = {
-  GameView: { gameCode: number, avatar: ImageSourcePropType, drink: ImageSourcePropType };
+  ActiveGame: { gameCode: number, avatar: ImageSourcePropType, drink: ImageSourcePropType };
   Lobby: { gameCode: number, avatar: ImageSourcePropType, drink: ImageSourcePropType, playableDeck: ImageSourcePropType, hostGame: boolean };
   WelcomeView: undefined;
   Login: undefined;
   Register: undefined;
-  MainMenuView: undefined;
+  MainMenu: undefined;
   NewGame: undefined;
   CardDecks: undefined;
   HostGame: undefined;
   JoinGame: { gameCode: number };
   Settings: undefined;
+  Profile: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -77,13 +79,14 @@ export default function Router() {
           </>
         ) : (
           <>
-            <Stack.Screen name="MainMenuView" component={MainMenuView} />
+            <Stack.Screen name="MainMenu" component={MainMenu} />
             <Stack.Screen name="NewGame" component={NewGame} />
             <Stack.Screen name="CardDecks" component={CardDecks} />
             <Stack.Screen name="JoinGame" component={JoinGame} />
             <Stack.Screen name="HostGame" component={HostGame} />
             <Stack.Screen name="Settings" component={Settings} />
-            <Stack.Screen name="GameView" component={GameView} />
+            <Stack.Screen name="Profile" component={Profile} />
+            <Stack.Screen name="ActiveGame" component={ActiveGame} />
             <Stack.Screen name="Lobby" component={Lobby} />
           </>
         )}

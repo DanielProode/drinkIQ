@@ -11,7 +11,7 @@ import { useAuth } from '../context/authContext';
 
 export type Props = {
   route: RouteProp<{
-    GameView: {
+    ActiveGame: {
       gameCode: number;
       avatar: ImageSourcePropType;
       drink: ImageSourcePropType;
@@ -20,13 +20,23 @@ export type Props = {
   navigation: NativeStackNavigationProp<any>;
 };
 
-export default function GameView({ route, navigation }: Props) {
+export default function ActiveGame({ route, navigation }: Props) {
   const { gameCode, avatar, drink } = route.params;
   const [isGameOver, setIsGameOver] = useState(false);
   const [correctAnswerCount, setCorrectAnswerCount] = useState<number>(0);
   const [wrongAnswerCount, setWrongAnswerCount] = useState<number>(0);
   const { user } = useAuth();
   const db = FIREBASE_DB;
+  let gameWon = 0;
+
+  const checkGameWinner = () => {
+    if (wrongAnswerCount < correctAnswerCount) {
+      gameWon = 1;
+    }
+    else {
+      gameWon = 0;
+    }
+  }
 
   const updateUserData = async () => {
     try {
@@ -34,7 +44,8 @@ export default function GameView({ route, navigation }: Props) {
         const userDoc = doc(db, 'users', user.uid);
         await updateDoc(userDoc, {
           total_points: increment(correctAnswerCount - wrongAnswerCount),
-          total_drinks: increment(wrongAnswerCount)
+          total_drinks: increment(wrongAnswerCount),
+          games_won: increment(gameWon)
         })
       }
       else {
@@ -47,6 +58,7 @@ export default function GameView({ route, navigation }: Props) {
 
   const handleGameOver = () => {
     console.log("Game over!");
+    checkGameWinner();
     setIsGameOver(true);
     updateUserData();
   }

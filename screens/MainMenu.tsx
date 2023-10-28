@@ -4,11 +4,11 @@ import { Image, StyleSheet, Text, View } from 'react-native';
 import Button from '../components/Button';
 import { useAuth } from '../context/authContext';
 
-interface MainMenuViewProps {
+interface MainMenuProps {
   navigation: NativeStackNavigationProp<any>;
 }
 
-export default function MainMenuView({ navigation }: MainMenuViewProps) {
+export default function MainMenu({ navigation }: MainMenuProps) {
   const { user } = useAuth();
   const userName = (user && user.username) ? user.username : null
 
