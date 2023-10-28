@@ -1,23 +1,27 @@
+import { doc, setDoc } from 'firebase/firestore';
 import { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Pressable, TouchableWithoutFeedback, Keyboard } from 'react-native';
 
+import TermsAndConditions from './TermsAndConditions';
 import Button from '../components/Button';
 import { useAuth } from '../context/authContext';
-import TermsAndConditions from './TermsAndConditions';
+import { FIREBASE_DB } from '../firebaseConfig.js';
 
 export default function Register() {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
-  
+
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible);
   }
 
   const [email, setEmail] = useState('');
+  const [nickname, setNickname] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [error, setError] = useState('');
   const { signUp } = useAuth();
+  const db = FIREBASE_DB;
 
   const handleSignUp = async () => {
     setError('');
@@ -26,7 +30,16 @@ export default function Register() {
         setError('Passwords do not match');
         return;
       }
-      await signUp(email, password);
+      const registerResponse = await signUp(email, password);
+      const user = registerResponse.user;
+      const usersCollection = doc(db, 'users', user.uid);
+      await setDoc(usersCollection, {
+        username: nickname,
+        games_won: 0,
+        total_drinks: 0,
+        total_points: 0,
+        packs_owned: ["estonia"]
+      });
     } catch (error: any) {
       setError(error.message);
     }
@@ -34,55 +47,61 @@ export default function Register() {
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} >
-    <View style={styles.container}>
-      <TermsAndConditions isVisible={isModalVisible} onClose={toggleModal} />
-      <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
-
-      <View style={styles.textInputContainer}>
-      <TextInput
-        style={styles.input}
-        placeholderTextColor='#ABABAB80'
-        placeholder='Email'
-        autoCapitalize='none'
-        onChangeText={(text) => setEmail(text)}
-        value={email}
-      />
-      <TextInput
-        style={styles.input}
-        placeholderTextColor='#ABABAB80'
-        placeholder='Password'
-        autoCapitalize='none'
-        textContentType="oneTimeCode" // Hacky solution to disable iOS password autofill
-        onChangeText={(text) => setPassword(text)}
-        value={password}
-        secureTextEntry
-        autoCorrect={false}
-      />
-      <TextInput
-        style={styles.input}
-        placeholderTextColor='#ABABAB80'
-        placeholder='Confirm Password'
-        autoCapitalize='none'
-        textContentType="oneTimeCode" // Hacky solution to disable iOS password autofill
-        onChangeText={(text) => setPasswordConfirm(text)}
-        value={passwordConfirm}
-        secureTextEntry
-        autoCorrect={false}
-      />
+      <View style={styles.container}>
+        <TermsAndConditions isVisible={isModalVisible} onClose={toggleModal} />
+        <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
+        <View style={styles.textInputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholderTextColor='#ABABAB80'
+            placeholder='Nickname'
+            autoCapitalize='none'
+            onChangeText={(text) => setNickname(text)}
+            value={nickname}
+          />
+          <TextInput
+            style={styles.input}
+            placeholderTextColor='#ABABAB80'
+            placeholder='Email'
+            autoCapitalize='none'
+            onChangeText={(text) => setEmail(text)}
+            value={email}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder='Password'
+            autoCapitalize='none'
+            textContentType="oneTimeCode" // Hacky solution to disable iOS password autofill
+            onChangeText={(text) => setPassword(text)}
+            value={password}
+            secureTextEntry
+            autoCorrect={false}
+          />
+          <TextInput
+            style={styles.input}
+            placeholderTextColor='#ABABAB80'
+            placeholder='Confirm Password'
+            autoCapitalize='none'
+            textContentType="oneTimeCode" // Hacky solution to disable iOS password autofill
+            onChangeText={(text) => setPasswordConfirm(text)}
+            value={passwordConfirm}
+            secureTextEntry
+            autoCorrect={false}
+          />
+        </View>
+        <View style={styles.buttonContainer}>
+          <Button text='Sign Up' onPress={handleSignUp} />
+          {error ? <Text style={styles.error}>Sign Up failed: {error}</Text> : null}
+        </View>
+        <Pressable
+          style={styles.touchableTerms}
+          onPress={toggleModal}>
+          <Text style={styles.outerText}>By signing up you agree with the
+            <Text
+              style={styles.innerText}> drinkIQ Terms and Conditions.</Text>
+          </Text>
+        </Pressable>
       </View>
-      <View style={styles.buttonContainer}>
-      <Button style={styles.signupButton} text='Sign Up' onPress={handleSignUp} />
-      {error ? <Text style={styles.error}>Sign Up failed: {error}</Text> : null}
-      </View>
-      <Pressable
-        style={styles.touchableTerms}
-        onPress={toggleModal}>
-        <Text style={styles.outerText}>By signing up you agree with the
-          <Text
-            style={styles.innerText}> drinkIQ Terms and Conditions.</Text>
-        </Text>
-      </Pressable>
-    </View>
     </TouchableWithoutFeedback>
   );
 };
@@ -100,8 +119,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   textInputContainer: {
-    marginTop: 150,
-    flex: 1,
+    marginTop: 100,
     width: '100%',
     alignItems: 'center',
   },
@@ -131,11 +149,8 @@ const styles = StyleSheet.create({
     color: 'red',
     marginTop: 10,
   },
-  signupButton: {
-    marginTop: 200,
-  },
   touchableTerms: {
-    
+
     alignItems: 'center',
   },
   innerText: {

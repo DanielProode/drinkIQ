@@ -88,7 +88,7 @@ export default function Card({ onClose, handlePoints, questionElement, avatar, d
                 ]}
                 onPress={onClose}
               >
-                <Text style={styles.nextButtonText}>{'→'}</Text>
+                <Text style={styles.nextButtonText}>→</Text>
               </Pressable>}
           </View>
         </ImageBackground>

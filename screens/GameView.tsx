@@ -1,3 +1,4 @@
+import { doc, updateDoc, increment } from "firebase/firestore";
 import { RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useState } from 'react';
@@ -5,6 +6,8 @@ import { StyleSheet, Text, View, ImageSourcePropType } from 'react-native';
 
 import Button from '../components/Button';
 import CardStack from '../components/CardStack';
+import { FIREBASE_DB } from '../firebaseConfig.js';
+import { useAuth } from '../context/authContext';
 
 export type Props = {
   route: RouteProp<{
@@ -22,10 +25,30 @@ export default function GameView({ route, navigation }: Props) {
   const [isGameOver, setIsGameOver] = useState(false);
   const [correctAnswerCount, setCorrectAnswerCount] = useState<number>(0);
   const [wrongAnswerCount, setWrongAnswerCount] = useState<number>(0);
+  const { user } = useAuth();
+  const db = FIREBASE_DB;
+
+  const updateUserData = async () => {
+    try {
+      if (user) {
+        const userDoc = doc(db, 'users', user.uid);
+        await updateDoc(userDoc, {
+          total_points: increment(correctAnswerCount - wrongAnswerCount),
+          total_drinks: increment(wrongAnswerCount)
+        })
+      }
+      else {
+        console.log('User object does not exist')
+      }
+    } catch (error) {
+      console.error('Error updating user data: ', error);
+    }
+  }
 
   const handleGameOver = () => {
     console.log("Game over!");
     setIsGameOver(true);
+    updateUserData();
   }
 
   return (

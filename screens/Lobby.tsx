@@ -28,36 +28,22 @@ interface ShowPlayersProps {
   playerArray: Player[];
 }
 
-let userName: string;
-
 const joinedPlayers = [
-  { id: 1, name: "Host Name", avatar: require('../assets/images/avatar_1.png'), drink: require('../assets/images/drink_1.png')},
-  
-  
+  { id: 1, name: "Host Name", avatar: require('../assets/images/avatar_1.png'), drink: require('../assets/images/drink_1.png') },
 ]
 
 export default function Lobby({ route, navigation }: Props) {
-
   const { gameCode, avatar, drink, playableDeck, hostGame } = route.params;
-
   const { user } = useAuth();
-
-
-
-  if (user?.email) userName = user?.email?.split('@')[0]
-
-
+  const userName = (user && user.username) ? user.username : "";
   const updatedJoinedPlayers = [...joinedPlayers];
+  const userToUpdate = updatedJoinedPlayers.find(player => player.id === 1);
 
-    const userToUpdate = updatedJoinedPlayers.find(player => player.id === 1);
-
-    if (userToUpdate) {
-      userToUpdate.avatar = avatar;
-      userToUpdate.drink = drink;
-      userToUpdate.name = userName;
-    }
-
-
+  if (userToUpdate) {
+    userToUpdate.avatar = avatar;
+    userToUpdate.drink = drink;
+    userToUpdate.name = userName;
+  }
 
   const ShowPlayers = ({ playerArray }: ShowPlayersProps) => {
     return (
@@ -81,14 +67,14 @@ export default function Lobby({ route, navigation }: Props) {
       </>
     );
   };
-  
+
 
   return (
     <View style={styles.gameView}>
       <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
       <Text style={styles.gameCode}>#{gameCode}</Text>
       <View style={styles.deckImageContainer}>
-      <Image style={styles.deck} source={playableDeck} />
+        <Image style={styles.deck} source={playableDeck} />
       </View>
 
       <Text style={styles.waitingText}>Waiting in the lobby:</Text>
@@ -97,18 +83,18 @@ export default function Lobby({ route, navigation }: Props) {
         <ShowPlayers playerArray={updatedJoinedPlayers} />
       </View>
 
-      
+
       <View style={styles.buttonContainer}>
 
-      
-      <Button
-      marginTop={10}
-        onPress={() =>
-          navigation.navigate('GameView', { gameCode, avatar, drink })}
-        text="START GAME" />
+
+        <Button
+          marginTop={10}
+          onPress={() =>
+            navigation.navigate('GameView', { gameCode, avatar, drink })}
+          text="START GAME" />
       </View>
 
-      
+
     </View>
   );
 };

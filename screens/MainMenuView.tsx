@@ -9,11 +9,8 @@ interface MainMenuViewProps {
 }
 
 export default function MainMenuView({ navigation }: MainMenuViewProps) {
-
   const { user } = useAuth();
-
-  const userName = user?.email?.split('@')[0]
-
+  const userName = (user && user.username) ? user.username : null
 
   return (
     <View style={styles.mainView}>
