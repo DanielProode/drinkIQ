@@ -6,25 +6,28 @@ export default function CardDecks() {
   let deckOwned: boolean;
 
   const cardDecks = [{
-    name: 'estonia',
+    id: 'estonia',
+    name: 'Estonia card pack',
     image: require('../assets/images/card_deck1.png'),
   }, {
-    name: 'Football',
+    id: 'football',
+    name: 'Football card pack',
     image: require('../assets/images/card_deck2.png'),
-  }, {
-    name: 'Birds',
+  },{
+    id: 'birds',
+    name: 'Birds card pack',
     image: require('../assets/images/card_deck3.png'),
   }];
 
   const { user } = useAuth();
 
-  const RenderDecks = (deckArray: {name: string; image: any}[]) => {
+  const RenderDecks = (deckArray: {name: string; image: any; id: string }[]) => {
 
     return deckArray.map((item, index) => {
 
       deckOwned = false;
 
-      if (user?.packs_owned?.includes(item.name)) deckOwned = true;
+      if (user?.packs_owned?.includes(item.id)) deckOwned = true;
 
       return (
         <Pressable
@@ -39,7 +42,7 @@ export default function CardDecks() {
             <View style={styles.cardView}>
               <Image style={styles.cardImage} source={item.image} />
               <View style={styles.cardInfo}>
-              <Text style={styles.deckTitle}>{item.name} pack</Text>
+              <Text style={styles.deckTitle}>{item.name}</Text>
               {deckOwned ? <></> : <Text style={styles.lockedText}>Locked</Text>}
               </View>
             </View>

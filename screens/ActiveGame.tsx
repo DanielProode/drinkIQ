@@ -11,7 +11,7 @@ import { useAuth } from '../context/authContext';
 
 export type Props = {
   route: RouteProp<{
-    GameView: {
+    ActiveGame: {
       gameCode: number;
       avatar: ImageSourcePropType;
       drink: ImageSourcePropType;
@@ -20,7 +20,7 @@ export type Props = {
   navigation: NativeStackNavigationProp<any>;
 };
 
-export default function GameView({ route, navigation }: Props) {
+export default function ActiveGame({ route, navigation }: Props) {
   const { gameCode, avatar, drink } = route.params;
   const [isGameOver, setIsGameOver] = useState(false);
   const [correctAnswerCount, setCorrectAnswerCount] = useState<number>(0);

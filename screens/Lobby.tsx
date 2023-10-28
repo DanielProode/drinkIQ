@@ -90,7 +90,7 @@ export default function Lobby({ route, navigation }: Props) {
         <Button
           marginTop={10}
           onPress={() =>
-            navigation.navigate('GameView', { gameCode, avatar, drink })}
+            navigation.navigate('ActiveGame', { gameCode, avatar, drink })}
           text="START GAME" />
       </View>
 

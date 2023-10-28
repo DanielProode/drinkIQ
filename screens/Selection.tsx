@@ -22,7 +22,7 @@ const avatarIcons1 = [
   require('../assets/images/avatar_1.png'),
   require('../assets/images/avatar_2.png'),
   require('../assets/images/avatar_3.png'),
-  require('../assets/images/avatar_4.png'),];
+  require('../assets/images/avatar_4.png')];
 const avatarIcons2 = [
   require('../assets/images/avatar_6.png'),
   require('../assets/images/avatar_7.png'),
@@ -32,7 +32,7 @@ const drinkIcons1 = [
   require('../assets/images/drink_1.png'),
   require('../assets/images/drink_2.png'),
   require('../assets/images/drink_3.png'),
-  require('../assets/images/drink_4.png'),];
+  require('../assets/images/drink_4.png')];
 const drinkIcons2 = [
   require('../assets/images/drink_6.png'),
   require('../assets/images/drink_7.png'),
