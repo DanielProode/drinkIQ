@@ -1,63 +1,52 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
-import { Image, ImageSourcePropType, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, ImageSourcePropType, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import Button from './Button';
+import { useGame } from '../context/gameContext';
 
+interface CardDeckSelectionProps {
+  isVisible: boolean;
+  onClose: () => void;
+};
 
+const ownedCardDecks = [
+  { image: require('../assets/images/card_deck1.png'), index: 1 },
+  { image: require('../assets/images/card_deck2.png'), index: 2 },
+  { image: require('../assets/images/card_deck3.png'), index: 3 },
+];
+const availableCardDecks = [
+  { image: require('../assets/images/card_deck4.png'), index: 4 },
+  { image: require('../assets/images/card_deck5.png'), index: 5 },
+  { image: require('../assets/images/card_deck6.png'), index: 6 },
+];
 
-export default function CardDeckSelection(props: { visibility: any; handleCardDeck: any; selectedDeck: any; }) {
-
-  const { visibility } = props;
-
-  const { handleCardDeck } = props;
-
-  // Logic to show border around initial selected deck in host "Choose a deck" view 
-  const { selectedDeck } = props;
-
-  const ownedCardDecks = [
-    {image: require('../assets/images/card_deck1.png'), index: 1},
-    {image: require('../assets/images/card_deck2.png'), index: 2},
-    {image: require('../assets/images/card_deck3.png'), index: 3},
-  ];
-  const availableCardDecks = [
-    {image: require('../assets/images/card_deck4.png'), index: 4},
-    {image: require('../assets/images/card_deck5.png'), index: 5},
-    {image: require('../assets/images/card_deck6.png'), index: 6},
-  ];
-
-
+export default function CardDeckSelection({ isVisible, onClose }: CardDeckSelectionProps) {
   const [selectedCardIndex, setSelectedCardIndex] = useState(-1);
+  const { updatePlayableDeck } = useGame();
 
   const RenderCardDecks = (myArray: { image: ImageSourcePropType; index: number; }[], owned: boolean) => {
     return myArray.map((cardDeck) => {
-      
       const isSelected = selectedCardIndex === cardDeck.index;
-
       return (
         <View style={styles.cardsContainer} key={cardDeck.index}>
-        <Pressable
-          key={cardDeck.index}
-          style={({ pressed }) => [
-            { opacity: pressed ? 0.5 : 1.0 },
-            styles.cardDeckContainer,
-            isSelected && styles.cardDeckContainerSelected,
+          <Pressable
+            key={cardDeck.index}
+            style={({ pressed }) => [
+              { opacity: pressed ? 0.5 : 1.0 },
+              styles.cardDeckContainer,
+              isSelected && styles.cardDeckContainerSelected,
             ]}
-          onPress={() => {
-            handleCardDeck(cardDeck.image)
-
-            setSelectedCardIndex(cardDeck.index);
-            
-          }
-          } >
-          <Image style={styles.cardDeck} source={cardDeck.image} />
-          
-        </Pressable>
-        {!owned && (
-        <View style={styles.priceContainer}>
-          <Text style={styles.priceText}>3.99€</Text>
-          
-          </View>
+            onPress={() => {
+              updatePlayableDeck(cardDeck.image)
+              setSelectedCardIndex(cardDeck.index);
+            }} >
+            <Image style={styles.cardDeck} source={cardDeck.image} />
+          </Pressable>
+          {!owned && (
+            <View style={styles.priceContainer}>
+              <Text style={styles.priceText}>3.99€</Text>
+            </View>
           )}
         </View>
       );
@@ -65,12 +54,13 @@ export default function CardDeckSelection(props: { visibility: any; handleCardDe
   };
 
   return (
-    <View style={styles.decksView}>
+    <Modal animationType='slide' presentationStyle='pageSheet' visible={isVisible}>
+      <View style={styles.decksView}>
         <LinearGradient
-        // Background Linear Gradient
-        colors={['#1F1F1F','#373737', '#1E1E1E']}
-        style={styles.background}
-      />
+          // Background Linear Gradient
+          colors={['#1F1F1F', '#373737', '#1E1E1E']}
+          style={styles.background}
+        />
         <View style={styles.decksContainer} >
           <Text style={styles.text}>CHOOSE A DECK</Text>
           <View style={styles.viewContainer}>
@@ -80,23 +70,22 @@ export default function CardDeckSelection(props: { visibility: any; handleCardDe
           <View style={styles.viewContainer}>
             {RenderCardDecks(availableCardDecks, false)}
           </View>
-          <Button 
-          marginTop={20}
-          text="CONTINUE"
-          onPress={() => visibility(false)}/>
+          <Button
+            marginTop={20}
+            text="CONTINUE"
+            onPress={onClose} />
         </View>
-    </View>
+      </View>
+    </Modal>
   );
 }
 
 const styles = StyleSheet.create({
   decksView: {
-    position: 'absolute',
+    flex: 1,
     alignItems: 'center',
-    top: 150, bottom: 150,
-    width: '95%',
-    zIndex: 1,
-    headerBackVisible: false,
+    justifyContent: 'center',
+    backgroundColor: '#1E1E1E',
   },
   background: {
     position: 'absolute',
@@ -105,23 +94,21 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
-    borderRadius: 20,
   },
   cardDeck: {
     flex: 1,
     resizeMode: 'contain',
     alignSelf: 'center',
     borderRadius: 10,
-    
   },
   cardDeckContainer: {
     width: 100,
     height: 100,
     borderRadius: 10,
-    marginHorizontal: 5,
+    marginHorizontal: 10,
     overflow: 'hidden',
     marginTop: 10,
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: '#FFFFFF',
   },
   cardDeckContainerSelected: {
@@ -129,14 +116,10 @@ const styles = StyleSheet.create({
   },
   viewContainer: {
     flexDirection: 'row',
-    width: '100%',
-    height: undefined,
     marginTop: 20,
     marginBottom: 10,
   },
-
   decksContainer: {
-    marginTop: 50,
     alignItems: 'center',
     width: '95%',
   },
@@ -159,5 +142,4 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
   },
-
 });

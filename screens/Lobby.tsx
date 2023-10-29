@@ -5,6 +5,7 @@ import { Image, ImageSourcePropType, Pressable, StyleSheet, Text, View } from 'r
 
 import Selection from './Selection';
 import Button from '../components/Button';
+import CardDeckSelection from '../components/CardDeckSelection';
 import { useAuth } from '../context/authContext';
 import { useGame } from '../context/gameContext';
 
@@ -38,6 +39,7 @@ export default function Lobby({ route, navigation }: LobbyProps) {
   const { user } = useAuth();
   const { avatar, drink, playableDeck } = useGame();
   const [isSelectionModalVisible, setIsSelectionModalVisible] = useState(false);
+  const [isCardDeckSelectionModalVisible, setIsCardDeckSelectionModalVisible] = useState(false);
   const userName = (user && user.username) ? user.username : "";
   const updatedJoinedPlayers = [...joinedPlayers];
   const userToUpdate = updatedJoinedPlayers.find(player => player.id === 1);
@@ -50,6 +52,10 @@ export default function Lobby({ route, navigation }: LobbyProps) {
 
   const toggleSelectionModal = () => {
     setIsSelectionModalVisible(!isSelectionModalVisible);
+  };
+
+  const toggleCardDeckSelectionModal = () => {
+    if (gameHost) setIsCardDeckSelectionModalVisible(!isCardDeckSelectionModalVisible);
   };
 
   const ShowPlayers = ({ playerArray }: ShowPlayersProps) => {
@@ -78,12 +84,13 @@ export default function Lobby({ route, navigation }: LobbyProps) {
 
   return (
     <View style={styles.gameView}>
-      <Selection isVisible={isSelectionModalVisible} onClose={toggleSelectionModal} gameHost={gameHost} />
+      <Selection isVisible={isSelectionModalVisible} onClose={toggleSelectionModal} />
+      <CardDeckSelection onClose={toggleCardDeckSelectionModal} isVisible={isCardDeckSelectionModalVisible}/>
       <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
       <Text style={styles.gameCode}>#{gameCode}</Text>
-      <View style={styles.deckImageContainer}>
+      <Pressable style={styles.deckImageContainer} onPress={() => {toggleCardDeckSelectionModal()}}>
         <Image style={styles.deck} source={playableDeck} />
-      </View>
+      </Pressable>
       <Text style={styles.waitingText}>Waiting in the lobby:</Text>
       <View style={styles.joinedPlayers}>
         <ShowPlayers playerArray={updatedJoinedPlayers} />

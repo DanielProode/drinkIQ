@@ -1,12 +1,9 @@
-import { useState } from 'react';
 import { Image, ImageSourcePropType, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
-import CardDeckSelection from '../components/CardDeckSelection';
 import { useGame } from '../context/gameContext';
 
 interface SelectionProps {
-  gameHost: boolean;
   isVisible: boolean;
   onClose: () => void;
 };
@@ -32,13 +29,8 @@ const drinkIcons2 = [
   require('../assets/images/drink_8.png'),
   require('../assets/images/drink_9.png')];
 
-export default function Selection({ gameHost, isVisible, onClose }: SelectionProps) {
-  const [isCardDeckSelectionVisible, setisCardDeckSelectionVisible] = useState(false);
-  const { avatar, drink, playableDeck, updateAvatar, updateDrink, updatePlayableDeck } = useGame();
-
-  const handleCardDeck = (selectedCardDeck: ImageSourcePropType) => {
-    updatePlayableDeck(selectedCardDeck);
-  }
+export default function Selection({ isVisible, onClose }: SelectionProps) {
+  const { avatar, drink, updateAvatar, updateDrink } = useGame();
 
   const RenderCircles = (myArray: ImageSourcePropType[], isDrink: boolean) => {
     return myArray.map((item, index) => {
@@ -56,12 +48,6 @@ export default function Selection({ gameHost, isVisible, onClose }: SelectionPro
   return (
     <Modal visible={isVisible} animationType='slide' presentationStyle='pageSheet'>
       <View style={styles.joinGameView}>
-        {isCardDeckSelectionVisible ?
-          <>
-            <View style={styles.backgroundBlur} />
-            <CardDeckSelection selectedDeck={playableDeck} handleCardDeck={handleCardDeck} visibility={setisCardDeckSelectionVisible} />
-          </>
-          : null}
         <View style={styles.avatarAndDrinkContainer}>
           <View style={styles.profileBackground}>
             <Image style={styles.avatar} source={avatar} />
@@ -85,16 +71,8 @@ export default function Selection({ gameHost, isVisible, onClose }: SelectionPro
           <View style={styles.drinkCircles}>
             {RenderCircles(drinkIcons2, true)}
           </View>
-          {gameHost &&
-            <View style={styles.selectDeck}>
-              <Text style={styles.selectDeckText}>Select game deck:</Text>
-              <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.5 : 1.0 }, styles.deckButtonContainer]}
-                onPress={() => setisCardDeckSelectionVisible(!isCardDeckSelectionVisible)}>
-                <Image style={styles.deckImage} source={playableDeck} />
-              </Pressable>
-            </View>}
           <Button
-            marginTop={20}
+            marginTop={50}
             onPress={onClose}
             text="SAVE SELECTION" />
         </View>
@@ -118,33 +96,6 @@ const styles = StyleSheet.create({
   avatarAndDrinkContainer: {
     marginTop: 20,
     height: 60,
-  },
-  backgroundBlur: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-    zIndex: 1,
-    backgroundColor: '#00000099',
-  },
-  selectDeck: {
-    flex: 1,
-  },
-  selectDeckText: {
-    color: 'white',
-    fontFamily: 'Basic',
-    marginTop: 10,
-    fontSize: 20,
-    alignSelf: 'center',
-  },
-  deckImage: {
-    flex: 1,
-    resizeMode: 'contain',
-    width: '100%',
-    height: '100%',
-    alignSelf: 'center',
-    borderColor: 'white',
-    borderWidth: 1,
-    borderRadius: 10,
   },
   avatar: {
     flex: 1,
