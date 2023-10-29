@@ -1,23 +1,23 @@
 import { useState } from 'react';
-import { ImageBackground, Pressable, StyleSheet, Text, View, Image, ImageSourcePropType } from 'react-native';
+import { ImageBackground, Pressable, StyleSheet, Text, View, Image } from 'react-native';
 
 import AnswerButton from './AnswerButton';
 import { QuestionsArray } from './CardStack';
+import { useGame } from '../context/gameContext';
 
 interface CardProps {
   onClose: () => void;
   handlePoints: (answerState: boolean) => void;
   questionElement: QuestionsArray;
-  avatar: ImageSourcePropType;
-  drink: ImageSourcePropType;
 };
 
-export default function Card({ onClose, handlePoints, questionElement, avatar, drink }: CardProps) {
+export default function Card({ onClose, handlePoints, questionElement }: CardProps) {
   const [isAnswered, setIsAnswered] = useState(false);
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number | null>(null);
   const [isAnswerCorrect, setIsAnswerCorrect] = useState(false);
   const correctAnswerIndex = questionElement.answers.findIndex((answer) => answer.isCorrect);
   const prefixes = ["a. ", "b. ", "c. ", "d. "];
+  const { avatar } = useGame();
 
   const handleAnswerSelection = (answerIndex: number) => {
     if (!isAnswered) {

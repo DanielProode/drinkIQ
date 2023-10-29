@@ -1,12 +1,24 @@
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useState } from 'react';
 import { Keyboard, StyleSheet, Text, TextInput, View, TouchableWithoutFeedback } from 'react-native';
 
 import Button from '../components/Button';
 
+interface NewGameProps {
+  navigation: NativeStackNavigationProp<any>;
+}
 
-export default function NewGame({ navigation }: { navigation: any }) {
-  const [number, setNumber] = useState('');
-  const [disabled, setDisabled] = useState(true)
+export default function NewGame({ navigation }: NewGameProps) {
+  const [disabled, setDisabled] = useState(true);
+  const [gameCode, setGameCode] = useState('');
+
+  // In the future, check if active game already exists with generated code
+  const generateGameCode = () => {
+    const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
+    const generatedGameCode = randomInt(100000, 999999).toString()
+    return generatedGameCode;
+  };
+
   const onChanged = (text: string) => {
     const numbers = '0123456789';
     let newText = '';
@@ -16,7 +28,7 @@ export default function NewGame({ navigation }: { navigation: any }) {
         newText = newText + text[i];
       }
     }
-    setNumber(newText);
+    setGameCode(newText);
 
     if (text.length === 6) {
       setDisabled(false);
@@ -25,59 +37,45 @@ export default function NewGame({ navigation }: { navigation: any }) {
     }
   };
 
-
-
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} >
-    <View style={styles.newGameView}>
-
-    <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
-
-    <View style={styles.gameCodeContainer}>
-      <Text style={styles.hashtag}>#</Text>
-
-      <TextInput
-        style={styles.gameCodeInput}
-        onChangeText={(text) => onChanged(text)}
-        value={number}
-        onSubmitEditing={(value) => setNumber(value.nativeEvent.text)}
-        placeholder="XXXXXX"
-        keyboardType="numeric"
-        maxLength={6}
-        placeholderTextColor="#FFFFFF80"
-      />
-
-    </View>
-
-      <View style={styles.buttonContainer}>
-        <Button
-          onPress={() => {
-            Keyboard.dismiss();
-            navigation.navigate('JoinGame', { gameCode: number })}}
-          text="JOIN GAME"
-          disabled={disabled} />
+      <View style={styles.newGameView}>
+        <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
+        <View style={styles.gameCodeContainer}>
+          <Text style={styles.hashtag}>#</Text>
+          <TextInput
+            style={styles.gameCodeInput}
+            onChangeText={(text) => onChanged(text)}
+            value={gameCode}
+            onSubmitEditing={(value) => setGameCode(value.nativeEvent.text)}
+            placeholder="XXXXXX"
+            keyboardType="numeric"
+            maxLength={6}
+            placeholderTextColor="#FFFFFF80"
+          />
+        </View>
+        <View style={styles.buttonContainer}>
+          <Button
+            onPress={() => {
+              Keyboard.dismiss();
+              navigation.navigate('Lobby', { gameCode })
+            }}
+            text="JOIN GAME"
+            disabled={disabled} />
+        </View>
+        <Text style={styles.hostGameText}>OR</Text>
+        <View style={styles.hostGameButton}>
+          <Button onPress={() => {
+            navigation.navigate('Lobby', { gameCode: generateGameCode(), gameHost: true });
+          }}
+            text="HOST GAME" />
+        </View>
       </View>
-      <Text style={styles.hostGameText}>OR</Text>
-      <View style={styles.hostGameButton}>
-        <Button onPress={() => {
-          console.log('Host Game Button pressed!');
-          navigation.navigate('HostGame');
-        }}
-          text="HOST GAME" />
-      </View>
-    </View>
     </TouchableWithoutFeedback>
-
   );
-}
+};
 
 const styles = StyleSheet.create({
-  enterCodeText: {
-    fontSize: 30,
-    marginTop: 200,
-    fontFamily: 'CarterOne-Regular',
-    color: 'white',
-  },
   newGameView: {
     alignItems: 'center',
     backgroundColor: '#1E1E1E',

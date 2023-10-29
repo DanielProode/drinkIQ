@@ -1,22 +1,15 @@
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useState } from 'react';
-import { Image, ImageSourcePropType, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, ImageSourcePropType, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
 import CardDeckSelection from '../components/CardDeckSelection';
+import { useGame } from '../context/gameContext';
 
-
-export type SelectionProps = {
-  gameCode: number;
-  navigation: NativeStackNavigationProp<any>;
-  hostGame: boolean;
-
+interface SelectionProps {
+  gameHost: boolean;
+  isVisible: boolean;
+  onClose: () => void;
 };
-
-const defaultAvatar = require('../assets/images/avatar_1.png');
-const defaultCardDeck = require('../assets/images/card_deck1.png');
-const defaultDrink = require('../assets/images/drink_1.png');
-
 
 const avatarIcons1 = [
   require('../assets/images/avatar_1.png'),
@@ -39,117 +32,78 @@ const drinkIcons2 = [
   require('../assets/images/drink_8.png'),
   require('../assets/images/drink_9.png')];
 
-export default function Selection({ gameCode, navigation, hostGame }: SelectionProps) {
-  const [avatar, setAvatar] = useState(defaultAvatar);
-  const [drink, setDrink] = useState(defaultDrink);
-  const [visibility, setVisibility] = useState(false);
-  const [playableDeck, setCardDeck] = useState(defaultCardDeck);
+export default function Selection({ gameHost, isVisible, onClose }: SelectionProps) {
+  const [isCardDeckSelectionVisible, setisCardDeckSelectionVisible] = useState(false);
+  const { avatar, drink, playableDeck, updateAvatar, updateDrink, updatePlayableDeck } = useGame();
 
-  function handleCardDeck(deck: ImageSourcePropType) {
-    setCardDeck(deck);
+  const handleCardDeck = (selectedCardDeck: ImageSourcePropType) => {
+    updatePlayableDeck(selectedCardDeck);
   }
 
   const RenderCircles = (myArray: ImageSourcePropType[], isDrink: boolean) => {
-
     return myArray.map((item, index) => {
       return (
-        <TouchableOpacity
-          activeOpacity={0.7}
+        <Pressable
           style={styles.avatarCircle}
           key={index}
-          onPress={() => {
-            isDrink
-              ? setDrink(item)
-              : setAvatar(item);
-          }
-          } >
+          onPress={() => isDrink ? updateDrink(item) : updateAvatar(item)}>
           <Image style={styles.avatar} source={item} />
-        </TouchableOpacity>
+        </Pressable>
       );
     });
   };
 
   return (
-    <View style={styles.joinGameView}>
-      {visibility ? 
-      <>
-      <View style={styles.backgroundBlur}/>
-
-      <CardDeckSelection selectedDeck={playableDeck} handleCardDeck={handleCardDeck} visibility={setVisibility} />
-      </>
-      : null}
-      <View style={styles.logoView}>
-        <Image style={styles.cheersIcon}
-          source={require('../assets/images/cheers_icon.png')} />
-        <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
-      </View>
-      <View style={styles.avatarAndDrinkContainer}>
-        <View style={styles.profileBackground}>
-          <Image style={styles.avatar} source={avatar} />
+    <Modal visible={isVisible} animationType='slide' presentationStyle='pageSheet'>
+      <View style={styles.joinGameView}>
+        {isCardDeckSelectionVisible ?
+          <>
+            <View style={styles.backgroundBlur} />
+            <CardDeckSelection selectedDeck={playableDeck} handleCardDeck={handleCardDeck} visibility={setisCardDeckSelectionVisible} />
+          </>
+          : null}
+        <View style={styles.avatarAndDrinkContainer}>
+          <View style={styles.profileBackground}>
+            <Image style={styles.avatar} source={avatar} />
+          </View>
+          <View style={styles.drinkContainer}>
+            <Image style={styles.drink} source={drink} />
+          </View>
         </View>
-        <View style={styles.drinkContainer}>
-          <Image style={styles.drink} source={drink} />
-        </View>
-      </View>
-      {hostGame ? <></>
-        : <Text style={styles.gameCode}>#{gameCode}</Text>}
-      <View style={styles.viewContainer}>
-        <Text style={styles.selectAvatarText}>Select your avatar:</Text>
-        <View style={styles.avatarCircles}>
-          {RenderCircles(avatarIcons1, false)}
-        </View>
-        <View style={styles.avatarCircles}>
-          {RenderCircles(avatarIcons2, false)}
-        </View>
-
-        <Text style={styles.selectDrinkText}>Select your drink:</Text>
-        <View style={styles.drinkCircles}>
-          {RenderCircles(drinkIcons1, true)}
-        </View>
-        <View style={styles.drinkCircles}>
-          {RenderCircles(drinkIcons2, true)}
-        </View>
-        <View>
-          {hostGame
-            ?
+        <View style={styles.viewContainer}>
+          <Text style={styles.selectAvatarText}>Select your avatar:</Text>
+          <View style={styles.avatarCircles}>
+            {RenderCircles(avatarIcons1, false)}
+          </View>
+          <View style={styles.avatarCircles}>
+            {RenderCircles(avatarIcons2, false)}
+          </View>
+          <Text style={styles.selectDrinkText}>Select your drink:</Text>
+          <View style={styles.drinkCircles}>
+            {RenderCircles(drinkIcons1, true)}
+          </View>
+          <View style={styles.drinkCircles}>
+            {RenderCircles(drinkIcons2, true)}
+          </View>
+          {gameHost &&
             <View style={styles.selectDeck}>
-
               <Text style={styles.selectDeckText}>Select game deck:</Text>
-
-              <View >
-                <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.5 : 1.0 }, styles.deckButtonContainer]}
-                  onPress={() => setVisibility(!visibility)}>
-                  <Image style={styles.deckImage} source={playableDeck} />
-                </Pressable>
-
-              </View>
-
-              <Button
-                onPress={() => {
-                  navigation.navigate('Lobby', { gameCode, avatar, drink, playableDeck, hostGame  });
-                }}
-                text="HOST GAME"
-              />
-            </View>
-
-            : <Button
-              marginTop={20}
-              onPress={() =>{
-                navigation.navigate('Lobby', { gameCode, avatar, drink, playableDeck, hostGame })}
-              }
-              text="JOIN GAME" />
-          }
+              <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.5 : 1.0 }, styles.deckButtonContainer]}
+                onPress={() => setisCardDeckSelectionVisible(!isCardDeckSelectionVisible)}>
+                <Image style={styles.deckImage} source={playableDeck} />
+              </Pressable>
+            </View>}
+          <Button
+            marginTop={20}
+            onPress={onClose}
+            text="SAVE SELECTION" />
         </View>
       </View>
-    </View>
-
+    </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-  logoView: {
-    alignContent: 'center',
-  },
   joinGameView: {
     flex: 1,
     alignItems: 'center',
@@ -162,6 +116,7 @@ const styles = StyleSheet.create({
     right: '-15%',
   },
   avatarAndDrinkContainer: {
+    marginTop: 20,
     height: 60,
   },
   backgroundBlur: {
@@ -226,13 +181,11 @@ const styles = StyleSheet.create({
     gap: 18,
     marginTop: 20,
   },
-
   drinkCircles: {
     flexDirection: 'row',
     gap: 18,
     marginTop: 20,
   },
-
   avatarCircle: {
     width: 60,
     height: 60,
@@ -246,21 +199,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#d8d8d8',
     borderRadius: 20,
   },
-  drinkIQLogo: {
-    fontFamily: 'Knewave',
-    marginTop: 50,
-    fontSize: 30,
-    color: 'white',
-  },
-  gameCode: {
-    fontFamily: 'CarterOne-Regular',
-    marginTop: 20,
-    fontSize: 18,
-    color: 'white',
-  },
   viewContainer: {
     flex: 1,
     marginTop: 30,
+    marginBottom: 50,
     alignItems: 'center',
   },
   selectAvatarText: {

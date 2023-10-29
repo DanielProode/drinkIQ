@@ -1,6 +1,6 @@
 import { collection, getDocs } from 'firebase/firestore';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { Pressable, View, Image, StyleSheet, Text, ImageSourcePropType } from 'react-native';
+import { Pressable, View, Image, StyleSheet, Text } from 'react-native';
 
 import Card from './Card';
 import LoadingScreen from '../components/LoadingScreen';
@@ -8,8 +8,6 @@ import { FIREBASE_DB } from '../firebaseConfig.js';
 
 interface CardStackProps {
   onGameOver: () => void;
-  avatar: ImageSourcePropType;
-  drink: ImageSourcePropType;
   points: number;
   drinks: number;
   setPoints: Dispatch<SetStateAction<number>>;
@@ -35,7 +33,7 @@ const cardImageArray = [
   require('../assets/images/card_stack_5.png')
 ];
 
-export default function CardStack({ onGameOver, setPoints, setDrinks, points, drinks, avatar, drink }: CardStackProps) {
+export default function CardStack({ onGameOver, setPoints, setDrinks, points, drinks }: CardStackProps) {
   const [cardCount, setCardCount] = useState(10);
   const [cardImage, setCardImage] = useState(baseCardImage);
   const [isCardVisible, setIsCardVisible] = useState(false);
@@ -93,7 +91,7 @@ export default function CardStack({ onGameOver, setPoints, setDrinks, points, dr
 
   return (
     <>
-      {isCardVisible && <Card handlePoints={handlePoints} onClose={toggleCardVisibility} questionElement={questionsArray[cardCount]} avatar={avatar} drink={drink} />}
+      {isCardVisible && <Card handlePoints={handlePoints} onClose={toggleCardVisibility} questionElement={questionsArray[cardCount]} />}
       <Text style={styles.cardsLeft}>Cards Left: {cardCount}</Text>
       <Text style={styles.cardsLeft}>Points: {points - drinks}</Text>
       <Text style={styles.cardsLeft}>Drinks: {drinks}</Text>

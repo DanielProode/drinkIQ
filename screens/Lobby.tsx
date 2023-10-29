@@ -1,22 +1,23 @@
 import { RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useState } from 'react';
 import { Image, ImageSourcePropType, Pressable, StyleSheet, Text, View } from 'react-native';
 
+import Selection from './Selection';
 import Button from '../components/Button';
 import { useAuth } from '../context/authContext';
+import { useGame } from '../context/gameContext';
 
-export type Props = {
+interface LobbyProps {
   route: RouteProp<{
     Lobby: {
-      gameCode: number;
-      avatar: ImageSourcePropType;
-      drink: ImageSourcePropType;
-      playableDeck: ImageSourcePropType;
-      hostGame: boolean;
+      gameCode: string;
+      gameHost: boolean;
     }
   }>;
   navigation: NativeStackNavigationProp<any>;
 };
+
 interface Player {
   id: number;
   name: string;
@@ -32,9 +33,11 @@ const joinedPlayers = [
   { id: 1, name: "Host Name", avatar: require('../assets/images/avatar_1.png'), drink: require('../assets/images/drink_1.png') },
 ]
 
-export default function Lobby({ route, navigation }: Props) {
-  const { gameCode, avatar, drink, playableDeck, hostGame } = route.params;
+export default function Lobby({ route, navigation }: LobbyProps) {
+  const { gameCode, gameHost } = route.params;
   const { user } = useAuth();
+  const { avatar, drink, playableDeck } = useGame();
+  const [isSelectionModalVisible, setIsSelectionModalVisible] = useState(false);
   const userName = (user && user.username) ? user.username : "";
   const updatedJoinedPlayers = [...joinedPlayers];
   const userToUpdate = updatedJoinedPlayers.find(player => player.id === 1);
@@ -45,6 +48,10 @@ export default function Lobby({ route, navigation }: Props) {
     userToUpdate.name = userName;
   }
 
+  const toggleSelectionModal = () => {
+    setIsSelectionModalVisible(!isSelectionModalVisible);
+  };
+
   const ShowPlayers = ({ playerArray }: ShowPlayersProps) => {
     return (
       <>
@@ -54,7 +61,8 @@ export default function Lobby({ route, navigation }: Props) {
             key={player.id}
             onPress={() => {
               console.log(player.name);
-              // Check other player's profile
+              toggleSelectionModal();
+              // TODO: If clicked on other players avatar then check their profile instead
             }}
           >
             <View style={styles.avatarCircle}>
@@ -68,33 +76,29 @@ export default function Lobby({ route, navigation }: Props) {
     );
   };
 
-
   return (
     <View style={styles.gameView}>
+      <Selection isVisible={isSelectionModalVisible} onClose={toggleSelectionModal} gameHost={gameHost} />
       <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
       <Text style={styles.gameCode}>#{gameCode}</Text>
       <View style={styles.deckImageContainer}>
         <Image style={styles.deck} source={playableDeck} />
       </View>
-
       <Text style={styles.waitingText}>Waiting in the lobby:</Text>
-
       <View style={styles.joinedPlayers}>
         <ShowPlayers playerArray={updatedJoinedPlayers} />
       </View>
-
-
       <View style={styles.buttonContainer}>
-
-
-        <Button
-          marginTop={10}
-          onPress={() =>
-            navigation.navigate('ActiveGame', { gameCode, avatar, drink })}
-          text="START GAME" />
+        {gameHost ? (
+          <Button
+            marginTop={10}
+            onPress={() =>
+              navigation.navigate('ActiveGame', { gameCode })}
+            text="START GAME" />
+        ) : (
+          <Text style={styles.waitingText}>Waiting for host to start the game...</Text>
+        )}
       </View>
-
-
     </View>
   );
 };

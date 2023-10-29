@@ -3,14 +3,11 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
-import { ImageSourcePropType } from 'react-native';
 
 import LoadingScreen from '../components/LoadingScreen';
 import { useAuth } from '../context/authContext';
 import ActiveGame from '../screens/ActiveGame';
 import CardDecks from '../screens/CardDecks';
-import HostGame from '../screens/HostGame';
-import JoinGame from '../screens/JoinGame';
 import Lobby from '../screens/Lobby';
 import Login from '../screens/Login';
 import MainMenu from '../screens/MainMenu';
@@ -20,15 +17,13 @@ import Register from '../screens/Register'
 import Settings from '../screens/Settings';
 
 type RootStackParamList = {
-  ActiveGame: { gameCode: number, avatar: ImageSourcePropType, drink: ImageSourcePropType };
-  Lobby: { gameCode: number, avatar: ImageSourcePropType, drink: ImageSourcePropType, playableDeck: ImageSourcePropType, hostGame: boolean };
+  ActiveGame: { gameCode: string };
+  Lobby: { gameCode: string, gameHost: boolean };
   Login: undefined;
   Register: undefined;
   MainMenu: undefined;
   NewGame: undefined;
   CardDecks: undefined;
-  HostGame: undefined;
-  JoinGame: { gameCode: number };
   Settings: undefined;
   Profile: undefined;
 };
@@ -77,14 +72,12 @@ export default function Router() {
         ) : (
           <>
             <Stack.Screen name="MainMenu" component={MainMenu} />
-            <Stack.Screen name="NewGame" component={NewGame} />
             <Stack.Screen name="CardDecks" component={CardDecks} />
-            <Stack.Screen name="JoinGame" component={JoinGame} />
-            <Stack.Screen name="HostGame" component={HostGame} />
             <Stack.Screen name="Settings" component={Settings} />
             <Stack.Screen name="Profile" component={Profile} />
-            <Stack.Screen name="ActiveGame" component={ActiveGame} />
+            <Stack.Screen name="NewGame" component={NewGame} />
             <Stack.Screen name="Lobby" component={Lobby} />
+            <Stack.Screen name="ActiveGame" component={ActiveGame} />
           </>
         )}
       </Stack.Navigator>

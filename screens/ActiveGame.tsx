@@ -1,27 +1,25 @@
-import { doc, updateDoc, increment } from "firebase/firestore";
 import { RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { doc, updateDoc, increment } from "firebase/firestore";
 import { useState } from 'react';
-import { StyleSheet, Text, View, ImageSourcePropType } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
 import CardStack from '../components/CardStack';
-import { FIREBASE_DB } from '../firebaseConfig.js';
 import { useAuth } from '../context/authContext';
+import { FIREBASE_DB } from '../firebaseConfig.js';
 
-export type Props = {
+interface ActiveGameProps {
   route: RouteProp<{
     ActiveGame: {
-      gameCode: number;
-      avatar: ImageSourcePropType;
-      drink: ImageSourcePropType;
+      gameCode: string;
     }
   }>;
   navigation: NativeStackNavigationProp<any>;
 };
 
-export default function ActiveGame({ route, navigation }: Props) {
-  const { gameCode, avatar, drink } = route.params;
+export default function ActiveGame({ route, navigation }: ActiveGameProps) {
+  const { gameCode } = route.params;
   const [isGameOver, setIsGameOver] = useState(false);
   const [correctAnswerCount, setCorrectAnswerCount] = useState<number>(0);
   const [wrongAnswerCount, setWrongAnswerCount] = useState<number>(0);
@@ -80,7 +78,7 @@ export default function ActiveGame({ route, navigation }: Props) {
                 text="BACK TO LOBBY" />
             </>
           ) : (
-            <CardStack onGameOver={handleGameOver} avatar={avatar} drink={drink} points={correctAnswerCount} drinks={wrongAnswerCount} setPoints={setCorrectAnswerCount} setDrinks={setWrongAnswerCount} />
+            <CardStack onGameOver={handleGameOver} points={correctAnswerCount} drinks={wrongAnswerCount} setPoints={setCorrectAnswerCount} setDrinks={setWrongAnswerCount} />
           )}
         </View>
       </View>
