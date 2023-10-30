@@ -2,7 +2,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
 import { Image, ImageSourcePropType, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
-import Button from './Button';
+import Button from '../components/Button';
 import { useGame } from '../context/gameContext';
 
 interface CardDeckSelectionProps {

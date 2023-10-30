@@ -3,7 +3,7 @@ import { Image, ImageSourcePropType, Modal, Pressable, StyleSheet, Text, View } 
 import Button from '../components/Button';
 import { useGame } from '../context/gameContext';
 
-interface SelectionProps {
+interface AvatarSelectionProps {
   isVisible: boolean;
   onClose: () => void;
 };
@@ -29,7 +29,7 @@ const drinkIcons2 = [
   require('../assets/images/drink_8.png'),
   require('../assets/images/drink_9.png')];
 
-export default function Selection({ isVisible, onClose }: SelectionProps) {
+export default function AvatarSelection({ isVisible, onClose }: AvatarSelectionProps) {
   const { avatar, drink, updateAvatar, updateDrink } = useGame();
 
   const RenderCircles = (myArray: ImageSourcePropType[], isDrink: boolean) => {

@@ -2,10 +2,10 @@ import { doc, setDoc } from 'firebase/firestore';
 import { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Pressable, TouchableWithoutFeedback, Keyboard } from 'react-native';
 
-import TermsAndConditions from './TermsAndConditions';
 import Button from '../components/Button';
 import { useAuth } from '../context/authContext';
 import { FIREBASE_DB } from '../firebaseConfig.js';
+import TermsAndConditions from '../modals/TermsAndConditions';
 
 export default function Register() {
 

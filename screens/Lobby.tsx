@@ -3,11 +3,11 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useState } from 'react';
 import { Image, ImageSourcePropType, Pressable, StyleSheet, Text, View } from 'react-native';
 
-import Selection from './Selection';
 import Button from '../components/Button';
-import CardDeckSelection from '../components/CardDeckSelection';
 import { useAuth } from '../context/authContext';
 import { useGame } from '../context/gameContext';
+import AvatarSelection from '../modals/AvatarSelection';
+import CardDeckSelection from '../modals/CardDeckSelection';
 
 interface LobbyProps {
   route: RouteProp<{
@@ -38,7 +38,7 @@ export default function Lobby({ route, navigation }: LobbyProps) {
   const { gameCode, gameHost } = route.params;
   const { user } = useAuth();
   const { avatar, drink, playableDeck } = useGame();
-  const [isSelectionModalVisible, setIsSelectionModalVisible] = useState(false);
+  const [isAvatarSelectionModalVisible, setIsAvatarSelectionModalVisible] = useState(false);
   const [isCardDeckSelectionModalVisible, setIsCardDeckSelectionModalVisible] = useState(false);
   const userName = (user && user.username) ? user.username : "";
   const updatedJoinedPlayers = [...joinedPlayers];
@@ -50,8 +50,8 @@ export default function Lobby({ route, navigation }: LobbyProps) {
     userToUpdate.name = userName;
   }
 
-  const toggleSelectionModal = () => {
-    setIsSelectionModalVisible(!isSelectionModalVisible);
+  const toggleAvatarSelectionModal = () => {
+    setIsAvatarSelectionModalVisible(!isAvatarSelectionModalVisible);
   };
 
   const toggleCardDeckSelectionModal = () => {
@@ -67,7 +67,7 @@ export default function Lobby({ route, navigation }: LobbyProps) {
             key={player.id}
             onPress={() => {
               console.log(player.name);
-              toggleSelectionModal();
+              toggleAvatarSelectionModal();
               // TODO: If clicked on other players avatar then check their profile instead
             }}
           >
@@ -84,7 +84,7 @@ export default function Lobby({ route, navigation }: LobbyProps) {
 
   return (
     <View style={styles.gameView}>
-      <Selection isVisible={isSelectionModalVisible} onClose={toggleSelectionModal} />
+      <AvatarSelection isVisible={isAvatarSelectionModalVisible} onClose={toggleAvatarSelectionModal} />
       <CardDeckSelection onClose={toggleCardDeckSelectionModal} isVisible={isCardDeckSelectionModalVisible}/>
       <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
       <Text style={styles.gameCode}>#{gameCode}</Text>
