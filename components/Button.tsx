@@ -10,7 +10,11 @@ export default function Button({ text, onPress, disabled, marginTop, buttonWidth
 
   if (buttonWidthNumber != null) buttonWidth = buttonWidthNumber;
 
-  if (buttonBgColor != null) buttonColor = buttonBgColor;
+  if (buttonBgColor != null) {
+    buttonColor = buttonBgColor;
+  } else {
+    buttonColor = '#000000';
+  }
   
 
   return (

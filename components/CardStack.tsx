@@ -114,9 +114,8 @@ export default function CardStack({ onGameOver, setPoints, setDrinks, points, dr
 
 const styles = StyleSheet.create({
   cardViewContainer: {
-    marginTop: 60,
-    width: 220,
-    height: 300,
+    marginTop: 50,
+    height: 400,
   },
   cardViewTouchable: {
     width: '100%',
@@ -128,7 +127,7 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   cardsLeft: {
-    marginTop: 30,
+    marginTop: 15,
     fontSize: 25,
     color: 'white',
     fontFamily: 'Basic',

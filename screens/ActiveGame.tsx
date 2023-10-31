@@ -1,13 +1,13 @@
-import { doc, updateDoc, increment } from "firebase/firestore";
 import { RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { doc, updateDoc, increment } from "firebase/firestore";
 import { useState } from 'react';
 import { StyleSheet, Text, View, ImageSourcePropType } from 'react-native';
 
 import Button from '../components/Button';
 import CardStack from '../components/CardStack';
-import { FIREBASE_DB } from '../firebaseConfig.js';
 import { useAuth } from '../context/authContext';
+import { FIREBASE_DB } from '../firebaseConfig.js';
 
 export type Props = {
   route: RouteProp<{
