@@ -1,25 +1,50 @@
-import { Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useState } from 'react';
+import { Image, Modal, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Button from '../components/Button';
 import { useAuth } from '../context/authContext';
 
 export default function CardDecks() {
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalContent, setModalContent] = useState(String);
 
   let deckOwned: boolean;
 
   const cardDecks = [{
     id: 'estonia',
     name: 'Estonia card pack',
-    image: require('../assets/images/card_deck1.png'),
+    image: require('../assets/images/estonia_deck.png'),
   }, {
     id: 'football',
     name: 'Football card pack',
-    image: require('../assets/images/card_deck2.png'),
+    image: require('../assets/images/football_deck.png'),
   },{
     id: 'birds',
     name: 'Birds card pack',
-    image: require('../assets/images/card_deck3.png'),
+    image: require('../assets/images/bird_deck.png'),
   }];
 
   const { user } = useAuth();
+
+  const ownedPacks = (user && user.packs_owned) ? user.packs_owned : null
+
+  const RenderModal = (owned: boolean, name: string) => {
+
+    return (
+      <Modal transparent={true} visible={modalVisible}>
+        <View style={styles.modal}>
+        <Text>This is a small intro to the {name} card pack.</Text>
+        <Text>Will insert some sample questions and sample avatars which will be unlocked.</Text>
+        {owned ? <></> : <Text style={styles.buyText}>Buy {modalContent} for just 4.99€!</Text> }
+        {owned ?  <Button text="Back" onPress={() => {setModalVisible(false)}}/> :
+                  <Button text="Buy pack" onPress={() => {
+                                                          deckOwned = true;
+                                                          setModalVisible(false)}}/> 
+                                                          }
+        </View>
+      </Modal>
+    );
+  }
 
   const RenderDecks = (deckArray: {name: string; image: any; id: string }[]) => {
 
@@ -27,7 +52,7 @@ export default function CardDecks() {
 
       deckOwned = false;
 
-      if (user?.packs_owned?.includes(item.id)) deckOwned = true;
+      if (ownedPacks && ownedPacks.includes(item.id)) deckOwned = true;
 
       return (
         <Pressable
@@ -36,17 +61,18 @@ export default function CardDecks() {
           ]}
           key={index}
           onPress={() => {
-            console.log('Pressed ' + item.name)
-          }
-          }>
+            setModalContent(item.name);
+            setModalVisible(true);
+          }}>
             <View style={styles.cardView}>
+             {RenderModal(deckOwned, item.name)}
+              {deckOwned ? <></> : <View style={styles.overlay}></View>}
+              {deckOwned ? <></> : <Text style={styles.lockedText}>Unlock for 4.99€</Text>}
               <Image style={styles.cardImage} source={item.image} />
               <View style={styles.cardInfo}>
-              <Text style={styles.deckTitle}>{item.name}</Text>
-              {deckOwned ? <></> : <Text style={styles.lockedText}>Locked</Text>}
+              <Text style={styles.deckTitle}>{item.name.toUpperCase()}</Text>
               </View>
             </View>
-
         </Pressable>
       );
     });
@@ -56,14 +82,13 @@ export default function CardDecks() {
     <View style={styles.cardDeckView}>
       <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
       <View style={styles.buttonContainer}>
-      <Text style={styles.filterButton}>Filter button</Text>
-      <Text style={styles.searchButton}>Search button</Text>
       </View>
       <View style={styles.cardsView}>
        
         <ScrollView style={styles.scrollView}>
           {RenderDecks(cardDecks)}
         </ScrollView>
+        
       </View>
     </View>
   );
@@ -76,6 +101,25 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
   },
+  buyText: {
+    fontSize: 18,
+  },
+  modal: {
+    margin: 20,
+    marginTop: '80%',
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
   buttonContainer: {
     flexDirection: 'row',
     gap: 40,
@@ -83,18 +127,31 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   deckTitle: {
-    fontFamily: 'Basic',
+    fontFamily: 'CarterOne-Regular',
     color: 'white',
-    fontSize: 20,
-    alignSelf: 'flex-start',
-    marginLeft: 20,
-    marginTop: 5,
+    fontSize: 24,
+    alignSelf: 'center',
+  },
+  overlay: {
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: '#1E1E1E90',
+    position: 'absolute',
+    borderRadius: 20,
+    zIndex: 1,
   },
   lockedText: {
     fontFamily: 'Basic',
+    position: 'absolute',
     color: 'white',
-    fontSize: 20,
-    marginTop: 5,
+    fontSize: 32,
+    marginTop: 50,
+    zIndex: 1,
+    alignSelf: 'center',
+    textShadowRadius: 7,
+    textShadowColor: 'black',
   },
   filterButton: {
     fontFamily: 'Basic',
@@ -122,8 +179,11 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   cardView: {
-    width: '100%',
-    height: '100%',
+    width: 320,
+    height: 150,
+    position: 'relative',
+    overflow: 'hidden',
+    alignContent: 'center',
   },
   cardImage: {
     width: '100%',
@@ -132,9 +192,6 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 25,
   },
   cardInfo: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginRight: 20,
   },
   cardsView: {
     flex: 1,

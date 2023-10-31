@@ -4,13 +4,13 @@ const width = Dimensions.get('window').width;
 
 let buttonWidth = 1.3;
 
-let buttonColor = '#FFFFFF';
+let buttonColor = '#000000';
 
 export default function Button({ text, onPress, disabled, marginTop, buttonWidthNumber, buttonBgColor }: any) {
 
   if (buttonWidthNumber != null) buttonWidth = buttonWidthNumber;
 
-  if (buttonColor != null) buttonColor = buttonBgColor;
+  if (buttonBgColor != null) buttonColor = buttonBgColor;
   
 
   return (
