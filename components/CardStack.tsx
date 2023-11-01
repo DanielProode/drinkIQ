@@ -4,6 +4,7 @@ import { Pressable, View, Image, StyleSheet, Text } from 'react-native';
 
 import Card from './Card';
 import LoadingScreen from '../components/LoadingScreen';
+import { useGame } from '../context/gameContext';
 import { FIREBASE_DB } from '../firebaseConfig.js';
 
 interface CardStackProps {
@@ -34,13 +35,14 @@ const cardImageArray = [
 ];
 
 export default function CardStack({ onGameOver, setPoints, setDrinks, points, drinks }: CardStackProps) {
-  const [cardCount, setCardCount] = useState(10);
+  const [cardCount, setCardCount] = useState(2);
   const [cardImage, setCardImage] = useState(baseCardImage);
   const [isCardVisible, setIsCardVisible] = useState(false);
   const [questionsArray, setQuestionsArray] = useState<QuestionsArray[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { playableDeck } = useGame();
   const db = FIREBASE_DB;
-  const questionsCollection = collection(db, "packs", "estonia", "questions");
+  const questionsCollection = collection(db, "packs", playableDeck, "questions");
 
   useEffect(() => {
     async function loadQuestions() {

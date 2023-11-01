@@ -17,7 +17,7 @@ export default function Card({ onClose, handlePoints, questionElement }: CardPro
   const [isAnswerCorrect, setIsAnswerCorrect] = useState(false);
   const correctAnswerIndex = questionElement.answers.findIndex((answer) => answer.isCorrect);
   const prefixes = ["a. ", "b. ", "c. ", "d. "];
-  const { avatar } = useGame();
+  const { avatar, playableCardBackground } = useGame();
 
   const handleAnswerSelection = (answerIndex: number) => {
     if (!isAnswered) {
@@ -66,7 +66,7 @@ export default function Card({ onClose, handlePoints, questionElement }: CardPro
   return (
     <View style={styles.backgroundBlur}>
       <View style={styles.cardView}>
-        <ImageBackground source={require('../assets/images/estonian_background.jpg')} resizeMode="cover" style={styles.image}>
+        <ImageBackground source={playableCardBackground} resizeMode="cover" style={styles.image}>
           <View style={styles.avatarView}>
             <Image style={styles.avatarImage} source={avatar} />
           </View>

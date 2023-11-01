@@ -37,7 +37,7 @@ const joinedPlayers = [
 export default function Lobby({ route, navigation }: LobbyProps) {
   const { gameCode, gameHost } = route.params;
   const { user } = useAuth();
-  const { avatar, drink, playableDeck } = useGame();
+  const { avatar, drink, playableDeckImage } = useGame();
   const [isAvatarSelectionModalVisible, setIsAvatarSelectionModalVisible] = useState(false);
   const [isCardDeckSelectionModalVisible, setIsCardDeckSelectionModalVisible] = useState(false);
   const userName = (user && user.username) ? user.username : "";
@@ -89,7 +89,7 @@ export default function Lobby({ route, navigation }: LobbyProps) {
       <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
       <Text style={styles.gameCode}>#{gameCode}</Text>
       <Pressable style={styles.deckImageContainer} onPress={() => {toggleCardDeckSelectionModal()}}>
-        <Image style={styles.deck} source={playableDeck} />
+        <Image style={styles.deck} source={playableDeckImage} />
       </Pressable>
       <Text style={styles.waitingText}>Waiting in the lobby:</Text>
       <View style={styles.joinedPlayers}>
@@ -177,7 +177,6 @@ const styles = StyleSheet.create({
   },
   deck: {
     flex: 1,
-    resizeMode: 'contain',
     width: '100%',
     height: '100%',
     alignSelf: 'center',
