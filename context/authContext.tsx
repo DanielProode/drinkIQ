@@ -19,7 +19,7 @@ interface UserProfile {
 interface AuthContextType {
   userProfile: UserProfile | null;
   authUser: User | null;
-  userLoaded: boolean;
+  isUserLoaded: boolean;
   isUserLoading: boolean;
   signUp: (email: string, password: string) => Promise<UserCredential>;
   signIn: (email: string, password: string) => Promise<UserCredential>;
@@ -28,14 +28,14 @@ interface AuthContextType {
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
+const auth = FIREBASE_AUTH;
+const db = FIREBASE_DB;
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [authUser, setAuthUser] = useState<User | null>(null);
-  const [userLoaded, setIsUserLoaded] = useState(false);
+  const [isUserLoaded, setIsUserLoaded] = useState(false);
   const [isUserLoading, setIsUserLoading] = useState(false);
-  const auth = FIREBASE_AUTH;
-  const db = FIREBASE_DB;
 
   const signUp = (email: string, password: string) => {
     return createUserWithEmailAndPassword(auth, email, password);
@@ -99,7 +99,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   }, [userProfile]);
 
   return (
-    <AuthContext.Provider value={{ userProfile, userLoaded, isUserLoading, authUser, listenToUserData, signUp, signIn, logOut }}>
+    <AuthContext.Provider value={{ userProfile, isUserLoaded, isUserLoading, authUser, listenToUserData, signUp, signIn, logOut }}>
       {children}
     </AuthContext.Provider>
   );
