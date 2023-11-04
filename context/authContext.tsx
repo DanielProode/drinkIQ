@@ -24,7 +24,6 @@ interface AuthContextType {
   signUp: (email: string, password: string) => Promise<UserCredential>;
   signIn: (email: string, password: string) => Promise<UserCredential>;
   logOut: () => Promise<void>;
-  updateLocalUserProfile: (updatedUserProfileData: UserProfile) => void;
   listenToUserData: () => Unsubscribe;
 };
 
@@ -49,12 +48,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const logOut = () => {
     return signOut(auth)
   };
-
-  const updateLocalUserProfile = (updatedUserProfileData: UserProfile) => {
-    if (userProfile) {
-      setUserProfile(updatedUserProfileData)
-    }
-  }
 
   const listenToUserData = () => {
     const userId = authUser ? authUser.uid : '';
@@ -106,7 +99,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   }, [userProfile]);
 
   return (
-    <AuthContext.Provider value={{ userProfile, userLoaded, isUserLoading, authUser, listenToUserData, updateLocalUserProfile, signUp, signIn, logOut }}>
+    <AuthContext.Provider value={{ userProfile, userLoaded, isUserLoading, authUser, listenToUserData, signUp, signIn, logOut }}>
       {children}
     </AuthContext.Provider>
   );
