@@ -33,7 +33,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 SplashScreen.preventAutoHideAsync();
 
 export default function Router() {
-  const { user, userLoaded } = useAuth()
+  const { authUser, userLoaded, isUserLoading } = useAuth()
   const [fontsLoaded] = useFonts({
     'Basic': require('../assets/fonts/Basic.ttf'),
     'Cabin-Bold': require('../assets/fonts/Cabin-Bold.ttf'),
@@ -57,14 +57,14 @@ export default function Router() {
     loadResourcesAsync();
   }, [fontsLoaded, userLoaded]);
 
-  if (!userLoaded || !fontsLoaded) {
+  if (isUserLoading || !fontsLoaded) {
     return <LoadingScreen />
   }
 
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerTitle: '', headerTransparent: true, headerTintColor: '#A5AFB9' }}>
-        {user == null ? (
+        {authUser === null ? (
           <>
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Register" component={Register} />

@@ -1,5 +1,5 @@
 import { arrayUnion, doc, updateDoc } from 'firebase/firestore';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
@@ -21,17 +21,13 @@ const cardDecks = [{
 }];
 
 export default function CardDecks() {
-
   const [modalVisible, setModalVisible] = useState(false);
   const [modalContent, setModalContent] = useState(Object);
   const [isDeckOwned, setDeckOwned] = useState(Boolean);
-
-  let deckOwned: boolean;
-
-  const { user } = useAuth();
+  const { authUser, userProfile, listenToUserData } = useAuth();
   const db = FIREBASE_DB;
-
-  const ownedPacks = (user && user.packs_owned) ? user.packs_owned : null
+  const ownedPacks = (userProfile && userProfile.packs_owned) ? userProfile.packs_owned : null
+  let deckOwned: boolean;
 
   const handlePayment = (pack: string) => {
     // Handle real payment when Buy Pack button is pressed
@@ -40,10 +36,15 @@ export default function CardDecks() {
     setModalVisible(false);
   }
 
+  useEffect(() => {
+    const unsubscribe = listenToUserData();
+    return () => unsubscribe();
+  }, []);
+
   const updateUserData = async (pack: string) => {
     try {
-      if (user) {
-        const userDoc = doc(db, 'users', user.uid);
+      if (authUser) {
+        const userDoc = doc(db, 'users', authUser.uid);
         await updateDoc(userDoc, {
           packs_owned: arrayUnion(pack),
         })
