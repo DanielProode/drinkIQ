@@ -7,7 +7,7 @@ import { FIREBASE_DB } from "../firebaseConfig";
 interface CardDeckInfoProps {
     isVisible: boolean;
     onClose: () => void;
-    modalContent: { name: string, image: ImageProps, id: string, owned: boolean};
+    modalContent: { name: string, image: ImageProps, id: string, text: string; owned: boolean};
     user: any;
 };
 
@@ -48,7 +48,7 @@ export default function CardDeckInfo({ isVisible, onClose, modalContent, user }:
 
                 <View style={styles.textView}>
                     <Text style={styles.modalText}>This is a small intro to the {modalContent.name} card pack.</Text>
-                    <Text style={styles.modalText}>Will insert some sample questions and sample avatars which will be unlocked. Very long text ahead. Some text about the card packs. Some more text about the card packs.</Text>
+                    <Text style={styles.modalText}>{modalContent.text}</Text>
                 </View>
                 {!modalContent.owned && <Text style={styles.buyText}>Buy {modalContent.name} for just 4.99€!</Text>}
                 {modalContent.owned ?

@@ -22,7 +22,7 @@ const defaultAvatar = require('../assets/images/avatar_1.png');
 const defaultDrink = require('../assets/images/drink_1.png');
 const defaultCardDeckImage = require('../assets/images/estonia_deck.png');
 const defaultCardDeck = "estonia";
-const defaultPlayableCardBackground = require('../assets/images/estonia_deck.png');
+const defaultPlayableCardBackground = require('../assets/images/estonia_deck_preview.png');
 
 const GameContext = createContext<GameContextType | null>(null);
 

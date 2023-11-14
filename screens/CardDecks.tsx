@@ -55,9 +55,7 @@ export default function CardDecks() {
   return (
     <View style={styles.cardDeckView}>
       <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
-      <View style={styles.buttonContainer}>
-        <Text>Filter buttons tba</Text>
-      </View>
+
       <View style={styles.cardsView}>
         <ScrollView style={styles.scrollView}>
           {renderDecks(getDecks())}
@@ -143,7 +141,7 @@ const styles = StyleSheet.create({
   },
   cardsView: {
     flex: 1,
-    marginTop: 50,
+    marginTop: 70,
     width: '100%',
     alignItems: 'center',
   },

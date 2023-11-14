@@ -6,6 +6,7 @@ import Button from '../components/Button';
 import { useDeck } from '../context/deckContext';
 import { useGame } from '../context/gameContext';
 
+
 interface CardDeckSelectionProps {
   isVisible: boolean;
   onClose: () => void;
@@ -16,7 +17,8 @@ export default function CardDeckSelection({ isVisible, onClose }: CardDeckSelect
   const { updatePlayableDeckImage, updatePlayableDeck, updatePlayableCardBackground } = useGame();
   const { getDecks } = useDeck();
 
-  const renderDecks = (cardDecks: { id: string; name: string; image: ImageSourcePropType; owned: boolean }[]) => {
+  
+  const renderDecks = (cardDecks: { id: string; name: string; image: ImageSourcePropType; previewImage: ImageSourcePropType; owned: boolean }[]) => {
     return cardDecks.map((cardDeck, index) => {
       const isSelected = selectedCardIndex === index;
       return (
@@ -29,18 +31,18 @@ export default function CardDeckSelection({ isVisible, onClose }: CardDeckSelect
               isSelected && styles.cardDeckContainerSelected,
             ]}
             onPress={() => {
-              updatePlayableDeckImage(cardDeck.image)
+              updatePlayableDeckImage(cardDeck.previewImage)
               updatePlayableDeck(cardDeck.id)
               updatePlayableCardBackground(cardDeck.image)
               setSelectedCardIndex(index);
             }}
             disabled={!cardDeck.owned} >
-            <Image style={styles.cardDeck} source={cardDeck.image} />
+            <Image style={styles.cardDeck} source={cardDeck.previewImage} />
             {!cardDeck.owned && <View style={styles.overlay} />}
           </Pressable>
           {!cardDeck.owned && (
             <View style={styles.priceContainer}>
-              <Text style={styles.priceText}>BUY FOR 3.99€</Text>
+              <Text style={styles.priceText}>BUY FOR 4.99€</Text>
             </View>
           )}
         </View>

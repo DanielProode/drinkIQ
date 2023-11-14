@@ -35,7 +35,7 @@ const cardImageArray = [
 ];
 
 export default function CardStack({ onGameOver, setPoints, setDrinks, points, drinks }: CardStackProps) {
-  const [cardCount, setCardCount] = useState(2);
+  const [cardCount, setCardCount] = useState(10);
   const [cardImage, setCardImage] = useState(baseCardImage);
   const [isCardVisible, setIsCardVisible] = useState(false);
   const [questionsArray, setQuestionsArray] = useState<QuestionsArray[]>([]);

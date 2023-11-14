@@ -8,7 +8,14 @@ interface DeckProviderProps {
 };
 
 interface DeckContextType {
-  getDecks: () => { id: string; name: string; image: ImageSourcePropType; owned: boolean }[];
+  getDecks: () => {
+    id: string;
+    name: string;
+    image: ImageSourcePropType;
+    previewImage: ImageSourcePropType;
+    text: string;
+    owned: boolean;
+  }[];
 }
 
 const DeckContext = createContext<DeckContextType | null>(null);
@@ -17,16 +24,22 @@ const cardDecks = [{
   id: 'estonia',
   name: 'Estonia card pack',
   image: require('../assets/images/estonia_deck.png'),
+  previewImage: require('../assets/images/estonia_deck_preview.png'),
+  text: "Information about the Estonia card pack.",
   owned: false,
 }, {
   id: 'football',
   name: 'Football card pack',
   image: require('../assets/images/football_deck.png'),
+  previewImage: require('../assets/images/football_deck_preview.png'),
+  text: "Information about the Football card pack.",
   owned: false,
 }, {
   id: 'birds',
   name: 'Birds card pack',
   image: require('../assets/images/bird_deck.png'),
+  previewImage: require('../assets/images/birds_deck_preview.png'),
+  text: "Information about the Birds card pack.",
   owned: false,
 }];
 
