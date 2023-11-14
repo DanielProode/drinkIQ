@@ -2,18 +2,20 @@ import { arrayUnion, doc, updateDoc } from "firebase/firestore";
 import { Modal, View, Image, Text, StyleSheet, ImageProps } from "react-native";
 
 import Button from "../components/Button";
+import { useAuth } from "../context/authContext";
 import { FIREBASE_DB } from "../firebaseConfig";
 
 interface CardDeckInfoProps {
     isVisible: boolean;
     onClose: () => void;
     modalContent: { name: string, image: ImageProps, id: string, text: string; owned: boolean};
-    user: any;
 };
 
 const db = FIREBASE_DB;
 
-export default function CardDeckInfo({ isVisible, onClose, modalContent, user }: CardDeckInfoProps) {
+export default function CardDeckInfo({ isVisible, onClose, modalContent }: CardDeckInfoProps) {
+
+    const { authUser } = useAuth();
 
     const handlePayment = (pack: string) => {
         // Handle real payment when Buy Pack button is pressed
@@ -24,8 +26,8 @@ export default function CardDeckInfo({ isVisible, onClose, modalContent, user }:
 
     const updateUserData = async (pack: string) => {
         try {
-            if (user) {
-                const userDoc = doc(db, 'users', user.uid);
+            if (authUser) {
+                const userDoc = doc(db, 'users', authUser.uid);
                 await updateDoc(userDoc, {
                     packs_owned: arrayUnion(pack),
                 })

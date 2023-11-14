@@ -1,4 +1,5 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useEffect } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
@@ -9,8 +10,13 @@ interface MainMenuProps {
 }
 
 export default function MainMenu({ navigation }: MainMenuProps) {
-  const { user } = useAuth();
-  const userName = (user && user.username) ? user.username : null
+  const { userProfile, listenToUserData } = useAuth();
+  const userName = (userProfile && userProfile.username) ? userProfile.username : null
+
+  useEffect(() => {
+    const unsubscribe = listenToUserData();
+    return () => unsubscribe();
+  }, [])
 
   return (
     <View style={styles.mainView}>

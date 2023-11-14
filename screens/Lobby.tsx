@@ -40,11 +40,11 @@ const joinedPlayers = [
 
 export default function Lobby({ route, navigation }: LobbyProps) {
   const { gameCode, gameHost } = route.params;
-  const { user } = useAuth();
+  const { userProfile } = useAuth();
   const { avatar, drink, playableDeckImage } = useGame();
   const [isAvatarSelectionModalVisible, setIsAvatarSelectionModalVisible] = useState(false);
   const [isCardDeckSelectionModalVisible, setIsCardDeckSelectionModalVisible] = useState(false);
-  const userName = (user && user.username) ? user.username : "";
+  const userName = (userProfile && userProfile.username) ? userProfile.username : "";
   const updatedJoinedPlayers = [...joinedPlayers];
   const userToUpdate = updatedJoinedPlayers.find(player => player.id === 1);
 
@@ -89,10 +89,10 @@ export default function Lobby({ route, navigation }: LobbyProps) {
   return (
     <View style={styles.gameView}>
       <AvatarSelection isVisible={isAvatarSelectionModalVisible} onClose={toggleAvatarSelectionModal} />
-      <CardDeckSelection onClose={toggleCardDeckSelectionModal} isVisible={isCardDeckSelectionModalVisible}/>
+      <CardDeckSelection onClose={toggleCardDeckSelectionModal} isVisible={isCardDeckSelectionModalVisible} />
       <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
       <Text style={styles.gameCode}>#{gameCode}</Text>
-      <Pressable style={styles.deckImageContainer} onPress={() => {toggleCardDeckSelectionModal()}}>
+      <Pressable style={styles.deckImageContainer} onPress={() => { toggleCardDeckSelectionModal() }}>
         <Image style={styles.deck} source={playableDeckImage} />
       </Pressable>
       <Text style={styles.waitingText}>Waiting in the lobby:</Text>

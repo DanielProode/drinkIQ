@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { useAuth } from '../context/authContext';
@@ -10,7 +10,7 @@ export default function CardDecks() {
 
   const [modalContent, setModalContent] = useState(Object);
   const [isCardDeckInfoModalVisible, setIsCardDeckInfoModalVisible] = useState(Boolean);
-  const { user } = useAuth();
+  const { listenToUserData } = useAuth();
   const { getDecks } = useDeck();
 
   const toggleCardDeckInfoModal = () => {
@@ -26,6 +26,11 @@ export default function CardDecks() {
     return 0;
   }
 
+  useEffect(() => {
+    const unsubscribe = listenToUserData();
+    return () => unsubscribe();
+  }, []);
+
   const renderDecks = (deckArray: { name: string; image: any; id: string; owned: boolean }[]) => {
 
     deckArray.sort(sortArray);
@@ -39,7 +44,7 @@ export default function CardDecks() {
             toggleCardDeckInfoModal();
           }}>
           <View style={styles.cardView}>
-            <CardDeckInfo isVisible={isCardDeckInfoModalVisible} onClose={toggleCardDeckInfoModal} modalContent={modalContent} user={user} />
+            <CardDeckInfo isVisible={isCardDeckInfoModalVisible} onClose={toggleCardDeckInfoModal} modalContent={modalContent} />
             {!item.owned && <View style={styles.overlay} />}
             {!item.owned && <Text style={styles.lockedText}>Unlock for 4.99€</Text>}
             <Image style={styles.cardImage} source={item.image} />

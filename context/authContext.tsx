@@ -1,5 +1,5 @@
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, User, UserCredential } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { Unsubscribe, doc, getDoc, onSnapshot } from 'firebase/firestore';
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 
 import { FIREBASE_AUTH, FIREBASE_DB } from '../firebaseConfig';
@@ -8,9 +8,7 @@ interface AuthProviderProps {
   children?: ReactNode;
 };
 
-interface CustomUser {
-  uid: string;
-  email: string | null;
+interface UserProfile {
   username?: string;
   games_won?: number;
   total_drinks?: number;
@@ -19,20 +17,25 @@ interface CustomUser {
 }
 
 interface AuthContextType {
-  user: CustomUser | null;
-  userLoaded: boolean;
+  userProfile: UserProfile | null;
+  authUser: User | null;
+  isUserLoaded: boolean;
+  isUserLoading: boolean;
   signUp: (email: string, password: string) => Promise<UserCredential>;
   signIn: (email: string, password: string) => Promise<UserCredential>;
   logOut: () => Promise<void>;
+  listenToUserData: () => Unsubscribe;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
+const auth = FIREBASE_AUTH;
+const db = FIREBASE_DB;
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<CustomUser | null>(null);
-  const [userLoaded, setIsUserLoaded] = useState(false);
-  const auth = FIREBASE_AUTH;
-  const db = FIREBASE_DB;
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [authUser, setAuthUser] = useState<User | null>(null);
+  const [isUserLoaded, setIsUserLoaded] = useState(false);
+  const [isUserLoading, setIsUserLoading] = useState(false);
 
   const signUp = (email: string, password: string) => {
     return createUserWithEmailAndPassword(auth, email, password);
@@ -46,28 +49,39 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     return signOut(auth)
   };
 
+  const listenToUserData = () => {
+    const userId = authUser ? authUser.uid : '';
+    const userRef = doc(FIREBASE_DB, 'users', userId);
+    const firestoreSnap = onSnapshot(userRef, (docSnapshot) => {
+      if (docSnapshot.exists()) {
+        const docData = docSnapshot.data();
+        setUserProfile(docData);
+      }
+    });
+    return firestoreSnap;
+  }
+
   const fetchUserData = async (userObject: User | null) => {
     if (userObject) {
-      const simpleUserObject = {
-        email: userObject.email,
-        uid: userObject.uid,
-      };
+      setIsUserLoading(true);
       const userDoc = doc(db, 'users', userObject.uid);
       try {
         const docSnap = await getDoc(userDoc);
         if (docSnap.exists()) {
           const userData = docSnap.data();
-          setUser({ ...simpleUserObject, ...userData });
+          setUserProfile(userData);
+          setAuthUser(userObject);
         } else {
-          setUser(simpleUserObject);
           console.log("User info document missing");
         }
       } catch (error) {
         console.error('Error fetching user info: ', error);
       };
     } else {
-      setUser(null);
+      setAuthUser(null);
+      setUserProfile(null);;
     };
+    setIsUserLoading(false);
     setIsUserLoaded(true);
   };
 
@@ -81,11 +95,11 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   useEffect(() => {
-    console.log(user);
-  }, [user]);
+    console.log(userProfile);
+  }, [userProfile]);
 
   return (
-    <AuthContext.Provider value={{ user, userLoaded, signUp, signIn, logOut }}>
+    <AuthContext.Provider value={{ userProfile, isUserLoaded, isUserLoading, authUser, listenToUserData, signUp, signIn, logOut }}>
       {children}
     </AuthContext.Provider>
   );

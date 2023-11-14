@@ -46,8 +46,8 @@ const cardDecks = [{
 
 const DeckProvider = ({ children }: DeckProviderProps) => {
 
-  const { user } = useAuth();
-  const ownedPacks = (user && user.packs_owned) ? user.packs_owned : null
+  const { userProfile } = useAuth();
+  const ownedPacks = (userProfile && userProfile.packs_owned) ? userProfile.packs_owned : null
 
   const getDecks = () => {
     cardDecks.map((item) => {
