@@ -3,55 +3,53 @@ import { useState } from 'react';
 import { Image, ImageSourcePropType, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
+import { useDeck } from '../context/deckContext';
 import { useGame } from '../context/gameContext';
+
 
 interface CardDeckSelectionProps {
   isVisible: boolean;
   onClose: () => void;
 };
 
-const ownedCardDecks = [
-  { image: require('../assets/images/card_deck1.png'), index: 1 },
-  { image: require('../assets/images/card_deck2.png'), index: 2 },
-  { image: require('../assets/images/card_deck3.png'), index: 3 },
-];
-const availableCardDecks = [
-  { image: require('../assets/images/card_deck4.png'), index: 4 },
-  { image: require('../assets/images/card_deck5.png'), index: 5 },
-  { image: require('../assets/images/card_deck6.png'), index: 6 },
-];
-
 export default function CardDeckSelection({ isVisible, onClose }: CardDeckSelectionProps) {
   const [selectedCardIndex, setSelectedCardIndex] = useState(-1);
-  const { updatePlayableDeck } = useGame();
+  const { updatePlayableDeckImage, updatePlayableDeck, updatePlayableCardBackground } = useGame();
+  const { getDecks } = useDeck();
 
-  const RenderCardDecks = (myArray: { image: ImageSourcePropType; index: number; }[], owned: boolean) => {
-    return myArray.map((cardDeck) => {
-      const isSelected = selectedCardIndex === cardDeck.index;
+  
+  const renderDecks = (cardDecks: { id: string; name: string; image: ImageSourcePropType; previewImage: ImageSourcePropType; owned: boolean }[]) => {
+    return cardDecks.map((cardDeck, index) => {
+      const isSelected = selectedCardIndex === index;
       return (
-        <View style={styles.cardsContainer} key={cardDeck.index}>
+        <View style={styles.cardsContainer} key={index}>
           <Pressable
-            key={cardDeck.index}
+            key={index}
             style={({ pressed }) => [
               { opacity: pressed ? 0.5 : 1.0 },
               styles.cardDeckContainer,
               isSelected && styles.cardDeckContainerSelected,
             ]}
             onPress={() => {
-              updatePlayableDeck(cardDeck.image)
-              setSelectedCardIndex(cardDeck.index);
-            }} >
-            <Image style={styles.cardDeck} source={cardDeck.image} />
+              updatePlayableDeckImage(cardDeck.previewImage)
+              updatePlayableDeck(cardDeck.id)
+              updatePlayableCardBackground(cardDeck.image)
+              setSelectedCardIndex(index);
+            }}
+            disabled={!cardDeck.owned} >
+            <Image style={styles.cardDeck} source={cardDeck.previewImage} />
+            {!cardDeck.owned && <View style={styles.overlay} />}
           </Pressable>
-          {!owned && (
+          {!cardDeck.owned && (
             <View style={styles.priceContainer}>
-              <Text style={styles.priceText}>3.99€</Text>
+              <Text style={styles.priceText}>BUY FOR 4.99€</Text>
             </View>
           )}
         </View>
       );
+
     });
-  };
+  }
 
   return (
     <Modal animationType='slide' presentationStyle='pageSheet' visible={isVisible}>
@@ -61,14 +59,10 @@ export default function CardDeckSelection({ isVisible, onClose }: CardDeckSelect
           colors={['#1F1F1F', '#373737', '#1E1E1E']}
           style={styles.background}
         />
-        <View style={styles.decksContainer} >
+        <View style={styles.decksContainer}>
           <Text style={styles.text}>CHOOSE A DECK</Text>
           <View style={styles.viewContainer}>
-            {RenderCardDecks(ownedCardDecks, true)}
-          </View>
-          <Text style={styles.text}>CARD DECKS AVAILABLE</Text>
-          <View style={styles.viewContainer}>
-            {RenderCardDecks(availableCardDecks, false)}
+            {renderDecks(getDecks())}
           </View>
           <Button
             marginTop={20}
@@ -113,6 +107,15 @@ const styles = StyleSheet.create({
   },
   cardDeckContainerSelected: {
     borderColor: 'blue',
+  },
+  overlay: {
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: '#00000099',
+    position: 'absolute',
+    zIndex: 1,
   },
   viewContainer: {
     flexDirection: 'row',

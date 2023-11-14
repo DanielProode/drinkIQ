@@ -8,22 +8,30 @@ interface GameProviderProps {
 interface GameContextType {
   avatar: ImageSourcePropType;
   drink: ImageSourcePropType;
-  playableDeck: ImageSourcePropType;
+  playableDeckImage: ImageSourcePropType;
+  playableDeck: string;
+  playableCardBackground: ImageSourcePropType;
   updateAvatar: (newAvatar: ImageSourcePropType) => void;
   updateDrink: (newDrink: ImageSourcePropType) => void;
-  updatePlayableDeck: (newPlayableDeck: ImageSourcePropType) => void;
+  updatePlayableDeckImage: (newPlayableDeckImage: ImageSourcePropType) => void;
+  updatePlayableDeck: (newPlayableDeck: string) => void;
+  updatePlayableCardBackground: (newPlayableCardBackground: ImageSourcePropType) => void;
 }
 
 const defaultAvatar = require('../assets/images/avatar_1.png');
-const defaultCardDeck = require('../assets/images/card_deck1.png');
 const defaultDrink = require('../assets/images/drink_1.png');
+const defaultCardDeckImage = require('../assets/images/estonia_deck.png');
+const defaultCardDeck = "estonia";
+const defaultPlayableCardBackground = require('../assets/images/estonia_deck_preview.png');
 
 const GameContext = createContext<GameContextType | null>(null);
 
 const GameProvider = ({ children }: GameProviderProps) => {
   const [avatar, setAvatar] = useState(defaultAvatar);
   const [drink, setDrink] = useState(defaultDrink);
+  const [playableDeckImage, setPlayableDeckImage] = useState(defaultCardDeckImage);
   const [playableDeck, setPlayableDeck] = useState(defaultCardDeck);
+  const [playableCardBackground, setPlayableCardBackground] = useState(defaultPlayableCardBackground);
 
   const updateAvatar = (newAvatar: ImageSourcePropType) => {
     setAvatar(newAvatar);
@@ -33,12 +41,20 @@ const GameProvider = ({ children }: GameProviderProps) => {
     setDrink(newDrink);
   }
 
-  const updatePlayableDeck = (newPlayableDeck: ImageSourcePropType) => {
+  const updatePlayableDeckImage = (newPlayableDeck: ImageSourcePropType) => {
+    setPlayableDeckImage(newPlayableDeck);
+  }
+
+  const updatePlayableDeck = (newPlayableDeck: string) => {
     setPlayableDeck(newPlayableDeck);
   }
 
+  const updatePlayableCardBackground = (newPlayableCardBackground: ImageSourcePropType) => {
+    setPlayableCardBackground(newPlayableCardBackground);
+  }
+
   return (
-    <GameContext.Provider value={{ avatar, drink, playableDeck, updateAvatar, updateDrink, updatePlayableDeck }}>
+    <GameContext.Provider value={{ avatar, drink, playableDeckImage, playableDeck, playableCardBackground, updateAvatar, updateDrink, updatePlayableDeckImage, updatePlayableDeck, updatePlayableCardBackground }}>
       {children}
     </GameContext.Provider>
   );
