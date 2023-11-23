@@ -3,28 +3,20 @@ import { Unsubscribe, doc, getDoc, onSnapshot } from 'firebase/firestore';
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 
 import { FIREBASE_AUTH, FIREBASE_DB } from '../firebaseConfig';
+import useUserStore from '../store/userStore';
 
 interface AuthProviderProps {
   children?: ReactNode;
 };
 
-interface UserProfile {
-  username?: string;
-  games_won?: number;
-  total_drinks?: number;
-  total_points?: number;
-  packs_owned?: string[];
-}
-
 interface AuthContextType {
-  userProfile: UserProfile | null;
   authUser: User | null;
   isUserLoaded: boolean;
   isUserLoading: boolean;
   signUp: (email: string, password: string) => Promise<UserCredential>;
   signIn: (email: string, password: string) => Promise<UserCredential>;
   logOut: () => Promise<void>;
-  listenToUserData: () => Unsubscribe;
+  listenToUserData: (field?: 'username' | 'games_won' | 'total_drinks' | 'total_points' | 'packs_owned') => Unsubscribe;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -32,10 +24,10 @@ const auth = FIREBASE_AUTH;
 const db = FIREBASE_DB;
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [authUser, setAuthUser] = useState<User | null>(null);
   const [isUserLoaded, setIsUserLoaded] = useState(false);
   const [isUserLoading, setIsUserLoading] = useState(false);
+  const { username, updateUsername, updateGamesWon, updateTotalDrinks, updateTotalPoints, updatePacksOwned } = useUserStore();
 
   const signUp = (email: string, password: string) => {
     return createUserWithEmailAndPassword(auth, email, password);
@@ -49,13 +41,37 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     return signOut(auth)
   };
 
-  const listenToUserData = () => {
+  const listenToUserData = (field?: 'username' | 'games_won' | 'total_drinks' | 'total_points' | 'packs_owned') => {
     const userId = authUser ? authUser.uid : '';
     const userRef = doc(FIREBASE_DB, 'users', userId);
     const firestoreSnap = onSnapshot(userRef, (docSnapshot) => {
       if (docSnapshot.exists()) {
         const docData = docSnapshot.data();
-        setUserProfile(docData);
+        updateUsername(docData.username);
+        switch (field) {
+          case 'username':
+            updateUsername(docData.username);
+            break;
+          case 'games_won':
+            updateGamesWon(docData.games_won);
+            break;
+          case 'total_drinks':
+            updateTotalDrinks(docData.total_drinks);
+            break;
+          case 'total_points':
+            updateTotalPoints(docData.total_drinks);
+            break;
+          case 'packs_owned':
+            updatePacksOwned(docData.packs_owned);
+            break;
+          default:
+            // Fetch all fields if field parameter is not provided
+            updateUsername(docData.username);
+            updateGamesWon(docData.games_won);
+            updateTotalDrinks(docData.total_drinks);
+            updateTotalPoints(docData.total_drinks);
+            updatePacksOwned(docData.packs_owned);
+        }
       }
     });
     return firestoreSnap;
@@ -68,8 +84,12 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       try {
         const docSnap = await getDoc(userDoc);
         if (docSnap.exists()) {
-          const userData = docSnap.data();
-          setUserProfile(userData);
+          const docData = docSnap.data();
+          updateUsername(docData.username);
+          updateGamesWon(docData.games_won);
+          updateTotalDrinks(docData.total_drinks);
+          updateTotalPoints(docData.total_drinks);
+          updatePacksOwned(docData.packs_owned);
           setAuthUser(userObject);
         } else {
           console.log("User info document missing");
@@ -79,7 +99,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       };
     } else {
       setAuthUser(null);
-      setUserProfile(null);;
     };
     setIsUserLoading(false);
     setIsUserLoaded(true);
@@ -95,11 +114,11 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   useEffect(() => {
-    console.log(userProfile);
-  }, [userProfile]);
+    console.log(username);
+  }, [username]);
 
   return (
-    <AuthContext.Provider value={{ userProfile, isUserLoaded, isUserLoading, authUser, listenToUserData, signUp, signIn, logOut }}>
+    <AuthContext.Provider value={{ isUserLoaded, isUserLoading, authUser, listenToUserData, signUp, signIn, logOut }}>
       {children}
     </AuthContext.Provider>
   );

@@ -4,10 +4,10 @@ import { useState } from 'react';
 import { Image, ImageSourcePropType, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
-import { useAuth } from '../context/authContext';
 import { useGame } from '../context/gameContext';
 import AvatarSelection from '../modals/AvatarSelection';
 import CardDeckSelection from '../modals/CardDeckSelection';
+import useUserStore from '../store/userStore';
 
 interface LobbyProps {
   route: RouteProp<{
@@ -40,18 +40,17 @@ const joinedPlayers = [
 
 export default function Lobby({ route, navigation }: LobbyProps) {
   const { gameCode, gameHost } = route.params;
-  const { userProfile } = useAuth();
+  const { username } = useUserStore();
   const { avatar, drink, playableDeckImage } = useGame();
   const [isAvatarSelectionModalVisible, setIsAvatarSelectionModalVisible] = useState(false);
   const [isCardDeckSelectionModalVisible, setIsCardDeckSelectionModalVisible] = useState(false);
-  const userName = (userProfile && userProfile.username) ? userProfile.username : "";
   const updatedJoinedPlayers = [...joinedPlayers];
   const userToUpdate = updatedJoinedPlayers.find(player => player.id === 1);
 
   if (userToUpdate) {
     userToUpdate.avatar = avatar;
     userToUpdate.drink = drink;
-    userToUpdate.name = userName;
+    userToUpdate.name = username;
   }
 
   const toggleAvatarSelectionModal = () => {

@@ -1,22 +1,15 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useEffect } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
-import { useAuth } from '../context/authContext';
+import useUserStore from '../store/userStore';
 
 interface MainMenuProps {
   navigation: NativeStackNavigationProp<any>;
 }
 
 export default function MainMenu({ navigation }: MainMenuProps) {
-  const { userProfile, listenToUserData } = useAuth();
-  const userName = (userProfile && userProfile.username) ? userProfile.username : null
-
-  useEffect(() => {
-    const unsubscribe = listenToUserData();
-    return () => unsubscribe();
-  }, [])
+  const { username } = useUserStore();
 
   return (
     <View style={styles.mainView}>
@@ -24,7 +17,7 @@ export default function MainMenu({ navigation }: MainMenuProps) {
         source={require('../assets/images/cheers_icon.png')} />
       <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
       <View style={styles.logoContainer}>
-        <Text style={styles.welcomeMessage}>Hi {userName}!</Text>
+        <Text style={styles.welcomeMessage}>Hi {username}!</Text>
         <Text style={styles.welcomeMessage}>Welcome to drinkIQ!</Text>
       </View>
       <View style={styles.bodyContainer}>

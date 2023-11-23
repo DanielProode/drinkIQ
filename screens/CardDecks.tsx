@@ -27,7 +27,7 @@ export default function CardDecks() {
   }
 
   useEffect(() => {
-    const unsubscribe = listenToUserData();
+    const unsubscribe = listenToUserData('packs_owned');
     return () => unsubscribe();
   }, []);
 

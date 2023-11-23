@@ -1,7 +1,7 @@
 import { ReactNode, createContext, useContext } from "react";
 import { ImageSourcePropType } from "react-native";
 
-import { useAuth } from "./authContext";
+import useUserStore from "../store/userStore";
 
 interface DeckProviderProps {
   children?: ReactNode;
@@ -45,13 +45,10 @@ const cardDecks = [{
 
 
 const DeckProvider = ({ children }: DeckProviderProps) => {
-
-  const { userProfile } = useAuth();
-  const ownedPacks = (userProfile && userProfile.packs_owned) ? userProfile.packs_owned : null
-
+  const { packs_owned } = useUserStore();
   const getDecks = () => {
     cardDecks.map((item) => {
-      if (ownedPacks && ownedPacks.includes(item.id)) item.owned = true;
+      if (packs_owned && packs_owned.includes(item.id)) item.owned = true;
       else item.owned = false;
     });
 
@@ -67,7 +64,6 @@ const DeckProvider = ({ children }: DeckProviderProps) => {
 
 const useDeck = () => {
   const context = useContext(DeckContext);
-
   if (!context) {
     throw new Error('useDeck must be used within a GameProvider');
   }
