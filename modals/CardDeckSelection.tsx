@@ -4,7 +4,7 @@ import { Image, ImageSourcePropType, Modal, Pressable, StyleSheet, Text, View } 
 
 import Button from '../components/Button';
 import { useDeck } from '../context/deckContext';
-import { useGame } from '../context/gameContext';
+import useGameStore from '../store/gameStore';
 
 
 interface CardDeckSelectionProps {
@@ -14,7 +14,7 @@ interface CardDeckSelectionProps {
 
 export default function CardDeckSelection({ isVisible, onClose }: CardDeckSelectionProps) {
   const [selectedCardIndex, setSelectedCardIndex] = useState(-1);
-  const { updatePlayableDeckImage, updatePlayableDeck, updatePlayableCardBackground } = useGame();
+  const { updatePlayableDeckImage, updatePlayableDeck, updatePlayableCardBackground } = useGameStore();
   const { getDecks } = useDeck();
 
   

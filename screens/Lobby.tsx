@@ -4,9 +4,9 @@ import { useState } from 'react';
 import { Image, ImageSourcePropType, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
-import { useGame } from '../context/gameContext';
 import AvatarSelection from '../modals/AvatarSelection';
 import CardDeckSelection from '../modals/CardDeckSelection';
+import useGameStore from '../store/gameStore';
 import useUserStore from '../store/userStore';
 
 interface LobbyProps {
@@ -41,7 +41,7 @@ const joinedPlayers = [
 export default function Lobby({ route, navigation }: LobbyProps) {
   const { gameCode, gameHost } = route.params;
   const { username } = useUserStore();
-  const { avatar, drink, playableDeckImage } = useGame();
+  const { avatar, drink, playableDeckImage } = useGameStore();
   const [isAvatarSelectionModalVisible, setIsAvatarSelectionModalVisible] = useState(false);
   const [isCardDeckSelectionModalVisible, setIsCardDeckSelectionModalVisible] = useState(false);
   const updatedJoinedPlayers = [...joinedPlayers];

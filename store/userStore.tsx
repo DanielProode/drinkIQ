@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export type UserProfile = {
+type UserProfile = {
   username: string;
   games_won: number;
   total_drinks: number;
@@ -8,7 +8,7 @@ export type UserProfile = {
   packs_owned: string[];
 }
 
-interface UserActions {
+type UserActions = {
   updateUsername: (username: UserProfile['username']) => void;
   updateGamesWon: (games_won: UserProfile['games_won']) => void;
   updateTotalDrinks: (total_drinks: UserProfile['total_drinks']) => void;

@@ -1,7 +1,7 @@
 import { Image, ImageSourcePropType, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
-import { useGame } from '../context/gameContext';
+import useGameStore from '../store/gameStore';
 
 interface AvatarSelectionProps {
   isVisible: boolean;
@@ -30,7 +30,7 @@ const drinkIcons2 = [
   require('../assets/images/drink_9.png')];
 
 export default function AvatarSelection({ isVisible, onClose }: AvatarSelectionProps) {
-  const { avatar, drink, updateAvatar, updateDrink } = useGame();
+  const { avatar, drink, updateAvatar, updateDrink } = useGameStore();
 
   const RenderCircles = (myArray: ImageSourcePropType[], isDrink: boolean) => {
     return myArray.map((item, index) => {

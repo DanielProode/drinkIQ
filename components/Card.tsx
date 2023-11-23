@@ -3,7 +3,7 @@ import { ImageBackground, Pressable, StyleSheet, Text, View, Image } from 'react
 
 import AnswerButton from './AnswerButton';
 import { QuestionsArray } from './CardStack';
-import { useGame } from '../context/gameContext';
+import useGameStore from '../store/gameStore';
 
 interface CardProps {
   onClose: () => void;
@@ -17,7 +17,7 @@ export default function Card({ onClose, handlePoints, questionElement }: CardPro
   const [isAnswerCorrect, setIsAnswerCorrect] = useState(false);
   const correctAnswerIndex = questionElement.answers.findIndex((answer) => answer.isCorrect);
   const prefixes = ["a. ", "b. ", "c. ", "d. "];
-  const { avatar, playableCardBackground } = useGame();
+  const { avatar, playableCardBackground } = useGameStore();
 
   const handleAnswerSelection = (answerIndex: number) => {
     if (!isAnswered) {
