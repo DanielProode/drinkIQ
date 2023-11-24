@@ -2,13 +2,13 @@
 import { useEffect } from 'react';
 import { StyleSheet, View, Text, Image, Pressable } from 'react-native';
 
+import { EDIT_BUTTON_IMAGE } from '../constants/general';
 import { useAuth } from '../context/authContext';
 import useUserStore from '../store/userStore';
 
 export default function Profile() {
   const { listenToUserData } = useAuth();
   const { username, games_won, total_points, total_drinks, packs_owned } = useUserStore();
-  const editImage = require('../assets/images/edit_button.png');
 
   useEffect(() => {
     const unsubscribe = listenToUserData();
@@ -26,7 +26,7 @@ export default function Profile() {
           <Pressable style={({ pressed }) => [
             { opacity: pressed ? 0.5 : 1.0 }
           ]}>
-            <Text style={styles.text}>{username} <Image style={styles.edit} source={editImage} /></Text>
+            <Text style={styles.text}>{username} <Image style={styles.edit} source={EDIT_BUTTON_IMAGE} /></Text>
           </Pressable>
         </View>
 

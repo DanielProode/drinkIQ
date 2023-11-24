@@ -12,10 +12,7 @@ interface CardDeckInfoProps {
   pack: { id: string, name: string, image: ImageProps, previewImage: ImageProps, text: string; };
 };
 
-const db = FIREBASE_DB;
-
 export default function CardDeckInfo({ isVisible, onClose, pack }: CardDeckInfoProps) {
-
   const { authUser } = useAuth();
   const { packs_owned } = useUserStore();
   const handlePayment = (pack: string) => {
@@ -28,7 +25,7 @@ export default function CardDeckInfo({ isVisible, onClose, pack }: CardDeckInfoP
   const updateUserData = async (pack: string) => {
     try {
       if (authUser) {
-        const userDoc = doc(db, 'users', authUser.uid);
+        const userDoc = doc(FIREBASE_DB, 'users', authUser.uid);
         await updateDoc(userDoc, {
           packs_owned: arrayUnion(pack),
         })

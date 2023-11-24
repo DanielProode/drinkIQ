@@ -1,33 +1,13 @@
 import { Image, ImageSourcePropType, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
+import { AVATAR_ICONS_1, AVATAR_ICONS_2, DRINK_ICONS_1, DRINK_ICONS_2 } from '../constants/general';
 import useGameStore from '../store/gameStore';
 
 interface AvatarSelectionProps {
   isVisible: boolean;
   onClose: () => void;
 };
-
-const avatarIcons1 = [
-  require('../assets/images/avatar_1.png'),
-  require('../assets/images/avatar_2.png'),
-  require('../assets/images/avatar_3.png'),
-  require('../assets/images/avatar_4.png')];
-const avatarIcons2 = [
-  require('../assets/images/avatar_6.png'),
-  require('../assets/images/avatar_7.png'),
-  require('../assets/images/avatar_8.png'),
-  require('../assets/images/avatar_9.png')];
-const drinkIcons1 = [
-  require('../assets/images/drink_1.png'),
-  require('../assets/images/drink_2.png'),
-  require('../assets/images/drink_3.png'),
-  require('../assets/images/drink_4.png')];
-const drinkIcons2 = [
-  require('../assets/images/drink_6.png'),
-  require('../assets/images/drink_7.png'),
-  require('../assets/images/drink_8.png'),
-  require('../assets/images/drink_9.png')];
 
 export default function AvatarSelection({ isVisible, onClose }: AvatarSelectionProps) {
   const { avatar, drink, updateAvatar, updateDrink } = useGameStore();
@@ -59,17 +39,17 @@ export default function AvatarSelection({ isVisible, onClose }: AvatarSelectionP
         <View style={styles.viewContainer}>
           <Text style={styles.selectAvatarText}>Select your avatar:</Text>
           <View style={styles.avatarCircles}>
-            {RenderCircles(avatarIcons1, false)}
+            {RenderCircles(AVATAR_ICONS_1, false)}
           </View>
           <View style={styles.avatarCircles}>
-            {RenderCircles(avatarIcons2, false)}
+            {RenderCircles(AVATAR_ICONS_2, false)}
           </View>
           <Text style={styles.selectDrinkText}>Select your drink:</Text>
           <View style={styles.drinkCircles}>
-            {RenderCircles(drinkIcons1, true)}
+            {RenderCircles(DRINK_ICONS_1, true)}
           </View>
           <View style={styles.drinkCircles}>
-            {RenderCircles(drinkIcons2, true)}
+            {RenderCircles(DRINK_ICONS_2, true)}
           </View>
           <Button
             marginTop={50}

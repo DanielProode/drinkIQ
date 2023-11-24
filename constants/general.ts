@@ -1,0 +1,62 @@
+export const CARD_PACKS = [{
+  id: 'estonia',
+  name: 'Estonia card pack',
+  image: require('../assets/images/estonia_deck.png'),
+  previewImage: require('../assets/images/estonia_deck_preview.png'),
+  text: "Information about the Estonia card pack.",
+}, {
+  id: 'football',
+  name: 'Football card pack',
+  image: require('../assets/images/football_deck.png'),
+  previewImage: require('../assets/images/football_deck_preview.png'),
+  text: "Information about the Football card pack.",
+}, {
+  id: 'birds',
+  name: 'Birds card pack',
+  image: require('../assets/images/bird_deck.png'),
+  previewImage: require('../assets/images/birds_deck_preview.png'),
+  text: "Information about the Birds card pack.",
+}];
+export const DEFAULT_PACK = 'estonia';
+
+export const GAME_CODE_MIN = 100000;
+export const GAME_CODE_MAX = 999999;
+
+export const DEFAULT_CARD_COUNT = 10;
+
+export const DRINKIQ_LOGO_IMAGE = require('../assets/images/cheers_icon.png');
+export const EDIT_BUTTON_IMAGE = require('../assets/images/edit_button.png');
+
+export const AVATAR_ICONS_1 = [
+  require('../assets/images/avatar_1.png'),
+  require('../assets/images/avatar_2.png'),
+  require('../assets/images/avatar_3.png'),
+  require('../assets/images/avatar_4.png')];
+export const AVATAR_ICONS_2 = [
+  require('../assets/images/avatar_6.png'),
+  require('../assets/images/avatar_7.png'),
+  require('../assets/images/avatar_8.png'),
+  require('../assets/images/avatar_9.png')];
+export const DRINK_ICONS_1 = [
+  require('../assets/images/drink_1.png'),
+  require('../assets/images/drink_2.png'),
+  require('../assets/images/drink_3.png'),
+  require('../assets/images/drink_4.png')];
+export const DRINK_ICONS_2 = [
+  require('../assets/images/drink_6.png'),
+  require('../assets/images/drink_7.png'),
+  require('../assets/images/drink_8.png'),
+  require('../assets/images/drink_9.png')];
+
+export const BASE_CARD_IMAGE = require('../assets/images/card_stack_5.png');
+export const CARD_STACK_IMAGES = [
+  require('../assets/images/card_stack_1.png'),
+  require('../assets/images/card_stack_2.png'),
+  require('../assets/images/card_stack_3.png'),
+  require('../assets/images/card_stack_4.png'),
+  require('../assets/images/card_stack_5.png')
+];
+
+export const CORRECT_ANSWER_IMAGE = require('../assets/images/correct.png');
+export const WRONG_ANSWER_IMAGE = require('../assets/images/wrong.png');
+export const ANSWER_PREFIXES =  ["a. ", "b. ", "c. ", "d. "];

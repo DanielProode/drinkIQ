@@ -3,6 +3,7 @@ import { ImageBackground, Pressable, StyleSheet, Text, View, Image } from 'react
 
 import AnswerButton from './AnswerButton';
 import { QuestionsArray } from './CardStack';
+import { ANSWER_PREFIXES, CORRECT_ANSWER_IMAGE, WRONG_ANSWER_IMAGE } from '../constants/general';
 import useGameStore from '../store/gameStore';
 
 interface CardProps {
@@ -12,12 +13,11 @@ interface CardProps {
 };
 
 export default function Card({ onClose, handlePoints, questionElement }: CardProps) {
+  const { avatar, playableCardBackground } = useGameStore();
   const [isAnswered, setIsAnswered] = useState(false);
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number | null>(null);
   const [isAnswerCorrect, setIsAnswerCorrect] = useState(false);
   const correctAnswerIndex = questionElement.answers.findIndex((answer) => answer.isCorrect);
-  const prefixes = ["a. ", "b. ", "c. ", "d. "];
-  const { avatar, playableCardBackground } = useGameStore();
 
   const handleAnswerSelection = (answerIndex: number) => {
     if (!isAnswered) {
@@ -51,7 +51,7 @@ export default function Card({ onClose, handlePoints, questionElement }: CardPro
         <AnswerButton
           key={answerIndex}
           isAnswered={isAnswered}
-          text={prefixes[answerIndex] + answer.text}
+          text={ANSWER_PREFIXES[answerIndex] + answer.text}
           style={answerStyle}
           textStyle={textStyle}
           onPress={() => { 
@@ -96,9 +96,9 @@ export default function Card({ onClose, handlePoints, questionElement }: CardPro
       {isAnswered && (
         <View style={styles.statusCircle}>
           {isAnswerCorrect ? (
-            <Image style={styles.correctImage} source={require('../assets/images/correct.png')} />
+            <Image style={styles.correctImage} source={CORRECT_ANSWER_IMAGE} />
           ) : (
-            <Image style={styles.wrongImage} source={require('../assets/images/wrong.png')} />
+            <Image style={styles.wrongImage} source={WRONG_ANSWER_IMAGE} />
           )}
         </View>
       )}

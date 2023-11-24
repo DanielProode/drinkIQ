@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Keyboard, StyleSheet, Text, TextInput, View, TouchableWithoutFeedback } from 'react-native';
 
 import Button from '../components/Button';
+import { GAME_CODE_MAX, GAME_CODE_MIN } from '../constants/general';
 
 interface NewGameProps {
   navigation: NativeStackNavigationProp<any>;
@@ -15,7 +16,7 @@ export default function NewGame({ navigation }: NewGameProps) {
   // In the future, check if active game already exists with generated code
   const generateGameCode = () => {
     const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
-    const generatedGameCode = randomInt(100000, 999999).toString()
+    const generatedGameCode = randomInt(GAME_CODE_MIN, GAME_CODE_MAX).toString()
     return generatedGameCode;
   };
 

@@ -24,7 +24,6 @@ export default function ActiveGame({ route, navigation }: ActiveGameProps) {
   const [correctAnswerCount, setCorrectAnswerCount] = useState<number>(0);
   const [wrongAnswerCount, setWrongAnswerCount] = useState<number>(0);
   const { authUser } = useAuth();
-  const db = FIREBASE_DB;
   let gameWon = 0;
 
   const checkGameWinner = () => {
@@ -39,7 +38,7 @@ export default function ActiveGame({ route, navigation }: ActiveGameProps) {
   const updateUserData = async () => {
     try {
       if (authUser) {
-        const userDoc = doc(db, 'users', authUser.uid);
+        const userDoc = doc(FIREBASE_DB, 'users', authUser.uid);
         await updateDoc(userDoc, {
           total_points: increment(correctAnswerCount - wrongAnswerCount),
           total_drinks: increment(wrongAnswerCount),

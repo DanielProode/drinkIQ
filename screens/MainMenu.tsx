@@ -2,6 +2,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Image, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
+import { DRINKIQ_LOGO_IMAGE } from '../constants/general';
 import useUserStore from '../store/userStore';
 
 interface MainMenuProps {
@@ -13,8 +14,7 @@ export default function MainMenu({ navigation }: MainMenuProps) {
 
   return (
     <View style={styles.mainView}>
-      <Image style={styles.cheersIcon}
-        source={require('../assets/images/cheers_icon.png')} />
+      <Image style={styles.cheersIcon} source={DRINKIQ_LOGO_IMAGE} />
       <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
       <View style={styles.logoContainer}>
         <Text style={styles.welcomeMessage}>Hi {username}!</Text>

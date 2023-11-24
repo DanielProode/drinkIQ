@@ -3,28 +3,9 @@ import { useState } from 'react';
 import { Image, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
+import { CARD_PACKS } from '../constants/general';
 import useGameStore from '../store/gameStore';
 import useUserStore from '../store/userStore';
-
-const cardPacks = [{
-  id: 'estonia',
-  name: 'Estonia card pack',
-  image: require('../assets/images/estonia_deck.png'),
-  previewImage: require('../assets/images/estonia_deck_preview.png'),
-  text: "Information about the Estonia card pack.",
-}, {
-  id: 'football',
-  name: 'Football card pack',
-  image: require('../assets/images/football_deck.png'),
-  previewImage: require('../assets/images/football_deck_preview.png'),
-  text: "Information about the Football card pack.",
-}, {
-  id: 'birds',
-  name: 'Birds card pack',
-  image: require('../assets/images/bird_deck.png'),
-  previewImage: require('../assets/images/birds_deck_preview.png'),
-  text: "Information about the Birds card pack.",
-}];
 
 interface CardDeckSelectionProps {
   isVisible: boolean;
@@ -37,7 +18,7 @@ export default function CardDeckSelection({ isVisible, onClose }: CardDeckSelect
   const { packs_owned } = useUserStore();
 
   const renderDecks = () => {
-    return cardPacks.map((cardPack, index) => {
+    return CARD_PACKS.map((cardPack, index) => {
       const isSelected = selectedCardIndex === index;
       return (
         <View style={styles.cardsContainer} key={index}>
