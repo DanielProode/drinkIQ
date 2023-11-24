@@ -4,8 +4,8 @@ import { Pressable, View, Image, StyleSheet, Text } from 'react-native';
 
 import Card from './Card';
 import LoadingScreen from '../components/LoadingScreen';
-import useGameStore from '../store/gameStore';
 import { FIREBASE_DB } from '../firebaseConfig.js';
+import useGameStore from '../store/gameStore';
 
 interface CardStackProps {
   onGameOver: () => void;

@@ -1,11 +1,30 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
-import { Image, ImageSourcePropType, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
-import { useDeck } from '../context/deckContext';
 import useGameStore from '../store/gameStore';
+import useUserStore from '../store/userStore';
 
+const cardPacks = [{
+  id: 'estonia',
+  name: 'Estonia card pack',
+  image: require('../assets/images/estonia_deck.png'),
+  previewImage: require('../assets/images/estonia_deck_preview.png'),
+  text: "Information about the Estonia card pack.",
+}, {
+  id: 'football',
+  name: 'Football card pack',
+  image: require('../assets/images/football_deck.png'),
+  previewImage: require('../assets/images/football_deck_preview.png'),
+  text: "Information about the Football card pack.",
+}, {
+  id: 'birds',
+  name: 'Birds card pack',
+  image: require('../assets/images/bird_deck.png'),
+  previewImage: require('../assets/images/birds_deck_preview.png'),
+  text: "Information about the Birds card pack.",
+}];
 
 interface CardDeckSelectionProps {
   isVisible: boolean;
@@ -15,11 +34,10 @@ interface CardDeckSelectionProps {
 export default function CardDeckSelection({ isVisible, onClose }: CardDeckSelectionProps) {
   const [selectedCardIndex, setSelectedCardIndex] = useState(-1);
   const { updatePlayableDeckImage, updatePlayableDeck, updatePlayableCardBackground } = useGameStore();
-  const { getDecks } = useDeck();
+  const { packs_owned } = useUserStore();
 
-  
-  const renderDecks = (cardDecks: { id: string; name: string; image: ImageSourcePropType; previewImage: ImageSourcePropType; owned: boolean }[]) => {
-    return cardDecks.map((cardDeck, index) => {
+  const renderDecks = () => {
+    return cardPacks.map((cardPack, index) => {
       const isSelected = selectedCardIndex === index;
       return (
         <View style={styles.cardsContainer} key={index}>
@@ -31,23 +49,22 @@ export default function CardDeckSelection({ isVisible, onClose }: CardDeckSelect
               isSelected && styles.cardDeckContainerSelected,
             ]}
             onPress={() => {
-              updatePlayableDeckImage(cardDeck.previewImage)
-              updatePlayableDeck(cardDeck.id)
-              updatePlayableCardBackground(cardDeck.image)
+              updatePlayableDeckImage(cardPack.previewImage)
+              updatePlayableDeck(cardPack.id)
+              updatePlayableCardBackground(cardPack.image)
               setSelectedCardIndex(index);
             }}
-            disabled={!cardDeck.owned} >
-            <Image style={styles.cardDeck} source={cardDeck.previewImage} />
-            {!cardDeck.owned && <View style={styles.overlay} />}
+            disabled={!(packs_owned && packs_owned.includes(cardPack.id))} >
+            <Image style={styles.cardDeck} source={cardPack.previewImage} />
+            {!(packs_owned && packs_owned.includes(cardPack.id)) && <View style={styles.overlay} />}
           </Pressable>
-          {!cardDeck.owned && (
+          {!(packs_owned && packs_owned.includes(cardPack.id)) && (
             <View style={styles.priceContainer}>
               <Text style={styles.priceText}>BUY FOR 4.99€</Text>
             </View>
           )}
         </View>
       );
-
     });
   }
 
@@ -62,7 +79,7 @@ export default function CardDeckSelection({ isVisible, onClose }: CardDeckSelect
         <View style={styles.decksContainer}>
           <Text style={styles.text}>CHOOSE A DECK</Text>
           <View style={styles.viewContainer}>
-            {renderDecks(getDecks())}
+            {renderDecks()}
           </View>
           <Button
             marginTop={20}
