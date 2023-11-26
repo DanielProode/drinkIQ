@@ -17,7 +17,12 @@ export const CARD_PACKS = [{
   previewImage: require('../assets/images/birds_deck_preview.png'),
   text: "Information about the Birds card pack.",
 }];
+
 export const DEFAULT_PACK = 'estonia';
+export const DEFAULT_AVATAR_IMAGE = require('../assets/images/avatar_1.png');
+export const DEFAULT_DRINK_IMAGE = require('../assets/images/drink_1.png');
+export const DEFAULT_DECK_IMAGE = require('../assets/images/estonia_deck.png');
+export const DEFAULT_DECK_PREVIEW_IMAGE = require('../assets/images/estonia_deck_preview.png');
 
 export const GAME_CODE_MIN = 100000;
 export const GAME_CODE_MAX = 999999;

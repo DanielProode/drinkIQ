@@ -1,11 +1,7 @@
 import { ImageSourcePropType } from "react-native";
 import { create } from "zustand";
 
-const defaultAvatar = require('../assets/images/avatar_1.png');
-const defaultDrink = require('../assets/images/drink_1.png');
-const defaultCardDeckImage = require('../assets/images/estonia_deck.png');
-const defaultCardDeck = "estonia";
-const defaultPlayableCardBackground = require('../assets/images/estonia_deck_preview.png');
+import { DEFAULT_AVATAR_IMAGE, DEFAULT_DECK_PREVIEW_IMAGE, DEFAULT_DRINK_IMAGE, DEFAULT_PACK } from "../constants/general";
 
 type GameChoices = {
   avatar: ImageSourcePropType;
@@ -24,11 +20,11 @@ type GameChoiceActions = {
 }
 
 const useGameStore = create<GameChoices & GameChoiceActions>((set) => ({
-  avatar: defaultAvatar,
-  drink: defaultDrink,
-  playableDeckImage: defaultCardDeckImage,
-  playableDeck: defaultCardDeck,
-  playableCardBackground: defaultPlayableCardBackground,
+  avatar: DEFAULT_AVATAR_IMAGE,
+  drink: DEFAULT_DRINK_IMAGE,
+  playableDeckImage: DEFAULT_DRINK_IMAGE,
+  playableDeck: DEFAULT_PACK,
+  playableCardBackground: DEFAULT_DECK_PREVIEW_IMAGE,
   updateAvatar: (avatar: ImageSourcePropType) => set(() => ({ avatar })),
   updateDrink: (drink: ImageSourcePropType) => set(() => ({ drink })),
   updatePlayableDeckImage: (playableDeckImage: ImageSourcePropType) => set(() => ({ playableDeckImage })),
