@@ -4,8 +4,9 @@ import { Pressable, View, Image, StyleSheet, Text } from 'react-native';
 
 import Card from './Card';
 import LoadingScreen from '../components/LoadingScreen';
-import { useGame } from '../context/gameContext';
+import { BASE_CARD_IMAGE, CARD_STACK_IMAGES, DEFAULT_CARD_COUNT } from '../constants/general';
 import { FIREBASE_DB } from '../firebaseConfig.js';
+import useGameStore from '../store/gameStore';
 
 interface CardStackProps {
   onGameOver: () => void;
@@ -25,24 +26,14 @@ interface AnswersArray {
   isCorrect: boolean;
 };
 
-const baseCardImage = require('../assets/images/card_stack_5.png');
-const cardImageArray = [
-  require('../assets/images/card_stack_1.png'),
-  require('../assets/images/card_stack_2.png'),
-  require('../assets/images/card_stack_3.png'),
-  require('../assets/images/card_stack_4.png'),
-  require('../assets/images/card_stack_5.png')
-];
-
 export default function CardStack({ onGameOver, setPoints, setDrinks, points, drinks }: CardStackProps) {
-  const [cardCount, setCardCount] = useState(10);
-  const [cardImage, setCardImage] = useState(baseCardImage);
+  const [cardCount, setCardCount] = useState(DEFAULT_CARD_COUNT);
+  const [cardImage, setCardImage] = useState(BASE_CARD_IMAGE);
   const [isCardVisible, setIsCardVisible] = useState(false);
   const [questionsArray, setQuestionsArray] = useState<QuestionsArray[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { playableDeck } = useGame();
-  const db = FIREBASE_DB;
-  const questionsCollection = collection(db, "packs", playableDeck, "questions");
+  const { playableDeck } = useGameStore();
+  const questionsCollection = collection(FIREBASE_DB, "packs", playableDeck, "questions");
 
   useEffect(() => {
     async function loadQuestions() {
@@ -65,7 +56,7 @@ export default function CardStack({ onGameOver, setPoints, setDrinks, points, dr
 
   useEffect(() => {
     if (cardCount < 5 && cardCount > 0) {
-      setCardImage(cardImageArray[cardCount - 1]);
+      setCardImage(CARD_STACK_IMAGES[cardCount - 1]);
     }
   }, [cardCount]);
 
@@ -79,7 +70,7 @@ export default function CardStack({ onGameOver, setPoints, setDrinks, points, dr
     if (cardCount > 0) setCardCount(cardCount - 1)
   };
 
-  function handlePoints (answerState: boolean) {
+  function handlePoints(answerState: boolean) {
     if (answerState) {
       setPoints(points + 1);
     } else {

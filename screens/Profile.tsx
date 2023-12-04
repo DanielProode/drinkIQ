@@ -2,11 +2,13 @@
 import { useEffect } from 'react';
 import { StyleSheet, View, Text, Image, Pressable } from 'react-native';
 
+import { EDIT_BUTTON_IMAGE } from '../constants/general';
 import { useAuth } from '../context/authContext';
+import useUserStore from '../store/userStore';
 
 export default function Profile() {
-  const { userProfile, listenToUserData } = useAuth();
-  const editImage = require('../assets/images/edit_button.png');
+  const { listenToUserData } = useAuth();
+  const { username, games_won, total_points, total_drinks, packs_owned } = useUserStore();
 
   useEffect(() => {
     const unsubscribe = listenToUserData();
@@ -24,25 +26,25 @@ export default function Profile() {
           <Pressable style={({ pressed }) => [
             { opacity: pressed ? 0.5 : 1.0 }
           ]}>
-            <Text style={styles.text}>{userProfile?.username} <Image style={styles.edit} source={editImage} /></Text>
+            <Text style={styles.text}>{username} <Image style={styles.edit} source={EDIT_BUTTON_IMAGE} /></Text>
           </Pressable>
         </View>
 
         <View style={styles.textRow}>
           <Text style={styles.text}>Games won: </Text>
-          <Text style={styles.text}>{userProfile?.games_won}</Text>
+          <Text style={styles.text}>{games_won}</Text>
         </View>
         <View style={styles.textRow}>
           <Text style={styles.text}>Total points: </Text>
-          <Text style={styles.text}>{userProfile?.total_points}</Text>
+          <Text style={styles.text}>{total_points}</Text>
         </View>
         <View style={styles.textRow}>
           <Text style={styles.text}>Total drinks: </Text>
-          <Text style={styles.text}>{userProfile?.total_drinks}</Text>
+          <Text style={styles.text}>{total_drinks}</Text>
         </View>
         <View style={styles.textRow}>
           <Text style={styles.text}>Packs owned: </Text>
-          <Text style={styles.text}>{userProfile?.packs_owned}</Text>
+          <Text style={styles.text}>{packs_owned}</Text>
         </View>
 
 

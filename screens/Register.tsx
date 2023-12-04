@@ -3,25 +3,23 @@ import { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Pressable, TouchableWithoutFeedback, Keyboard } from 'react-native';
 
 import Button from '../components/Button';
+import { DEFAULT_PACK } from '../constants/general';
 import { useAuth } from '../context/authContext';
 import { FIREBASE_DB } from '../firebaseConfig.js';
 import TermsAndConditions from '../modals/TermsAndConditions';
 
 export default function Register() {
-
   const [isModalVisible, setIsModalVisible] = useState(false);
-
-  const toggleModal = () => {
-    setIsModalVisible(!isModalVisible);
-  }
-
   const [email, setEmail] = useState('');
   const [nickname, setNickname] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [error, setError] = useState('');
   const { signUp } = useAuth();
-  const db = FIREBASE_DB;
+
+  const toggleModal = () => {
+    setIsModalVisible(!isModalVisible);
+  }
 
   const handleSignUp = async () => {
     setError('');
@@ -32,13 +30,13 @@ export default function Register() {
       }
       const registerResponse = await signUp(email, password);
       const user = registerResponse.user;
-      const usersCollection = doc(db, 'users', user.uid);
+      const usersCollection = doc(FIREBASE_DB, 'users', user.uid);
       await setDoc(usersCollection, {
         username: nickname,
         games_won: 0,
         total_drinks: 0,
         total_points: 0,
-        packs_owned: ["estonia"]
+        packs_owned: [DEFAULT_PACK]
       });
     } catch (error: any) {
       setError(error.message);
