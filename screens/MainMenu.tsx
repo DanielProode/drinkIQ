@@ -17,7 +17,7 @@ export default function MainMenu({ navigation }: MainMenuProps) {
       <Image style={styles.cheersIcon} source={DRINKIQ_LOGO_IMAGE} />
       <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
       <View style={styles.logoContainer}>
-        <Text style={styles.welcomeMessage}>Hi {username}!</Text>
+        <Text style={styles.welcomeMessage}>Good morning {username}!</Text>
         <Text style={styles.welcomeMessage}>Welcome to drinkIQ!</Text>
       </View>
       <View style={styles.bodyContainer}>
