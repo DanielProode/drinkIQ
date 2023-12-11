@@ -2,12 +2,14 @@ import { RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useState } from 'react';
 import { Image, ImageSourcePropType, Pressable, StyleSheet, Text, View } from 'react-native';
+import { DEFAULT_AVATAR_IMAGE, DEFAULT_DRINK_IMAGE } from '../constants/general';
 
 import Button from '../components/Button';
 import AvatarSelection from '../modals/AvatarSelection';
 import CardDeckSelection from '../modals/CardDeckSelection';
 import useGameStore from '../store/gameStore';
 import useUserStore from '../store/userStore';
+import PlayerProfile from '../modals/PlayerProfile';
 
 interface LobbyProps {
   route: RouteProp<{
@@ -20,8 +22,7 @@ interface LobbyProps {
 };
 
 interface Player {
-  id: number;
-  name: string;
+  username: string;
   avatar: ImageSourcePropType;
   drink: ImageSourcePropType;
 }
@@ -30,32 +31,57 @@ interface ShowPlayersProps {
   playerArray: Player[];
 }
 
-const joinedPlayers = [
-  { id: 1, name: "Host Name", avatar: require('../assets/images/avatar_1.png'), drink: require('../assets/images/drink_1.png') },
-  { id: 2, name: "Host Name2", avatar: require('../assets/images/avatar_1.png'), drink: require('../assets/images/drink_1.png') },
-  { id: 3, name: "Host Name", avatar: require('../assets/images/avatar_1.png'), drink: require('../assets/images/drink_1.png') },
-  { id: 4, name: "Host Name", avatar: require('../assets/images/avatar_1.png'), drink: require('../assets/images/drink_1.png') },
-  { id: 5, name: "Host Name", avatar: require('../assets/images/avatar_1.png'), drink: require('../assets/images/drink_1.png') },
-]
+const joinedPlayers: Player[] = []
+
+var selectedPlayer = {username: "Placeholder", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE};
+
+// FETCH all joined players in session excluding host (max 7)
+const fetchedPlayersImitation = [ {username: "Bot Alfred", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
+                                  {username: "Bot Allu", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
+                                  {username: "Bot Pete", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
+                                  {username: "Bot Viktor", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
+                                  {username: "Bot Albert", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
+                                  {username: "Bot Sasha", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
+                                  {username: "Bot Anubis", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
+                                ]
+
+const fetchedPlayerObjects: Player[] = fetchedPlayersImitation
 
 export default function Lobby({ route, navigation }: LobbyProps) {
   const { gameCode, gameHost } = route.params;
   const { username } = useUserStore();
   const { avatar, drink, playableDeckImage } = useGameStore();
   const [isAvatarSelectionModalVisible, setIsAvatarSelectionModalVisible] = useState(false);
+  const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
   const [isCardDeckSelectionModalVisible, setIsCardDeckSelectionModalVisible] = useState(false);
+  const [selectedProfile, setSelectedProfile] = useState(selectedPlayer);
   const updatedJoinedPlayers = [...joinedPlayers];
-  const userToUpdate = updatedJoinedPlayers.find(player => player.id === 1);
 
-  if (userToUpdate) {
-    userToUpdate.avatar = avatar;
-    userToUpdate.drink = drink;
-    userToUpdate.name = username;
+
+  const currentPlayer: Player = {
+    username,
+    avatar,
+    drink
   }
+
+  updatedJoinedPlayers.push(currentPlayer);
+
+  // Imitate looping over fetched players
+  fetchedPlayerObjects.map((fetchedPlayerObject) => (
+    updatedJoinedPlayers.push(fetchedPlayerObject)
+  ))
 
   const toggleAvatarSelectionModal = () => {
     setIsAvatarSelectionModalVisible(!isAvatarSelectionModalVisible);
   };
+
+  const toggleProfileModal = () => {
+    setIsProfileModalVisible(!isProfileModalVisible);
+  }
+
+  const checkSelectedPlayer = (player: Player) => {
+    setSelectedProfile(player);
+  }
 
   const toggleCardDeckSelectionModal = () => {
     if (gameHost) setIsCardDeckSelectionModalVisible(!isCardDeckSelectionModalVisible);
@@ -67,18 +93,23 @@ export default function Lobby({ route, navigation }: LobbyProps) {
         {playerArray.map((player) => (
           <Pressable
             style={styles.playerContainer}
-            key={player.id}
+            //KEY set as username - implement unique ID's and replace
+            key={player.username}
             onPress={() => {
-              console.log(player.name);
-              toggleAvatarSelectionModal();
-              // TODO: If clicked on other players avatar then check their profile instead
+              console.log(player.username);
+              if (player.username == currentPlayer.username) {
+                toggleAvatarSelectionModal();
+              } else {
+                toggleProfileModal();
+                checkSelectedPlayer(player);
+              }
             }}
           >
             <View style={styles.avatarCircle}>
               <Image style={styles.avatar} source={player.avatar} />
               <Image style={styles.drink} source={player.drink} />
             </View>
-            <Text style={styles.name}>{player.name}</Text>
+            <Text style={styles.name}>{player.username}</Text>
           </Pressable>
         ))}
       </>
@@ -88,13 +119,13 @@ export default function Lobby({ route, navigation }: LobbyProps) {
   return (
     <View style={styles.gameView}>
       <AvatarSelection isVisible={isAvatarSelectionModalVisible} onClose={toggleAvatarSelectionModal} />
+      <PlayerProfile profile={selectedProfile} isVisible={isProfileModalVisible} onClose={toggleProfileModal} />
       <CardDeckSelection onClose={toggleCardDeckSelectionModal} isVisible={isCardDeckSelectionModalVisible} />
       <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
       <Text style={styles.gameCode}>#{gameCode}</Text>
       <Pressable style={styles.deckImageContainer} onPress={() => { toggleCardDeckSelectionModal() }}>
         <Image style={styles.deck} source={playableDeckImage} />
       </Pressable>
-      <Text style={styles.waitingText}>Waiting in the lobby:</Text>
       <View style={styles.joinedPlayers}>
         <ShowPlayers playerArray={updatedJoinedPlayers} />
       </View>
@@ -130,11 +161,11 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginLeft: 10,
     aspectRatio: 1.5,
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
   },
   avatarCircle: {
-    width: '40%',
+    width: '48%',
     aspectRatio: 1 / 1,
     backgroundColor: 'white',
     borderRadius: 40,
@@ -164,12 +195,6 @@ const styles = StyleSheet.create({
     height: '80%',
     alignSelf: 'center',
   },
-  name: {
-    marginLeft: 10,
-    fontSize: 18,
-    fontFamily: 'Basic',
-    color: 'white',
-  },
   drink: {
     position: 'absolute',
     resizeMode: 'contain',
@@ -177,6 +202,12 @@ const styles = StyleSheet.create({
     height: '45%',
     alignSelf: 'flex-end',
     bottom: 0,
+  },
+  name: {
+    marginLeft: 10,
+    fontSize: 18,
+    fontFamily: 'Basic',
+    color: 'white',
   },
   deck: {
     flex: 1,

@@ -63,7 +63,6 @@ export default function ActiveGame({ route, navigation }: ActiveGameProps) {
   return (
     <>
       <View style={styles.gameBackground}>
-        <View style={styles.gameView}>
           <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
           <Text style={styles.gameCode}>#{gameCode}</Text>
           {isGameOver ? (
@@ -77,9 +76,10 @@ export default function ActiveGame({ route, navigation }: ActiveGameProps) {
                 text="BACK TO LOBBY" />
             </>
           ) : (
+            <>
             <CardStack onGameOver={handleGameOver} points={correctAnswerCount} drinks={wrongAnswerCount} setPoints={setCorrectAnswerCount} setDrinks={setWrongAnswerCount} />
+            </>
           )}
-        </View>
       </View>
     </>
   );
@@ -90,10 +90,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     backgroundColor: '#1E1E1E',
-  },
-  gameView: {
-    flex: 1,
-    alignItems: 'center',
   },
   drinkIQLogo: {
     fontFamily: 'Knewave',
