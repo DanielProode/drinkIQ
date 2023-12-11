@@ -15,7 +15,6 @@ interface PlayerProfileProps {
 };
 
 export default function PlayerProfile({ profile, isVisible, onClose }: PlayerProfileProps) {
-console.log(profile);
   return (
     <Modal visible={isVisible} animationType='slide' presentationStyle='pageSheet'>
       <View style={styles.profileView}>

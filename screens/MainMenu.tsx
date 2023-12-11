@@ -15,17 +15,15 @@ export default function MainMenu({ navigation }: MainMenuProps) {
   return (
     <View style={styles.mainView}>
       <Image style={styles.cheersIcon} source={DRINKIQ_LOGO_IMAGE} />
-      <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
-      <View style={styles.logoContainer}>
-        <Text style={styles.welcomeMessage}>Good morning {username}!</Text>
-        <Text style={styles.welcomeMessage}>Welcome to drinkIQ!</Text>
-      </View>
+      <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
       <View style={styles.bodyContainer}>
         <View >
           <Button onPress={() => {
             navigation.navigate('NewGame');
           }}
-            text="New game" />
+            text="New game"
+            buttonBgColor="#F76D31"
+            buttonBorderColor="#F76D31" />
         </View>
         <View style={styles.cardButtonContainer}>
           <Button onPress={() => {
@@ -60,10 +58,14 @@ const styles = StyleSheet.create({
     opacity: 0.3,
   },
   drinkIQLogo: {
-    fontFamily: 'Knewave',
+    fontFamily: 'JetbrainsMono-Bold',
     marginTop: 150,
     fontSize: 60,
     color: 'white',
+    letterSpacing: 3,
+  },
+  drinkIQOrange: {
+    color: '#F76D31',
   },
   logoContainer: {
     alignItems: 'center',
@@ -78,7 +80,7 @@ const styles = StyleSheet.create({
   },
   bodyContainer: {
     flex: 4,
-    marginTop: 20,
+    marginTop: 160,
   },
   cardButtonContainer: {
     marginTop: 20,

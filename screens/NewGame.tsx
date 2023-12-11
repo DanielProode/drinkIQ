@@ -41,7 +41,7 @@ export default function NewGame({ navigation }: NewGameProps) {
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} >
       <View style={styles.newGameView}>
-        <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
+      <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
         <View style={styles.gameCodeContainer}>
           <Text style={styles.hashtag}>#</Text>
           <TextInput
@@ -62,14 +62,18 @@ export default function NewGame({ navigation }: NewGameProps) {
               navigation.navigate('Lobby', { gameCode })
             }}
             text="JOIN GAME"
-            disabled={disabled} />
+            disabled={disabled}
+            buttonBgColor="#F76D31"
+            buttonBorderColor="#F76D31" />
         </View>
-        <Text style={styles.hostGameText}>OR</Text>
+        <Text style={styles.hostGameText}>Want to create your own game?</Text>
         <View style={styles.hostGameButton}>
           <Button onPress={() => {
             navigation.navigate('Lobby', { gameCode: generateGameCode(), gameHost: true });
           }}
-            text="HOST GAME" />
+            text="HOST GAME"
+            buttonBgColor="#D36C50"
+            buttonBorderColor="#D36C50" />
         </View>
       </View>
     </TouchableWithoutFeedback>
@@ -83,10 +87,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   drinkIQLogo: {
-    fontFamily: 'Knewave',
+    fontFamily: 'JetbrainsMono-Bold',
     marginTop: 50,
     fontSize: 30,
     color: 'white',
+    letterSpacing: 3,
+  },
+  drinkIQOrange: {
+    color: '#F76D31',
   },
   buttonContainer: {
     marginTop: 30,
@@ -104,12 +112,12 @@ const styles = StyleSheet.create({
   },
   gameCodeInput: {
     marginTop: 20,
-    width: 120,
+    width: 150,
     borderBottomWidth: 3,
     padding: 10,
     borderColor: 'gray',
     textAlign: 'center',
-    fontFamily: 'CarterOne-Regular',
+    fontFamily: 'JosefinSans-Bold',
     fontSize: 24,
     color: 'white',
   },
@@ -117,12 +125,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: 50,
     width: 100,
-    marginTop: 60,
+    marginTop: 30,
   },
   hostGameText: {
-    fontFamily: 'CarterOne-Regular',
+    fontFamily: 'JosefinSans-Bold',
     color: 'white',
-    fontSize: 40,
+    fontSize: 18,
     marginTop: 130,
   },
 });

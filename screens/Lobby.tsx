@@ -2,7 +2,7 @@ import { RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useState } from 'react';
 import { Image, ImageSourcePropType, Pressable, StyleSheet, Text, View } from 'react-native';
-import { DEFAULT_AVATAR_IMAGE, DEFAULT_DRINK_IMAGE } from '../constants/general';
+import { DEFAULT_AVATAR_IMAGE, DEFAULT_DRINK_IMAGE, CARD_PACKS } from '../constants/general';
 
 import Button from '../components/Button';
 import AvatarSelection from '../modals/AvatarSelection';
@@ -50,7 +50,7 @@ const fetchedPlayerObjects: Player[] = fetchedPlayersImitation
 export default function Lobby({ route, navigation }: LobbyProps) {
   const { gameCode, gameHost } = route.params;
   const { username } = useUserStore();
-  const { avatar, drink, playableDeckImage } = useGameStore();
+  const { avatar, drink, playableDeckImage, playableDeckName } = useGameStore();
   const [isAvatarSelectionModalVisible, setIsAvatarSelectionModalVisible] = useState(false);
   const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
   const [isCardDeckSelectionModalVisible, setIsCardDeckSelectionModalVisible] = useState(false);
@@ -90,13 +90,12 @@ export default function Lobby({ route, navigation }: LobbyProps) {
   const ShowPlayers = ({ playerArray }: ShowPlayersProps) => {
     return (
       <>
-        {playerArray.map((player) => (
+        {playerArray.map((player, index) => (
           <Pressable
             style={styles.playerContainer}
             //KEY set as username - implement unique ID's and replace
-            key={player.username}
+            key={index}
             onPress={() => {
-              console.log(player.username);
               if (player.username == currentPlayer.username) {
                 toggleAvatarSelectionModal();
               } else {
@@ -105,7 +104,7 @@ export default function Lobby({ route, navigation }: LobbyProps) {
               }
             }}
           >
-            <View style={styles.avatarCircle}>
+            <View style={[styles.avatarCircle, player.username == currentPlayer.username && styles.currentAvatarCircle]}>
               <Image style={styles.avatar} source={player.avatar} />
               <Image style={styles.drink} source={player.drink} />
             </View>
@@ -121,11 +120,12 @@ export default function Lobby({ route, navigation }: LobbyProps) {
       <AvatarSelection isVisible={isAvatarSelectionModalVisible} onClose={toggleAvatarSelectionModal} />
       <PlayerProfile profile={selectedProfile} isVisible={isProfileModalVisible} onClose={toggleProfileModal} />
       <CardDeckSelection onClose={toggleCardDeckSelectionModal} isVisible={isCardDeckSelectionModalVisible} />
-      <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
+      <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
       <Text style={styles.gameCode}>#{gameCode}</Text>
       <Pressable style={styles.deckImageContainer} onPress={() => { toggleCardDeckSelectionModal() }}>
         <Image style={styles.deck} source={playableDeckImage} />
       </Pressable>
+      <Text style={styles.deckName}>{playableDeckName}</Text>
       <View style={styles.joinedPlayers}>
         <ShowPlayers playerArray={updatedJoinedPlayers} />
       </View>
@@ -135,7 +135,9 @@ export default function Lobby({ route, navigation }: LobbyProps) {
             marginTop={10}
             onPress={() =>
               navigation.navigate('ActiveGame', { gameCode })}
-            text="START GAME" />
+            text="START GAME"
+            buttonBgColor="#F76D31"
+            buttonBorderColor="#F76D31" />
         ) : (
           <Text style={styles.waitingText}>Waiting for host to start the game...</Text>
         )}
@@ -151,10 +153,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#1E1E1E',
   },
   drinkIQLogo: {
-    fontFamily: 'Knewave',
+    fontFamily: 'JetbrainsMono-Bold',
     marginTop: 50,
     fontSize: 30,
-    color: 'white',
+    color: '#F2F2F2',
+    letterSpacing: 3,
+  },
+  drinkIQOrange: {
+    fontFamily: 'JetbrainsMono-Bold',
+    marginTop: 50,
+    fontSize: 30,
+    color: '#F76D31',
   },
   playerContainer: {
     width: '40%',
@@ -168,6 +177,16 @@ const styles = StyleSheet.create({
     width: '48%',
     aspectRatio: 1 / 1,
     backgroundColor: 'white',
+    borderWidth: 2,
+    borderColor: '#00000090',
+    borderRadius: 40,
+  },
+  currentAvatarCircle: {
+    width: '48%',
+    aspectRatio: 1 / 1,
+    backgroundColor: 'white',
+    borderWidth: 2,
+    borderColor: '#F76D31',
     borderRadius: 40,
   },
   deckImageContainer: {
@@ -175,15 +194,20 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     aspectRatio: 1 / 1,
     marginTop: 20,
-    marginBottom: 20,
     borderRadius: 10,
+  },
+  deckName: {
+    marginTop: 8,
+    fontSize: 18,
+    color: 'white',
+    fontFamily: 'JosefinSans-Bold',
   },
   joinedPlayers: {
     flex: 1,
     width: '95%',
     flexWrap: 'wrap',
     justifyContent: 'flex-start',
-    alignContent: 'space-around',
+    alignContent: 'center',
   },
   buttonContainer: {
     flex: 0.3,
@@ -204,9 +228,9 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   name: {
-    marginLeft: 10,
+    marginTop: 10,
     fontSize: 18,
-    fontFamily: 'Basic',
+    fontFamily: 'JosefinSans-Medium',
     color: 'white',
   },
   deck: {
@@ -214,19 +238,17 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     alignSelf: 'center',
-    borderColor: '#3395EF',
-    borderWidth: 1,
     borderRadius: 10,
   },
   waitingText: {
     color: 'white',
-    fontFamily: 'Basic',
-    marginTop: 10,
+    fontFamily: 'JosefinSans-Bold',
+    marginTop: 20,
     fontSize: 20,
   },
   gameCode: {
     fontSize: 20,
     color: 'white',
-    fontFamily: 'Basic',
+    fontFamily: 'JosefinSans-Regular',
   },
 });

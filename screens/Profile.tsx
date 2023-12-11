@@ -18,7 +18,7 @@ export default function Profile() {
   return (
     <View style={styles.profileView}>
       <View style={styles.logoView}>
-        <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
+      <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
       </View>
       <View style={styles.textView}>
         <View style={styles.textRow}>
@@ -67,10 +67,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   drinkIQLogo: {
-    fontFamily: 'Knewave',
+    fontFamily: 'JetbrainsMono-Bold',
     marginTop: 50,
     fontSize: 30,
     color: 'white',
+    letterSpacing: 3,
+  },
+  drinkIQOrange: {
+    color: '#F76D31',
   },
   textView: {
     flex: 2,

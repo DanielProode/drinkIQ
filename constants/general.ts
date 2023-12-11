@@ -19,6 +19,7 @@ export const CARD_PACKS = [{
 }];
 
 export const DEFAULT_PACK = 'estonia';
+export const DEFAULT_PACK_NAME = 'Estonia card pack';
 export const DEFAULT_AVATAR_IMAGE = require('../assets/images/avatar_1.png');
 export const DEFAULT_DRINK_IMAGE = require('../assets/images/drink_1.png');
 export const DEFAULT_DECK_IMAGE = require('../assets/images/estonia_deck.png');
@@ -53,7 +54,7 @@ export const DRINK_ICONS_2 = [
   require('../assets/images/drink_8.png'),
   require('../assets/images/drink_9.png')];
 
-export const BASE_CARD_IMAGE = require('../assets/images/card_stack_5.png');
+export const BASE_CARD_IMAGE = require('../assets/images/card_stack_1.png');
 export const CARD_STACK_IMAGES = [
   require('../assets/images/card_stack_1.png'),
   require('../assets/images/card_stack_2.png'),

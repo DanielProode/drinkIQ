@@ -63,7 +63,7 @@ export default function ActiveGame({ route, navigation }: ActiveGameProps) {
   return (
     <>
       <View style={styles.gameBackground}>
-          <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
+      <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
           <Text style={styles.gameCode}>#{gameCode}</Text>
           {isGameOver ? (
             <>
@@ -92,10 +92,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#1E1E1E',
   },
   drinkIQLogo: {
-    fontFamily: 'Knewave',
+    fontFamily: 'JetbrainsMono-Bold',
     marginTop: 50,
     fontSize: 30,
     color: 'white',
+    letterSpacing: 3,
+  },
+  drinkIQOrange: {
+    fontFamily: 'JetbrainsMono-Bold',
+    marginTop: 50,
+    fontSize: 30,
+    color: '#F76D31',
   },
   gameText: {
     fontSize: 50,
@@ -136,7 +143,7 @@ const styles = StyleSheet.create({
   gameCode: {
     fontSize: 20,
     color: 'white',
-    fontFamily: 'Basic',
+    fontFamily: 'JosefinSans-Regular',
   },
   cardViewContainer: {
     marginTop: 130,

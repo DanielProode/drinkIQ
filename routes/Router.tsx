@@ -42,6 +42,10 @@ export default function Router() {
     'Cabin-SemiBold': require('../assets/fonts/Cabin-SemiBold.ttf'),
     'CarterOne-Regular': require('../assets/fonts/CarterOne-Regular.ttf'),
     'Knewave': require('../assets/fonts/Knewave.ttf'),
+    'JetbrainsMono-Bold': require('../assets/fonts/JetBrainsMono-Bold.ttf'),
+    'JosefinSans-Regular': require('../assets/fonts/JosefinSans-Regular.ttf'),
+    'JosefinSans-Bold': require('../assets/fonts/JosefinSans-Bold.ttf'),
+    'JosefinSans-Medium': require('../assets/fonts/JosefinSans-Medium.ttf'),
   });
 
   useEffect(() => {

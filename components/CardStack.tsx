@@ -77,7 +77,7 @@ export default function CardStack({ onGameOver, setPoints, setDrinks, points, dr
 
   useEffect(() => {
     if (cardCount < 5 && cardCount > 0) {
-      setCardImage(CARD_STACK_IMAGES[cardCount - 1]);
+      setCardImage(CARD_STACK_IMAGES[0]);
     }
   }, [cardCount]);
 
@@ -111,7 +111,7 @@ export default function CardStack({ onGameOver, setPoints, setDrinks, points, dr
     styles.fifthAvatar,
     styles.sixthAvatar,
     styles.seventhAvatar,
-    styles.eighthAvatar,
+    styles.eighthAvatar,    
   ];
 
   const RenderPlayers = ({ playerArray }: RenderPlayersProps) => {
@@ -134,16 +134,12 @@ export default function CardStack({ onGameOver, setPoints, setDrinks, points, dr
         ))}
         </>
     );
-    
   };
 
   return (
+    <>
+    {isCardVisible && <Card handlePoints={handlePoints} onClose={toggleCardVisibility} questionElement={questionsArray[cardCount]} />}      
     <View style={styles.gameView}>
-      {isCardVisible && <Card handlePoints={handlePoints} onClose={toggleCardVisibility} questionElement={questionsArray[cardCount]} />}
-      <Text style={styles.cardsLeft}>Cards Left: {cardCount}</Text>
-      <Text style={styles.cardsLeft}>Points: {points - drinks}</Text>
-      <Text style={styles.cardsLeft}>Drinks: {drinks}</Text>
-    
         <View style={styles.cardViewContainer}>
           <RenderPlayers playerArray={fetchedPlayers}/>
           <Pressable
@@ -156,8 +152,11 @@ export default function CardStack({ onGameOver, setPoints, setDrinks, points, dr
             <Image style={styles.cardView} source={cardImage} />
           </Pressable>
         </View>
-
+      <Text style={styles.gameText}>Cards Left: {cardCount}</Text>
+      <Text style={styles.gameText}>Points: {points - drinks}</Text>
+      <Text style={styles.gameText}>Drinks: {drinks}</Text>
         </View>
+        </>
   )
 }
 
@@ -168,7 +167,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cardViewContainer: {
-    marginTop: 20,
+    marginTop: 60,
     width: '90%',
     height: '70%',
     justifyContent: 'center',
@@ -176,98 +175,94 @@ const styles = StyleSheet.create({
   cardViewTouchable: {
     alignItems: 'center',
     justifyContent: 'center',
+    zIndex: -1,
   },
   cardView: {
-    height: '85%',
+    height: '80%',
     resizeMode: 'contain',
+  },
+  seventhAvatar: {
+    position: 'absolute',
+    top: '8%',
+    left: '0%',
   },
   firstAvatar: {
     position: 'absolute',
-    top: '8%',
-    left: '5%',
+    top: '0%',
+    left: '41%',
   },
-  secondAvatar: {
+  fifthAvatar: {
     position: 'absolute',
-    top: '6%',
-    left: '48%',
+    top: '8%',
+    left: '84%',
   },
   thirdAvatar: {
     position: 'absolute',
-    top: '8%',
-    left: '87%',
+    top: '45%',
+    left: '86%',
+  },
+  eighthAvatar: {
+    position: 'absolute',
+    top: '78%',
+    left: '84%',
+  },
+  secondAvatar: {
+    position: 'absolute',
+    top: '86%',
+    left: '41%',
+  },
+  sixthAvatar: {
+    position: 'absolute',
+    top: '78%',
+    left: '0%',
   },
   fourthAvatar: {
     position: 'absolute',
     top: '45%',
-    left: '87%',
-  },
-  fifthAvatar: {
-    position: 'absolute',
-    top: '80%',
-    left: '87%',
-  },
-  sixthAvatar: {
-    position: 'absolute',
-    top: '90%',
-    left: '48%',
-  },
-  seventhAvatar: {
-    position: 'absolute',
-    top: '80%',
-    left: '5%',
-  },
-  eighthAvatar: {
-    position: 'absolute',
-    top: '45%',
-    left: '5%',
+    left: '-2%',
   },
   playerContainer: {
-    width: '50%',
-    marginTop: 10,
-    marginLeft: 10,
-    aspectRatio: 1.5,
+    width: '42%',
+    aspectRatio: 1,
     flexDirection: 'column',
     alignItems: 'center',
-    backgroundColor: 'pink',
   },
   avatarCircle: {
-    width: '70%',
-    aspectRatio: 1 / 1,
+    width: '100%',
+    height: '100%',
     backgroundColor: 'white',
-    borderRadius: 40,
+    borderRadius: 50,
   },
   avatar: {
     flex: 1,
     resizeMode: 'contain',
-    width: '80%',
-    height: '80%',
+    width: '90%',
+    height: '90%',
     alignSelf: 'center',
   },
   drink: {
     position: 'absolute',
     resizeMode: 'contain',
-    width: '45%',
-    height: '45%',
+    width: '50%',
+    height: '50%',
     alignSelf: 'flex-end',
     bottom: 0,
   },
   name: {
-    marginLeft: 10,
-    fontSize: 18,
-    fontFamily: 'Basic',
+    marginTop: 5,
+    fontSize: 14,
+    fontFamily: 'JosefinSans-Medium',
     color: 'white',
-  },
-  avatarContainer: {
-    flex: 1,
-    backgroundColor: 'pink',
   },
   text: {
     color: 'white',
     fontSize: 40,
   },
-  cardsLeft: {
-    marginTop: 15,
-    fontSize: 25,
+  gameText: {
+    flex: 1,
+    display: 'none',
+    marginTop: 5,
+    fontSize: 12,
     color: 'white',
     fontFamily: 'Basic',
   }

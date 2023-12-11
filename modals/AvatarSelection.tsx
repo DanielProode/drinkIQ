@@ -54,7 +54,10 @@ export default function AvatarSelection({ isVisible, onClose }: AvatarSelectionP
           <Button
             marginTop={50}
             onPress={onClose}
-            text="SAVE SELECTION" />
+            text="DONE"
+            buttonBgColor="#F76D31"
+            buttonBorderColor="#F76D31"
+            buttonWidthNumber={2.5} />
         </View>
       </View>
     </Modal>
@@ -138,12 +141,12 @@ const styles = StyleSheet.create({
   },
   selectAvatarText: {
     color: 'white',
-    fontFamily: 'Basic',
+    fontFamily: 'JosefinSans-Bold',
     fontSize: 20,
   },
   selectDrinkText: {
     color: 'white',
-    fontFamily: 'Basic',
+    fontFamily: 'JosefinSans-Bold',
     marginTop: 10,
     fontSize: 20,
   },
