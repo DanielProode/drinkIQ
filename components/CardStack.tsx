@@ -1,6 +1,7 @@
+import { Image } from 'expo-image';
 import { collection, getDocs } from 'firebase/firestore';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { Pressable, View, Image, StyleSheet, Text, ImageSourcePropType } from 'react-native';
+import { Pressable, View, StyleSheet, Text, ImageSourcePropType } from 'react-native';
 
 import Card from './Card';
 import LoadingScreen from '../components/LoadingScreen';
@@ -118,17 +119,16 @@ export default function CardStack({ onGameOver, setPoints, setDrinks, points, dr
     return (
       <>
         {playerArray.map((player, index) => (
-          <View style={stylesArray[index]}>
+          //KEY set as index - implement unique ID's and replace
+          <View style={stylesArray[index]} key={index}>
           <Pressable
             style={styles.playerContainer}
-            //KEY set as username - implement unique ID's and replace
-            key={index}
           >
             <View style={styles.avatarCircle}>
               <Image style={styles.avatar} source={player.avatar} />
               <Image style={styles.drink} source={player.drink} />
             </View>
-            <Text style={styles.name}>{player.username}</Text>
+            <Text style={styles.name} adjustsFontSizeToFit numberOfLines={1}>{player.username}</Text>
           </Pressable>
           </View>
         ))}
@@ -144,6 +144,7 @@ export default function CardStack({ onGameOver, setPoints, setDrinks, points, dr
           <RenderPlayers playerArray={fetchedPlayers}/>
           <Pressable
             style={styles.cardViewTouchable}
+            disabled={isCardVisible}
             onPress={() => {
               toggleCardVisibility()
               onDecrement()
@@ -152,9 +153,12 @@ export default function CardStack({ onGameOver, setPoints, setDrinks, points, dr
             <Image style={styles.cardView} source={cardImage} />
           </Pressable>
         </View>
-      <Text style={styles.gameText}>Cards Left: {cardCount}</Text>
-      <Text style={styles.gameText}>Points: {points - drinks}</Text>
-      <Text style={styles.gameText}>Drinks: {drinks}</Text>
+        <View style={styles.gameDataView}>
+          <Text style={styles.gameDataText}>Cards Left: {cardCount}</Text>
+          <Text style={styles.gameDataText}>Points: {points - drinks}</Text>
+          <Text style={styles.gameDataText}>Drinks: {drinks}</Text>
+        </View>
+
         </View>
         </>
   )
@@ -179,7 +183,18 @@ const styles = StyleSheet.create({
   },
   cardView: {
     height: '80%',
-    resizeMode: 'contain',
+    width: '80%',
+    contentFit: 'contain',
+  },
+  gameDataView: {
+    marginTop: 50,
+    justifyContent: 'flex-start',
+    flexDirection: 'column',
+  },
+  gameDataText: {
+    color: 'white',
+    fontFamily: 'JosefinSans-Medium',
+    marginTop: 5,
   },
   seventhAvatar: {
     position: 'absolute',

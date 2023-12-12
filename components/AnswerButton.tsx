@@ -16,7 +16,7 @@ export default function AnswerButton({ text, onPress, isAnswered, style, textSty
       style={({ pressed }) => [pressed && { opacity: 0.8 }, styles.button, style]}
       onPress={onPress}
       disabled={isAnswered}>
-      <Text style={[styles.text, textStyle]}>{text}</Text>
+      <Text style={[styles.text, textStyle]} adjustsFontSizeToFit numberOfLines={1}>{text}</Text>
     </Pressable>
   );
 };

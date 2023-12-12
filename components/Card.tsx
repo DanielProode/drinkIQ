@@ -1,5 +1,6 @@
+import { Image } from 'expo-image';
 import { useState } from 'react';
-import { ImageBackground, Pressable, StyleSheet, Text, View, Image } from 'react-native';
+import { ImageBackground, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import AnswerButton from './AnswerButton';
 import { QuestionsArray } from './CardStack';
@@ -71,7 +72,7 @@ export default function Card({ onClose, handlePoints, questionElement }: CardPro
             <Image style={styles.avatarImage} source={avatar} />
           </View>
           <View style={styles.questionBox}>
-            <Text style={styles.questionText}>
+            <Text style={styles.questionText} adjustsFontSizeToFit numberOfLines={5}>
               {isAnswered && (isAnswerCorrect ? "Choose who has to drink!" : "You drink!")}
               {!isAnswered && questionElement.question}
             </Text>
@@ -126,7 +127,7 @@ const styles = StyleSheet.create({
     height: 140,
     backgroundColor: 'white',
     borderRadius: 10,
-    borderWidth: 20,
+    borderWidth: 15,
     borderColor: 'white',
     alignSelf: 'center',
     justifyContent: 'center',
@@ -134,7 +135,7 @@ const styles = StyleSheet.create({
   avatarView: {
     position: 'absolute',
     zIndex: 3,
-    marginTop: 30,
+    marginTop: 10,
     backgroundColor: 'white',
     width: 80,
     height: 80,
@@ -144,7 +145,7 @@ const styles = StyleSheet.create({
   },
   avatarImage: {
     flex: 1,
-    resizeMode: 'contain',
+    contentFit: 'contain',
     width: '70%',
     height: '70%',
     alignSelf: 'center',
@@ -218,14 +219,14 @@ const styles = StyleSheet.create({
   },
   correctImage: {
     flex: 1,
-    resizeMode: 'contain',
+    contentFit: 'contain',
     width: '80%',
     height: '80%',
     alignSelf: 'center',
   },
   wrongImage: {
     flex: 1,
-    resizeMode: 'contain',
+    contentFit: 'contain',
     width: '80%',
     height: '80%',
     alignSelf: 'center',

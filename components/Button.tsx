@@ -11,6 +11,7 @@ let buttonBrdrColor = '#FFFFFF';
 export default function Button({ text, onPress, disabled, marginTop, buttonWidthNumber, buttonBgColor, buttonBorderColor }: any) {
 
   if (buttonWidthNumber != null) buttonWidth = buttonWidthNumber;
+  else buttonWidth = 1.3;
 
   if (buttonBgColor != null) {
     buttonColor = buttonBgColor;

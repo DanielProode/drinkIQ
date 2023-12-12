@@ -1,19 +1,26 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useState } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
 import { DRINKIQ_LOGO_IMAGE } from '../constants/general';
-import useUserStore from '../store/userStore';
+import Tutorial from '../modals/Tutorial';
 
 interface MainMenuProps {
   navigation: NativeStackNavigationProp<any>;
 }
 
+
 export default function MainMenu({ navigation }: MainMenuProps) {
-  const { username } = useUserStore();
+  const [isTutorialModalVisible, setIsTutorialModalVisible] = useState(false);
+
+  const toggleTutorialModal = () => {
+    setIsTutorialModalVisible(!isTutorialModalVisible)
+  };
 
   return (
     <View style={styles.mainView}>
+      <Tutorial onClose={toggleTutorialModal} isVisible={isTutorialModalVisible} />
       <Image style={styles.cheersIcon} source={DRINKIQ_LOGO_IMAGE} />
       <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
       <View style={styles.bodyContainer}>
@@ -31,11 +38,17 @@ export default function MainMenu({ navigation }: MainMenuProps) {
           }}
             text="Card Decks" />
         </View>
+        <View style={styles.tutorialButtonContainer}>
+          <Button onPress={() => {
+            toggleTutorialModal();
+          }}
+            text="How to play" />
+        </View>
         <View style={styles.settingsButtonContainer}>
           <Button onPress={() => {
-            navigation.navigate('Settings');
+            navigation.navigate('Profile');
           }}
-            text="Settings" />
+            text="Profile" />
         </View>
       </View>
     </View>
@@ -80,12 +93,15 @@ const styles = StyleSheet.create({
   },
   bodyContainer: {
     flex: 4,
-    marginTop: 160,
+    marginTop: 120,
   },
   cardButtonContainer: {
     marginTop: 20,
   },
   settingsButtonContainer: {
+    marginTop: 20,
+  },
+  tutorialButtonContainer: {
     marginTop: 20,
   },
 });

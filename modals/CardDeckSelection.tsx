@@ -1,9 +1,10 @@
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
-import { Image, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
-import { CARD_PACKS, DEFAULT_DECK_PREVIEW_IMAGE } from '../constants/general';
+import { CARD_PACKS, DEFAULT_DECK_PREVIEW_IMAGE, DEFAULT_PACK_NAME } from '../constants/general';
 import useGameStore from '../store/gameStore';
 import useUserStore from '../store/userStore';
 
@@ -14,9 +15,10 @@ interface CardDeckSelectionProps {
 
 export default function CardDeckSelection({ isVisible, onClose }: CardDeckSelectionProps) {
   const [selectedCardIndex, setSelectedCardIndex] = useState(-1);
-  const { updatePlayableDeckImage, updatePlayableDeck, updatePlayableDeckName, updatePlayableCardBackground } = useGameStore();
+  const { updatePlayableDeckImage, updatePlayableDeck, updatePlayableDeckName, updatePlayableCardBackground, updatePlayableDeckText } = useGameStore();
   const { packs_owned } = useUserStore();
   const [ selectedCardDeck, setSelectedCardDeck ] = useState(DEFAULT_DECK_PREVIEW_IMAGE);
+  const [ selectedCardDeckName, setSelectedCardDeckName ] = useState(DEFAULT_PACK_NAME);
 
   const renderDecks = () => {
     return CARD_PACKS.map((cardPack, index) => {
@@ -35,8 +37,10 @@ export default function CardDeckSelection({ isVisible, onClose }: CardDeckSelect
               updatePlayableDeck(cardPack.id)
               updatePlayableDeckName(cardPack.name)
               updatePlayableCardBackground(cardPack.image)
+              updatePlayableDeckText(cardPack.text)
               setSelectedCardIndex(index)
               setSelectedCardDeck(cardPack.previewImage)
+              setSelectedCardDeckName(cardPack.name)
             }}
             disabled={!(packs_owned && packs_owned.includes(cardPack.id))} >
             <Image style={styles.cardDeck} source={cardPack.previewImage} />
@@ -62,7 +66,7 @@ export default function CardDeckSelection({ isVisible, onClose }: CardDeckSelect
         />
         <View style={styles.decksContainer}>
         <Image style={styles.selectedCardDeck} source={selectedCardDeck} />
-        <Text style={styles.selectedCardDeckName}>Estonia</Text>
+        <Text style={styles.selectedCardDeckName}>{selectedCardDeckName}</Text>
           <View style={styles.viewContainer}>
             {renderDecks()}
           </View>
@@ -95,9 +99,7 @@ const styles = StyleSheet.create({
   },
   cardDeck: {
     flex: 1,
-    resizeMode: 'contain',
-    alignSelf: 'center',
-    borderRadius: 10,
+    width: '100%',
   },
   selectedCardDeck: {
     height: 200,
@@ -118,11 +120,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     overflow: 'hidden',
     marginTop: 10,
-    borderWidth: 2,
-    borderColor: '#FFFFFF',
   },
   cardDeckContainerSelected: {
-    borderColor: 'blue',
+    borderWidth: 1,
+    borderColor: '#F76D31',
   },
   overlay: {
     top: 0,

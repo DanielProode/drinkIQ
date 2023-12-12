@@ -1,5 +1,5 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 
 import Button from '../components/Button';
 import { useAuth } from '../context/authContext';
@@ -22,12 +22,11 @@ export default function Settings({ navigation }: SettingsProps ) {
 
   return (
     <View style={styles.settingsView}>
-      <Button text="Profile" onPress={() => navigation.navigate('Profile')} />
-      <Button marginTop={20} text="Light Mode" />
-      <Button marginTop={20} text="Language" />
-      <Button marginTop={20} text="Notifications" />
-      <Button marginTop={20} text="About" />
-      <Button marginTop={20} text="Log Out" onPress={handleLogout} />
+      <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
+      <View style={styles.buttonContainer}>
+        <Button marginTop={20} text="Log out" onPress={handleLogout}  />
+      </View>
+      
     </View>
   );
 }
@@ -37,7 +36,20 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#1E1E1E',
     alignItems: 'center',
-    justifyContent: 'center',
   },
+  drinkIQLogo: {
+    fontFamily: 'JetbrainsMono-Bold',
+    marginTop: 55,
+    alignSelf: 'flex-start',
+    marginLeft: 30,
+    fontSize: 30,
+    color: '#F2F2F2',
+    letterSpacing: 3,
+    },
+  buttonContainer: {
+    },
+  drinkIQOrange: {
+    color: '#F76D31',
+    },
 
 });

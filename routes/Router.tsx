@@ -14,7 +14,7 @@ import MainMenu from '../screens/MainMenu';
 import NewGame from '../screens/NewGame';
 import Profile from '../screens/Profile';
 import Register from '../screens/Register'
-import Settings from '../screens/Settings';
+import Settings from '../screens/Settings'
 
 type RootStackParamList = {
   ActiveGame: { gameCode: string };
@@ -77,8 +77,8 @@ export default function Router() {
           <>
             <Stack.Screen name="MainMenu" component={MainMenu} />
             <Stack.Screen name="CardDecks" component={CardDecks} />
-            <Stack.Screen name="Settings" component={Settings} />
             <Stack.Screen name="Profile" component={Profile} />
+            <Stack.Screen name="Settings" component={Settings} />
             <Stack.Screen name="NewGame" component={NewGame} />
             <Stack.Screen name="Lobby" component={Lobby} />
             <Stack.Screen name="ActiveGame" component={ActiveGame} />
