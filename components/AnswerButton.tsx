@@ -35,9 +35,8 @@ const styles = StyleSheet.create({
   text: {
     color: '#1E1E1E',
     fontSize: 16,
-    textTransform: 'uppercase',
     textAlign: 'left',
     paddingLeft: 10,
-    fontFamily: 'Basic',
+    fontFamily: 'JosefinSans-Regular',
   },
 });

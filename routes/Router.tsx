@@ -46,6 +46,7 @@ export default function Router() {
     'JosefinSans-Regular': require('../assets/fonts/JosefinSans-Regular.ttf'),
     'JosefinSans-Bold': require('../assets/fonts/JosefinSans-Bold.ttf'),
     'JosefinSans-Medium': require('../assets/fonts/JosefinSans-Medium.ttf'),
+    'JosefinSans-Light': require('../assets/fonts/JosefinSans-Light.ttf'),
   });
 
   useEffect(() => {

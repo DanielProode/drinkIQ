@@ -37,6 +37,7 @@ interface RenderPlayersProps {
   playerArray: Player[];
 }
 
+// FETCH all players from session, including the current player, and later on check which player in list is current player, and go from there
 const fetchedPlayers = [ {username: "Bot Alfred", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
                                   {username: "Bot Allu", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
                                   {username: "Bot Pete", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
@@ -138,7 +139,7 @@ export default function CardStack({ onGameOver, setPoints, setDrinks, points, dr
 
   return (
     <>
-    {isCardVisible && <Card handlePoints={handlePoints} onClose={toggleCardVisibility} questionElement={questionsArray[cardCount]} />}      
+    {isCardVisible && <Card handlePoints={handlePoints} onClose={toggleCardVisibility} questionElement={questionsArray[cardCount]} cardsLeft={cardCount} />}      
     <View style={styles.gameView}>
         <View style={styles.cardViewContainer}>
           <RenderPlayers playerArray={fetchedPlayers}/>
