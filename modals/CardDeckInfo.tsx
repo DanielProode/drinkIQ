@@ -1,5 +1,6 @@
+import { Image } from 'expo-image';
 import { arrayUnion, doc, updateDoc } from "firebase/firestore";
-import { Modal, View, Image, Text, StyleSheet, ImageProps } from "react-native";
+import { Modal, View, Text, StyleSheet, ImageSourcePropType } from "react-native";
 
 import Button from "../components/Button";
 import { useAuth } from "../context/authContext";
@@ -9,7 +10,7 @@ import useUserStore from "../store/userStore";
 interface CardDeckInfoProps {
   isVisible: boolean;
   onClose: () => void;
-  pack: { id: string, name: string, image: ImageProps, previewImage: ImageProps, text: string; };
+  pack: { id: string, name: string, image: ImageSourcePropType, previewImage: ImageSourcePropType, text: string; };
 };
 
 export default function CardDeckInfo({ isVisible, onClose, pack }: CardDeckInfoProps) {
@@ -40,12 +41,16 @@ export default function CardDeckInfo({ isVisible, onClose, pack }: CardDeckInfoP
 
   return (
     <Modal visible={isVisible} animationType='slide' presentationStyle='pageSheet'>
-      <View style={styles.imageView}>
-        <Image style={styles.modalImage} source={pack.image} />
+      <View style={styles.deckImageAndText}>
+        <View style={styles.imageView}>
+          <Image style={styles.modalImage} source={pack.image} />
+        </View>
+        <Text style={styles.packName}>{pack.name}</Text>
       </View>
+      
       <View style={styles.modal}>
-        <View style={styles.textView}>
-          <Text style={styles.modalText}>This is a small intro to the {pack.name} card pack.</Text>
+        <View>
+          <Text style={styles.modalTextBold}>This is a small intro to the {pack.name} card pack.</Text>
           <Text style={styles.modalText}>{pack.text}</Text>
         </View>
         {(packs_owned && packs_owned.includes(pack.id)) ? (
@@ -67,11 +72,14 @@ export default function CardDeckInfo({ isVisible, onClose, pack }: CardDeckInfoP
 }
 
 const styles = StyleSheet.create({
+  deckImageAndText: {
+    backgroundColor: '#1E1E1E',
+  },
   imageView: {
     alignItems: 'center',
-    justifyContent: 'center',
-    resizeMode: 'contain',
     height: 200,
+    marginTop: 100,
+    backgroundColor: '#1E1E1E',
   },
   buyText: {
     marginTop: 20,
@@ -80,8 +88,11 @@ const styles = StyleSheet.create({
     color: 'white',
     fontFamily: 'Basic',
   },
-  textView: {
-
+  packName: {
+    marginTop: 20,
+    fontFamily: 'JosefinSans-Bold',
+    color: 'white',
+    alignSelf: 'center',
   },
   modal: {
     flex: 1,
@@ -92,8 +103,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   modalImage: {
-    resizeMode: 'cover',
-    width: '100%',
+    width: '60%',
     height: '100%',
   },
   modalText: {
@@ -101,7 +111,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     fontSize: 18,
     color: 'white',
-    fontFamily: 'Basic',
+    fontFamily: 'JosefinSans-Regular',
+  },
+  modalTextBold: {
+    marginTop: 10,
+    marginBottom: 10,
+    fontSize: 18,
+    color: 'white',
+    fontFamily: 'JosefinSans-Bold',
   },
   modalButtons: {
     justifyContent: 'flex-end',

@@ -28,7 +28,7 @@ export default function CardDecks() {
 
   return (
     <View style={styles.cardDeckView}>
-      <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
+      <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
       <View style={styles.cardsView}>
         <ScrollView>
           {sortedPacks.map((pack) => (
@@ -48,11 +48,15 @@ const styles = StyleSheet.create({
     paddingRight: 20,
   },
   drinkIQLogo: {
-    fontFamily: 'Knewave',
+    fontFamily: 'JetbrainsMono-Bold',
     marginTop: 50,
     marginLeft: 20,
     fontSize: 30,
     color: 'white',
+    letterSpacing: 3,
+  },
+  drinkIQOrange: {
+    color: '#F76D31',
   },
   cardsView: {
     flex: 1,

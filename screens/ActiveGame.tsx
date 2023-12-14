@@ -63,23 +63,26 @@ export default function ActiveGame({ route, navigation }: ActiveGameProps) {
   return (
     <>
       <View style={styles.gameBackground}>
-        <View style={styles.gameView}>
-          <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
+      <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
           <Text style={styles.gameCode}>#{gameCode}</Text>
           {isGameOver ? (
             <>
               <Text style={styles.gameText}>GAME OVER!</Text>
               <Text style={styles.gameText}>Score: {correctAnswerCount - wrongAnswerCount} </Text>
               <Text style={styles.gameText}>Drinks: {wrongAnswerCount} </Text>
-              <Button
-                onPress={() => navigation.goBack()}
-                style={styles.lobbyButton}
-                text="BACK TO LOBBY" />
+              <View style={styles.lobbyButtonContainer}>
+                <Button
+                  onPress={() => navigation.goBack()}
+                  style={styles.lobbyButton}
+                  text="BACK TO LOBBY" />
+              </View>
+              
             </>
           ) : (
+            <>
             <CardStack onGameOver={handleGameOver} points={correctAnswerCount} drinks={wrongAnswerCount} setPoints={setCorrectAnswerCount} setDrinks={setWrongAnswerCount} />
+            </>
           )}
-        </View>
       </View>
     </>
   );
@@ -91,18 +94,22 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#1E1E1E',
   },
-  gameView: {
-    flex: 1,
-    alignItems: 'center',
-  },
   drinkIQLogo: {
-    fontFamily: 'Knewave',
+    fontFamily: 'JetbrainsMono-Bold',
     marginTop: 50,
     fontSize: 30,
     color: 'white',
+    letterSpacing: 3,
+  },
+  drinkIQOrange: {
+    fontFamily: 'JetbrainsMono-Bold',
+    marginTop: 50,
+    fontSize: 30,
+    color: '#F76D31',
   },
   gameText: {
-    fontSize: 50,
+    fontFamily: 'JetbrainsMono-Bold',
+    fontSize: 30,
     marginTop: 100,
     color: 'white',
   },
@@ -135,12 +142,12 @@ const styles = StyleSheet.create({
     right: 120,
   },
   lobbyButton: {
-    marginTop: 40,
+    marginTop: 80,
   },
   gameCode: {
     fontSize: 20,
     color: 'white',
-    fontFamily: 'Basic',
+    fontFamily: 'JosefinSans-Regular',
   },
   cardViewContainer: {
     marginTop: 130,
@@ -151,6 +158,10 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     alignItems: 'center',
+  },
+  lobbyButtonContainer: {
+    flex: 1,
+    justifyContent: 'center',
   },
   cardView: {
     flex: 1,

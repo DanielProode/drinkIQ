@@ -14,7 +14,7 @@ import MainMenu from '../screens/MainMenu';
 import NewGame from '../screens/NewGame';
 import Profile from '../screens/Profile';
 import Register from '../screens/Register'
-import Settings from '../screens/Settings';
+import Settings from '../screens/Settings'
 
 type RootStackParamList = {
   ActiveGame: { gameCode: string };
@@ -42,6 +42,11 @@ export default function Router() {
     'Cabin-SemiBold': require('../assets/fonts/Cabin-SemiBold.ttf'),
     'CarterOne-Regular': require('../assets/fonts/CarterOne-Regular.ttf'),
     'Knewave': require('../assets/fonts/Knewave.ttf'),
+    'JetbrainsMono-Bold': require('../assets/fonts/JetBrainsMono-Bold.ttf'),
+    'JosefinSans-Regular': require('../assets/fonts/JosefinSans-Regular.ttf'),
+    'JosefinSans-Bold': require('../assets/fonts/JosefinSans-Bold.ttf'),
+    'JosefinSans-Medium': require('../assets/fonts/JosefinSans-Medium.ttf'),
+    'JosefinSans-Light': require('../assets/fonts/JosefinSans-Light.ttf'),
   });
 
   useEffect(() => {
@@ -73,8 +78,8 @@ export default function Router() {
           <>
             <Stack.Screen name="MainMenu" component={MainMenu} />
             <Stack.Screen name="CardDecks" component={CardDecks} />
-            <Stack.Screen name="Settings" component={Settings} />
             <Stack.Screen name="Profile" component={Profile} />
+            <Stack.Screen name="Settings" component={Settings} />
             <Stack.Screen name="NewGame" component={NewGame} />
             <Stack.Screen name="Lobby" component={Lobby} />
             <Stack.Screen name="ActiveGame" component={ActiveGame} />

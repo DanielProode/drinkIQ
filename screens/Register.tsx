@@ -47,7 +47,7 @@ export default function Register() {
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} >
       <View style={styles.container}>
         <TermsAndConditions isVisible={isModalVisible} onClose={toggleModal} />
-        <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
+        <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
         <View style={styles.textInputContainer}>
           <TextInput
             style={styles.input}
@@ -89,7 +89,7 @@ export default function Register() {
           />
         </View>
         <View style={styles.buttonContainer}>
-          <Button text='Sign Up' onPress={handleSignUp} />
+          <Button text='Sign Up' onPress={handleSignUp} buttonBgColor="#F76D31" buttonBorderColor="#F76D31" />
           {error ? <Text style={styles.error}>Sign Up failed: {error}</Text> : null}
         </View>
         <Pressable
@@ -113,9 +113,13 @@ const styles = StyleSheet.create({
   },
   drinkIQLogo: {
     marginTop: 100,
-    fontFamily: 'Knewave',
+    fontFamily: 'JetbrainsMono-Bold',
     fontSize: 40,
     color: 'white',
+    letterSpacing: 3,
+  },
+  drinkIQOrange: {
+    color: '#F76D31',
   },
   textInputContainer: {
     marginTop: 100,
@@ -136,7 +140,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginBottom: 45,
-    fontFamily: 'Cabin-Regular',
+    fontFamily: 'JosefinSans-Bold',
     fontSize: 18,
     color: '#ABABAB',
   },
@@ -153,7 +157,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   innerText: {
-    fontFamily: 'Cabin-Bold',
+    fontFamily: 'JosefinSans-Bold',
     color: '#FFFFFF95',
   },
   outerText: {
@@ -163,6 +167,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
     color: '#FFFFFF95',
-    fontFamily: 'Cabin-Regular',
+    fontFamily: 'JosefinSans-Regular',
   },
 });

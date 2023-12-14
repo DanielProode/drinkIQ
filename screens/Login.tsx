@@ -36,7 +36,7 @@ export default function Login({ navigation }: LoginProps) {
         <TermsAndConditions isVisible={isModalVisible} onClose={toggleModal} />
         <Image style={styles.cheersIcon}
           source={require('../assets/images/cheers_icon.png')} />
-        <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
+        <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
         <View style={styles.textInputContainer}>
           <TextInput
             style={styles.input}
@@ -58,16 +58,13 @@ export default function Login({ navigation }: LoginProps) {
         </View>
         <View style={styles.buttonContainer}>
           {error ? <Text style={styles.error}>Login failed: {error}</Text> : null}
-          <Button text='LOGIN' onPress={handleLogin} />
+          <Button text='LOGIN' onPress={handleLogin} buttonBgColor="#F76D31" buttonBorderColor="#F76D31"/>
           <Pressable
             onPress={() => navigation.navigate('Register')}>
             <Text style={styles.signUpText}>Don't have an account?
               <Text style={styles.innerText}> Sign Up</Text>
             </Text>
           </Pressable>
-          <Button
-            text="JOIN GAME AS GUEST"
-            buttonWidthNumber={1.3} />
         </View>
         <Pressable
           style={styles.touchableTerms}
@@ -89,10 +86,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#1E1E1E',
   },
   drinkIQLogo: {
-    fontFamily: 'Knewave',
+    fontFamily: 'JetbrainsMono-Bold',
     marginTop: 150,
     fontSize: 60,
     color: 'white',
+    letterSpacing: 3,
+  },
+  drinkIQOrange: {
+    color: '#F76D31',
   },
   cheersIcon: {
     position: 'absolute',
@@ -116,7 +117,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginBottom: 45,
-    fontFamily: 'Cabin-Regular',
+    fontFamily: 'JosefinSans-Bold',
     fontSize: 18,
     color: '#ABABAB',
   },
@@ -128,10 +129,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
   },
-  innerText: {
-    fontFamily: 'Cabin-Bold',
-    color: 'white',
-  },
   outerText: {
     position: 'absolute',
     bottom: 20,
@@ -139,11 +136,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
     color: '#FFFFFF95',
-    fontFamily: 'Cabin-Regular',
+    fontFamily: 'JosefinSans-Regular',
   },
   signUpText: {
     color: '#FFFFFF95',
-    fontFamily: 'Cabin-Regular',
+    fontFamily: 'JosefinSans-Regular',
+  },
+  innerText: {
+    fontFamily: 'JosefinSans-Bold',
+    color: 'white',
   },
   error: {
     color: 'red',

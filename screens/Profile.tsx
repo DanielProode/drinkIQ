@@ -1,56 +1,58 @@
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { StyleSheet, View, Text } from 'react-native';
 
-import { useEffect } from 'react';
-import { StyleSheet, View, Text, Image, Pressable } from 'react-native';
+import Button from '../components/Button';
+import useUserStore from "../store/userStore";
 
-import { EDIT_BUTTON_IMAGE } from '../constants/general';
-import { useAuth } from '../context/authContext';
-import useUserStore from '../store/userStore';
 
-export default function Profile() {
-  const { listenToUserData } = useAuth();
-  const { username, games_won, total_points, total_drinks, packs_owned } = useUserStore();
+interface ProfileProps {
+  navigation: NativeStackNavigationProp<any>;
+}
 
-  useEffect(() => {
-    const unsubscribe = listenToUserData();
-    return () => unsubscribe();
-  }, [])
+export default function Profile({ navigation }: ProfileProps ) {
+
+  const { username, games_won, total_drinks, total_points, packs_owned } = useUserStore();
 
   return (
     <View style={styles.profileView}>
-      <View style={styles.logoView}>
-        <Text style={styles.drinkIQLogo}>DRINKIQ</Text>
+      <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
+      <Text style={styles.profileNameText}>Nickname: {username}</Text>
+      <View style={styles.profileData}>
+        <View style={styles.row}>
+          <View style={styles.gamesWon}>
+            <Text style={styles.numberText}>{games_won}</Text>
+            <Text style={styles.descriptionText}>Games Won</Text>
+          </View>
+          <View style={styles.gamesWon}>
+            <Text style={styles.numberTextOrange}>0</Text>
+            <Text style={styles.descriptionText}>Games Played</Text>
+          </View>
+        </View>
+        <View style={styles.row}>
+          <View style={styles.gamesWon}>
+            <Text style={styles.numberTextOrange}>{total_drinks}</Text>
+            <Text style={styles.descriptionText}>Drinks taken</Text>
+          </View>
+          <View style={styles.gamesWon}>
+            <Text style={styles.numberText}>{total_points}</Text>
+            <Text style={styles.descriptionText}>Total points</Text>
+          </View>
+        </View>
+        <View style={styles.row}>
+          <View style={styles.gamesWon}>
+            <Text style={styles.numberText}>0</Text>
+            <Text style={styles.descriptionText}>Friends</Text>
+          </View>
+          <View style={styles.gamesWon}>
+            <Text style={styles.numberTextOrange}>{packs_owned.length}</Text>
+            <Text style={styles.descriptionText}>Packs owned</Text>
+          </View>
+        </View>
       </View>
-      <View style={styles.textView}>
-        <View style={styles.textRow}>
-          <Text style={styles.text}>Username: </Text>
-          <Pressable style={({ pressed }) => [
-            { opacity: pressed ? 0.5 : 1.0 }
-          ]}>
-            <Text style={styles.text}>{username} <Image style={styles.edit} source={EDIT_BUTTON_IMAGE} /></Text>
-          </Pressable>
-        </View>
-
-        <View style={styles.textRow}>
-          <Text style={styles.text}>Games won: </Text>
-          <Text style={styles.text}>{games_won}</Text>
-        </View>
-        <View style={styles.textRow}>
-          <Text style={styles.text}>Total points: </Text>
-          <Text style={styles.text}>{total_points}</Text>
-        </View>
-        <View style={styles.textRow}>
-          <Text style={styles.text}>Total drinks: </Text>
-          <Text style={styles.text}>{total_drinks}</Text>
-        </View>
-        <View style={styles.textRow}>
-          <Text style={styles.text}>Packs owned: </Text>
-          <Text style={styles.text}>{packs_owned}</Text>
-        </View>
-
-
-
+      <View style={styles.buttonContainer}>
+        <Button marginTop={20} text="Settings" onPress={() => {
+            navigation.navigate('Settings');}}  />
       </View>
-
     </View>
   );
 }
@@ -60,33 +62,63 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#1E1E1E',
     alignItems: 'center',
-    justifyContent: 'center',
-  },
-  logoView: {
-    alignContent: 'center',
-    flex: 1,
+    justifyContent: 'space-between',
   },
   drinkIQLogo: {
-    fontFamily: 'Knewave',
-    marginTop: 50,
+    fontFamily: 'JetbrainsMono-Bold',
+    marginTop: 55,
+    alignSelf: 'flex-start',
+    marginLeft: 30,
     fontSize: 30,
+    color: '#F2F2F2',
+    letterSpacing: 3,
+    },
+  drinkIQOrange: {
+    color: '#F76D31',
+    },
+  profileNameText: {
+    fontFamily: 'JetbrainsMono-Bold',
     color: 'white',
-  },
-  textView: {
-    flex: 2,
-  },
-  textRow: {
+    marginTop: 40,
+    fontSize: 28,
+    },
+  profileData: {
+    width: '100%',
+    marginTop: -40,
+    },
+    row: {
+    marginTop: 60,
+    justifyContent: 'space-around',
+    alignSelf: 'center',
+    width: '90%',
     flexDirection: 'row',
     alignContent: 'center',
+    },
+  gamesWon: {
+    flexDirection: 'column',
+    width: 200,
+    height: 80,
   },
-  edit: {
-    width: 25,
-    height: 25,
-  },
-  text: {
-    marginBottom: 20,
-    fontFamily: 'Basic',
-    fontSize: 24,
+  numberText: {
+    fontSize: 70,
+    fontFamily: 'JosefinSans-Bold',
     color: 'white',
+    textAlign: 'center',
   },
+  numberTextOrange: {
+    fontSize: 70,
+    fontFamily: 'JosefinSans-Bold',
+    color: '#F76D31',
+    textAlign: 'center',
+  },
+  descriptionText: {
+    fontSize: 20,
+    fontFamily: 'JosefinSans-Regular',
+    color: 'white',
+    textAlign: 'center',
+  },
+  buttonContainer: {
+    marginBottom: 60,
+  },
+
 });

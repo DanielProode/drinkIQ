@@ -59,7 +59,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
             updateTotalDrinks(docData.total_drinks);
             break;
           case 'total_points':
-            updateTotalPoints(docData.total_drinks);
+            updateTotalPoints(docData.total_points);
             break;
           case 'packs_owned':
             updatePacksOwned(docData.packs_owned);
@@ -69,7 +69,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
             updateUsername(docData.username);
             updateGamesWon(docData.games_won);
             updateTotalDrinks(docData.total_drinks);
-            updateTotalPoints(docData.total_drinks);
+            updateTotalPoints(docData.total_points);
             updatePacksOwned(docData.packs_owned);
         }
       }
@@ -88,7 +88,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           updateUsername(docData.username);
           updateGamesWon(docData.games_won);
           updateTotalDrinks(docData.total_drinks);
-          updateTotalPoints(docData.total_drinks);
+          updateTotalPoints(docData.total_points);
           updatePacksOwned(docData.packs_owned);
           setAuthUser(userObject);
         } else {

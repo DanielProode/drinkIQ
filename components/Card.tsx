@@ -1,18 +1,20 @@
+import { Image } from 'expo-image';
 import { useState } from 'react';
-import { ImageBackground, Pressable, StyleSheet, Text, View, Image } from 'react-native';
+import { ImageBackground, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import AnswerButton from './AnswerButton';
 import { QuestionsArray } from './CardStack';
-import { ANSWER_PREFIXES, CORRECT_ANSWER_IMAGE, WRONG_ANSWER_IMAGE } from '../constants/general';
+import { ANSWER_PREFIXES, CORRECT_ANSWER_IMAGE, WRONG_ANSWER_IMAGE, BASE_CARD_IMAGE } from '../constants/general';
 import useGameStore from '../store/gameStore';
 
 interface CardProps {
   onClose: () => void;
   handlePoints: (answerState: boolean) => void;
   questionElement: QuestionsArray;
+  cardsLeft: number;
 };
 
-export default function Card({ onClose, handlePoints, questionElement }: CardProps) {
+export default function Card({ onClose, handlePoints, questionElement, cardsLeft }: CardProps) {
   const { avatar, playableCardBackground } = useGameStore();
   const [isAnswered, setIsAnswered] = useState(false);
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number | null>(null);
@@ -66,17 +68,20 @@ export default function Card({ onClose, handlePoints, questionElement }: CardPro
   return (
     <View style={styles.backgroundBlur}>
       <View style={styles.cardView}>
-        <ImageBackground source={playableCardBackground} resizeMode="cover" style={styles.image}>
-          <View style={styles.avatarView}>
-            <Image style={styles.avatarImage} source={avatar} />
-          </View>
+        <Image source={BASE_CARD_IMAGE} style={styles.image}>
           <View style={styles.questionBox}>
-            <Text style={styles.questionText}>
-              {isAnswered && (isAnswerCorrect ? "Choose who has to drink!" : "You drink!")}
-              {!isAnswered && questionElement.question}
-            </Text>
+            <View style={styles.questionNumberContainer}>
+              <Text style={styles.questionNumberText}>Question {10 - cardsLeft}/10</Text>
+            </View>
+            <View style={styles.questionTextContainer}>
+              <Text style={styles.questionText} adjustsFontSizeToFit numberOfLines={5}>
+                {isAnswered && (isAnswerCorrect ? "Choose who has to drink!" : "Wrong, take a sip!")}
+                {!isAnswered && questionElement.question}
+              </Text>
+            </View>
+            
           </View>
-          <View style={styles.buttonView}>
+          <View style={styles.answerButtonView}>
             {renderAnswers()}
           </View>
           <View style={styles.nextButtonContainer}>
@@ -91,17 +96,11 @@ export default function Card({ onClose, handlePoints, questionElement }: CardPro
                 <Text style={styles.nextButtonText}>→</Text>
               </Pressable>}
           </View>
-        </ImageBackground>
+          </Image>
       </View>
-      {isAnswered && (
-        <View style={styles.statusCircle}>
-          {isAnswerCorrect ? (
-            <Image style={styles.correctImage} source={CORRECT_ANSWER_IMAGE} />
-          ) : (
-            <Image style={styles.wrongImage} source={WRONG_ANSWER_IMAGE} />
-          )}
+        <View style={styles.deckCircle}>
+          <Image style={styles.deckLogo} source={playableCardBackground} />
         </View>
-      )}
     </View>
   );
 };
@@ -110,15 +109,10 @@ const styles = StyleSheet.create({
   cardView: {
     position: 'absolute',
     alignSelf: 'center',
-    top: 120, bottom: 150,
+    top: 110, bottom: 110,
     marginTop: 20,
-    width: '85%',
+    width: '95%',
     zIndex: 1,
-    backgroundColor: 'white',
-    justifyContent: 'space-between',
-    borderRadius: 20,
-    borderColor: 'white',
-    borderWidth: 10,
   },
   questionBox: {
     marginTop: 80,
@@ -126,28 +120,13 @@ const styles = StyleSheet.create({
     height: 140,
     backgroundColor: 'white',
     borderRadius: 10,
-    borderWidth: 20,
+    borderWidth: 5,
     borderColor: 'white',
     alignSelf: 'center',
     justifyContent: 'center',
   },
-  avatarView: {
-    position: 'absolute',
-    zIndex: 3,
-    marginTop: 30,
-    backgroundColor: 'white',
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    borderColor: '#3395EF',
-    borderWidth: 3,
-  },
-  avatarImage: {
-    flex: 1,
-    resizeMode: 'contain',
-    width: '70%',
-    height: '70%',
-    alignSelf: 'center',
+  questionNumberContainer: {
+    height: 40,
   },
   backgroundBlur: {
     position: 'absolute',
@@ -157,7 +136,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#00000099',
   },
   image: {
-    flex: 1,
+    resizeMode: 'contain',
+    height: '100%',
   },
   background: {
     position: 'absolute',
@@ -168,15 +148,25 @@ const styles = StyleSheet.create({
     bottom: 0,
     borderRadius: 20,
   },
+  questionNumberText: {
+    fontSize: 18,
+    marginTop: 20,
+    fontFamily: 'JosefinSans-Medium',
+    textAlign: 'center',
+  },
+  questionTextContainer: {
+    flex: 1,
+    justifyContent: 'center',
+  },
   questionText: {
     fontSize: 24,
-    fontFamily: 'Basic',
-    textAlign: 'left',
+    fontFamily: 'JosefinSans-Regular',
+    textAlign: 'center',
   },
   nextButtonContainer: {
     alignSelf: 'flex-end',
-    marginTop: 5,
-    marginRight: 10,
+    marginTop: 50,
+    marginRight: '40%',
     width: 50,
     height: 50,
     justifyContent: 'center',
@@ -194,7 +184,7 @@ const styles = StyleSheet.create({
     fontSize: 38,
     alignSelf: 'center',
   },
-  buttonView: {
+  answerButtonView: {
     marginTop: 20,
     alignSelf: 'center',
   },
@@ -206,26 +196,28 @@ const styles = StyleSheet.create({
     color: 'red',
     zIndex: 3,
   },
-  statusCircle: {
+  deckCircle: {
     flex: 1,
     position: 'absolute',
-    marginTop: 160,
+    marginTop: 130,
     zIndex: 3,
-    width: 130,
-    height: 130,
+    width: 100,
+    height: 100,
     alignSelf: 'center',
+    borderRadius: 80,
+    borderColor: 'white',
+    borderWidth: 2,
     justifyContent: 'flex-start',
   },
-  correctImage: {
-    flex: 1,
-    resizeMode: 'contain',
-    width: '80%',
-    height: '80%',
-    alignSelf: 'center',
+  deckLogo: {
+    contentFit: '',
+    width: '100%',
+    height: '100%',
+    borderRadius: 80,
   },
   wrongImage: {
     flex: 1,
-    resizeMode: 'contain',
+    contentFit: 'contain',
     width: '80%',
     height: '80%',
     alignSelf: 'center',
