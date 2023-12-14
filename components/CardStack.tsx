@@ -79,7 +79,7 @@ export default function CardStack({ onGameOver, setPoints, setDrinks, points, dr
 
   useEffect(() => {
     if (cardCount < 5 && cardCount > 0) {
-      setCardImage(CARD_STACK_IMAGES[0]);
+      setCardImage(BASE_CARD_IMAGE);
     }
   }, [cardCount]);
 

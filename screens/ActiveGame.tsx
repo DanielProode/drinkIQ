@@ -70,10 +70,13 @@ export default function ActiveGame({ route, navigation }: ActiveGameProps) {
               <Text style={styles.gameText}>GAME OVER!</Text>
               <Text style={styles.gameText}>Score: {correctAnswerCount - wrongAnswerCount} </Text>
               <Text style={styles.gameText}>Drinks: {wrongAnswerCount} </Text>
-              <Button
-                onPress={() => navigation.goBack()}
-                style={styles.lobbyButton}
-                text="BACK TO LOBBY" />
+              <View style={styles.lobbyButtonContainer}>
+                <Button
+                  onPress={() => navigation.goBack()}
+                  style={styles.lobbyButton}
+                  text="BACK TO LOBBY" />
+              </View>
+              
             </>
           ) : (
             <>
@@ -105,7 +108,8 @@ const styles = StyleSheet.create({
     color: '#F76D31',
   },
   gameText: {
-    fontSize: 50,
+    fontFamily: 'JetbrainsMono-Bold',
+    fontSize: 30,
     marginTop: 100,
     color: 'white',
   },
@@ -138,7 +142,7 @@ const styles = StyleSheet.create({
     right: 120,
   },
   lobbyButton: {
-    marginTop: 40,
+    marginTop: 80,
   },
   gameCode: {
     fontSize: 20,
@@ -154,6 +158,10 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     alignItems: 'center',
+  },
+  lobbyButtonContainer: {
+    flex: 1,
+    justifyContent: 'center',
   },
   cardView: {
     flex: 1,

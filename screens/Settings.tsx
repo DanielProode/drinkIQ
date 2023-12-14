@@ -47,9 +47,10 @@ const styles = StyleSheet.create({
     letterSpacing: 3,
     },
   buttonContainer: {
+    justifyContent: 'center',
+    flex: 1,
     },
   drinkIQOrange: {
     color: '#F76D31',
     },
-
 });
