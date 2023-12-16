@@ -26,7 +26,7 @@ export default function NewGame({ navigation }: NewGameProps) {
       if (codeExists) {
         setError('')
         addPlayerToRoom(roomCode);
-        navigation.navigate('Lobby', { roomCode })
+        navigation.navigate('Lobby', { roomCode });
       } else {
         setError(`Room ${roomCode} does not exist.`);
       }

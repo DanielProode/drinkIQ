@@ -34,7 +34,6 @@ const useGameStore = create<GameChoices & GameChoiceActions>((set) => ({
   playableDeckName: DEFAULT_PACK_NAME,
   playableCardBackground: DEFAULT_DECK_IMAGE,
   playableDeckText: DEFAULT_DECK_TEXT,
-  roomJoined: false,
   updatePlayerId: (playerId: string | null) => set(() => ({ playerId })),
   updateAvatar: (avatar: number) => set(() => ({ avatar })),
   updateDrink: (drink: number) => set(() => ({ drink })),
