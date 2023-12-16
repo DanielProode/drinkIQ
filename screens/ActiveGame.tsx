@@ -6,7 +6,7 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
 import CardStack from '../components/CardStack';
-import RenderPlayersAroundTable from '../components/RenderPlayersAroundTable';
+import PlayerAroundTable from '../components/PlayerAroundTable';
 import { DEFAULT_AVATAR_IMAGE, DEFAULT_DRINK_IMAGE } from '../constants/general';
 import { useAuth } from '../context/authContext';
 import { FIREBASE_DB } from '../firebaseConfig.js';
@@ -91,7 +91,10 @@ export default function ActiveGame({ route, navigation }: ActiveGameProps) {
           </>
         ) : (
           <>
-            <RenderPlayersAroundTable playerArray={fetchedPlayers} />
+          {fetchedPlayers.map((player, index) => 
+            <PlayerAroundTable player={player} index={index} />
+          )}
+           
             <CardStack onGameOver={handleGameOver} points={correctAnswerCount} drinks={wrongAnswerCount} setPoints={setCorrectAnswerCount} setDrinks={setWrongAnswerCount} />
           </>
         )}

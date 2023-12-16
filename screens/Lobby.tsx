@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { ImageSourcePropType, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
-import RenderPlayersInLobby from '../components/RenderPlayersInLobby';
+import PlayerInLobby from '../components/PlayerInLobby';
 import { DEFAULT_AVATAR_IMAGE, DEFAULT_DRINK_IMAGE } from '../constants/general';
 import AvatarSelection from '../modals/AvatarSelection';
 import CardDeckInfo from '../modals/CardDeckInfo';
@@ -108,7 +108,9 @@ export default function Lobby({ route, navigation }: LobbyProps) {
       </Pressable>
       <Text style={styles.deckName}>{playableDeckName}</Text>
       <View style={styles.joinedPlayers}>
-        <RenderPlayersInLobby playerArray={updatedJoinedPlayers} currentPlayer={currentPlayer} toggleAvatarSelectionModal={toggleAvatarSelectionModal} toggleProfileModal={toggleProfileModal} checkSelectedPlayer={checkSelectedPlayer} />
+        {updatedJoinedPlayers.map((player, index) => 
+          <PlayerInLobby player={player} index={index} currentPlayer={currentPlayer} toggleAvatarSelectionModal={toggleAvatarSelectionModal} toggleProfileModal={toggleProfileModal} checkSelectedPlayer={checkSelectedPlayer} />
+        )}
       </View>
       <View style={styles.buttonContainer}>
         {gameHost ? (

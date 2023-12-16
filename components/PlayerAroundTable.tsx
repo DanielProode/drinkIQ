@@ -2,8 +2,9 @@ import { Image } from 'expo-image';
 import React from 'react'
 import { StyleSheet, View, Text, Pressable, ImageSourcePropType } from 'react-native';
 
-interface RenderPlayersAroundTableProps {
-    playerArray: Player[];
+interface PlayerAroundTableProps {
+    player: Player;
+    index: number;
 }
 
 interface Player {
@@ -13,7 +14,7 @@ interface Player {
 }
 
 
-export default function RenderPlayersAroundTable({ playerArray }: RenderPlayersAroundTableProps) {
+export default function PlayerAroundTable({ player, index }: PlayerAroundTableProps) {
 
     const stylesArray = [
         styles.firstAvatar,
@@ -28,8 +29,6 @@ export default function RenderPlayersAroundTable({ playerArray }: RenderPlayersA
 
     return (
         <>
-            {playerArray.map((player, index) => (
-                //KEY set as index - implement unique ID's and replace
                 <View style={stylesArray[index]} key={index}>
                     <Pressable
                         style={styles.playerContainer}
@@ -41,7 +40,6 @@ export default function RenderPlayersAroundTable({ playerArray }: RenderPlayersA
                         <Text style={styles.name} adjustsFontSizeToFit numberOfLines={1}>{player.username}</Text>
                     </Pressable>
                 </View>
-            ))}
         </>
     );
 };

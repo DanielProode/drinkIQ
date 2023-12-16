@@ -2,8 +2,9 @@ import { Image } from 'expo-image';
 import React from 'react'
 import { StyleSheet, View, Text, Pressable, ImageSourcePropType } from 'react-native';
 
-interface RenderPlayersInLobbyProps {
-    playerArray: Player[];
+interface PlayerInLobbyProps {
+    player: Player;
+    index: number;
     currentPlayer: Player;
     toggleAvatarSelectionModal: any;
     toggleProfileModal: any;
@@ -16,10 +17,9 @@ interface Player {
     drink: ImageSourcePropType;
 }
 
-export default function RenderPlayersInLobby({ playerArray, currentPlayer, toggleAvatarSelectionModal, toggleProfileModal, checkSelectedPlayer }: RenderPlayersInLobbyProps) {
+export default function PlayerInLobby({player, index, currentPlayer, toggleAvatarSelectionModal, toggleProfileModal, checkSelectedPlayer }: PlayerInLobbyProps) {
       return (
         <>
-          {playerArray.map((player, index) => (
             <Pressable
               style={styles.playerContainer}
               //KEY set as index - implement unique ID's and replace
@@ -39,7 +39,7 @@ export default function RenderPlayersInLobby({ playerArray, currentPlayer, toggl
               </View>
               <Text style={styles.name} adjustsFontSizeToFit numberOfLines={1}>{player.username}</Text>
             </Pressable>
-          ))}
+          
         </>
       );
 };
