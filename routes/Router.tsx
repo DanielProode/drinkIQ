@@ -18,7 +18,7 @@ import Settings from '../screens/Settings'
 
 type RootStackParamList = {
   ActiveGame: { gameCode: string };
-  Lobby: { gameCode: string, gameHost: boolean };
+  Lobby: { roomCode: string, gameHost: boolean };
   Login: undefined;
   Register: undefined;
   MainMenu: undefined;
