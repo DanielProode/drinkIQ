@@ -134,12 +134,13 @@ const styles = StyleSheet.create({
     color: '#F76D31',
   },
   gameText: {
-    fontSize: 50,
+    fontFamily: 'JetbrainsMono-Bold',
+    fontSize: 30,
     marginTop: 100,
     color: 'white',
   },
   lobbyButton: {
-    marginTop: 40,
+    marginTop: 80,
   },
   gameCode: {
     fontSize: 20,

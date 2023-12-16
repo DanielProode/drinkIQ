@@ -89,7 +89,7 @@ export default function Register() {
           />
         </View>
         <View style={styles.buttonContainer}>
-          <Button text='Sign Up' onPress={handleSignUp} buttonBgColor="#F76D31" />
+          <Button text='Sign Up' onPress={handleSignUp} buttonBgColor="#F76D31" buttonBorderColor="#F76D31" />
           {error ? <Text style={styles.error}>Sign Up failed: {error}</Text> : null}
         </View>
         <Pressable
