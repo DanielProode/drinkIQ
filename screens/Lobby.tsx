@@ -89,17 +89,13 @@ export default function Lobby({ route, navigation }: LobbyProps) {
     else setIsCardDeckInfoModalVisible(!isCardDeckInfoModalVisible)
   };
 
-  const onPress = (player: Player) => {
+  const avatarPressed = (player: Player) => {
     if (player.username === currentPlayer.username) {
       toggleAvatarSelectionModal();
     } else {
       toggleProfileModal();
       checkSelectedPlayer(player);
     }
-  }
-
-  const renderPlayers = () => {
-    
   }
 
   return (
@@ -122,7 +118,7 @@ export default function Lobby({ route, navigation }: LobbyProps) {
       <Text style={styles.deckName}>{playableDeckName}</Text>
       <View style={styles.joinedPlayers}>
         {updatedJoinedPlayers.map((player, index) =>
-          <PlayerInLobby onPress={() => onPress(player)} player={player} index={index} currentPlayer={currentPlayer} />
+          <PlayerInLobby onPress={() => avatarPressed(player)} player={player} index={index} currentPlayer={currentPlayer} />
         )}
       </View>
       <View style={styles.buttonContainer}>

@@ -44,9 +44,6 @@ export default function CardStack({ onGameOver, setPoints, setDrinks, points, dr
   const getArray = async (): Promise<QuestionsArray[]> => {
     try {
       const jsonValue = await AsyncStorage.getItem(playableDeck);
-      console.log('Checking if stored array is empty: ', jsonValue);
-      if (jsonValue != null)
-      console.log('Stored array size: ' + JSON.parse(jsonValue).length)
       const parsedArray = (jsonValue != null && JSON.parse(jsonValue).length > DEFAULT_CARD_COUNT) ? JSON.parse(jsonValue) : await loadQuestions();
       return Array.isArray(parsedArray) ? parsedArray : [];
     } catch (error) {
@@ -60,16 +57,13 @@ export default function CardStack({ onGameOver, setPoints, setDrinks, points, dr
     try {
       const querySnapshot = await getDocs(questionsCollection);
       const tempQuestionsArray: QuestionsArray[] = [];
-      console.log("Stored array was empty, fetching questions...");
       querySnapshot.forEach((question) => {
         const questionData = question.data() as QuestionsArray;
         tempQuestionsArray.push(questionData);
       });
-      setIsLoading(false);
       return tempQuestionsArray;
     } catch (error) {
       console.error('Error loading questions: ', error)
-      setIsLoading(false);
       throw error;
     }
   };
@@ -78,7 +72,6 @@ export default function CardStack({ onGameOver, setPoints, setDrinks, points, dr
   const storeArray = async (value: QuestionsArray[]) => {
     try {
       const jsonValue = JSON.stringify(value);
-      console.log('Storing array to AsyncStorage:', jsonValue);
       await AsyncStorage.setItem(playableDeck, jsonValue);
     } catch (error) {
       console.error('Error writing questions to array: ', error)
