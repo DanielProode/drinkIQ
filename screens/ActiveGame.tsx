@@ -39,6 +39,17 @@ export default function ActiveGame({ route, navigation }: ActiveGameProps) {
   const { authUser } = useAuth();
   let gameWon = 0;
 
+  const stylesArray = [
+    styles.firstAvatar,
+    styles.secondAvatar,
+    styles.thirdAvatar,
+    styles.fourthAvatar,
+    styles.fifthAvatar,
+    styles.sixthAvatar,
+    styles.seventhAvatar,
+    styles.eighthAvatar,
+  ];
+
   const checkGameWinner = () => {
     if (wrongAnswerCount < correctAnswerCount) {
       gameWon = 1;
@@ -91,10 +102,10 @@ export default function ActiveGame({ route, navigation }: ActiveGameProps) {
           </>
         ) : (
           <>
-          {fetchedPlayers.map((player, index) => 
-            <PlayerAroundTable player={player} index={index} />
-          )}
-           
+            {fetchedPlayers.map((player, index) =>
+              <PlayerAroundTable stylesArray={stylesArray[index]} player={player} index={index} />
+            )}
+
             <CardStack onGameOver={handleGameOver} points={correctAnswerCount} drinks={wrongAnswerCount} setPoints={setCorrectAnswerCount} setDrinks={setWrongAnswerCount} />
           </>
         )}
@@ -134,5 +145,45 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'white',
     fontFamily: 'JosefinSans-Regular',
+  },
+  seventhAvatar: {
+    position: 'absolute',
+    top: '22%',
+    left: '5%',
+  },
+  firstAvatar: {
+    position: 'absolute',
+    top: '18%',
+    left: '41%',
+  },
+  fifthAvatar: {
+    position: 'absolute',
+    top: '22%',
+    left: '78%',
+  },
+  thirdAvatar: {
+    position: 'absolute',
+    top: '45%',
+    left: '80%',
+  },
+  eighthAvatar: {
+    position: 'absolute',
+    top: '68%',
+    left: '78%',
+  },
+  secondAvatar: {
+    position: 'absolute',
+    top: '72%',
+    left: '41%',
+  },
+  sixthAvatar: {
+    position: 'absolute',
+    top: '68%',
+    left: '5%',
+  },
+  fourthAvatar: {
+    position: 'absolute',
+    top: '45%',
+    left: '3%',
   },
 });

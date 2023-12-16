@@ -1,10 +1,11 @@
 import { Image } from 'expo-image';
 import React from 'react'
-import { StyleSheet, View, Text, Pressable, ImageSourcePropType } from 'react-native';
+import { StyleSheet, View, Text, Pressable, ImageSourcePropType, ViewStyle } from 'react-native';
 
 interface PlayerAroundTableProps {
     player: Player;
     index: number;
+    stylesArray: ViewStyle;
 }
 
 interface Player {
@@ -14,32 +15,20 @@ interface Player {
 }
 
 
-export default function PlayerAroundTable({ player, index }: PlayerAroundTableProps) {
-
-    const stylesArray = [
-        styles.firstAvatar,
-        styles.secondAvatar,
-        styles.thirdAvatar,
-        styles.fourthAvatar,
-        styles.fifthAvatar,
-        styles.sixthAvatar,
-        styles.seventhAvatar,
-        styles.eighthAvatar,
-    ];
-
+export default function PlayerAroundTable({ stylesArray, player, index }: PlayerAroundTableProps) {
     return (
         <>
-                <View style={stylesArray[index]} key={index}>
-                    <Pressable
-                        style={styles.playerContainer}
-                    >
-                        <View style={styles.avatarCircle}>
-                            <Image style={styles.avatar} source={player.avatar} />
-                            <Image style={styles.drink} source={player.drink} />
-                        </View>
-                        <Text style={styles.name} adjustsFontSizeToFit numberOfLines={1}>{player.username}</Text>
-                    </Pressable>
-                </View>
+            <View style={stylesArray} key={index}>
+                <Pressable
+                    style={styles.playerContainer}
+                >
+                    <View style={styles.avatarCircle}>
+                        <Image style={styles.avatar} source={player.avatar} />
+                        <Image style={styles.drink} source={player.drink} />
+                    </View>
+                    <Text style={styles.name} adjustsFontSizeToFit numberOfLines={1}>{player.username}</Text>
+                </Pressable>
+            </View>
         </>
     );
 };
@@ -77,45 +66,6 @@ const styles = StyleSheet.create({
         fontFamily: 'JosefinSans-Medium',
         color: 'white',
     },
-    seventhAvatar: {
-        position: 'absolute',
-        top: '22%',
-        left: '5%',
-    },
-    firstAvatar: {
-        position: 'absolute',
-        top: '18%',
-        left: '41%',
-    },
-    fifthAvatar: {
-        position: 'absolute',
-        top: '22%',
-        left: '78%',
-    },
-    thirdAvatar: {
-        position: 'absolute',
-        top: '45%',
-        left: '80%',
-    },
-    eighthAvatar: {
-        position: 'absolute',
-        top: '68%',
-        left: '78%',
-    },
-    secondAvatar: {
-        position: 'absolute',
-        top: '72%',
-        left: '41%',
-    },
-    sixthAvatar: {
-        position: 'absolute',
-        top: '68%',
-        left: '5%',
-    },
-    fourthAvatar: {
-        position: 'absolute',
-        top: '45%',
-        left: '3%',
-    },
+
 });
 
