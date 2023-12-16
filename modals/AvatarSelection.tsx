@@ -1,10 +1,11 @@
 import { LinearGradient } from 'expo-linear-gradient';
+import { useState } from 'react';
 import { FlatList, Image, ImageSourcePropType, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
 import { AVATAR_ICONS, DRINK_ICONS } from '../constants/general';
 import useGameStore from '../store/gameStore';
-import { useState } from 'react';
+
 
 interface AvatarSelectionProps {
   isVisible: boolean;

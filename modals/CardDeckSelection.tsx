@@ -17,8 +17,8 @@ export default function CardDeckSelection({ isVisible, onClose }: CardDeckSelect
   const [selectedCardIndex, setSelectedCardIndex] = useState(-1);
   const { updatePlayableDeckImage, updatePlayableDeck, updatePlayableDeckName, updatePlayableCardBackground, updatePlayableDeckText } = useGameStore();
   const { packs_owned } = useUserStore();
-  const [ selectedCardDeck, setSelectedCardDeck ] = useState(DEFAULT_DECK_PREVIEW_IMAGE);
-  const [ selectedCardDeckName, setSelectedCardDeckName ] = useState(DEFAULT_PACK_NAME);
+  const [selectedCardDeck, setSelectedCardDeck] = useState(DEFAULT_DECK_PREVIEW_IMAGE);
+  const [selectedCardDeckName, setSelectedCardDeckName] = useState(DEFAULT_PACK_NAME);
 
   const renderDecks = () => {
     return CARD_PACKS.map((cardPack, index) => {
@@ -65,8 +65,8 @@ export default function CardDeckSelection({ isVisible, onClose }: CardDeckSelect
           style={styles.background}
         />
         <View style={styles.decksContainer}>
-        <Image style={styles.selectedCardDeck} source={selectedCardDeck} />
-        <Text style={styles.selectedCardDeckName}>{selectedCardDeckName}</Text>
+          <Image style={styles.selectedCardDeck} source={selectedCardDeck} />
+          <Text style={styles.selectedCardDeckName}>{selectedCardDeckName}</Text>
           <View style={styles.viewContainer}>
             {renderDecks()}
           </View>

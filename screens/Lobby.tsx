@@ -5,13 +5,14 @@ import { useState } from 'react';
 import { ImageSourcePropType, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
+import PlayerInLobby from '../components/PlayerInLobby';
 import { DEFAULT_AVATAR_IMAGE, DEFAULT_DRINK_IMAGE } from '../constants/general';
 import AvatarSelection from '../modals/AvatarSelection';
+import CardDeckInfo from '../modals/CardDeckInfo';
 import CardDeckSelection from '../modals/CardDeckSelection';
 import PlayerProfile from '../modals/PlayerProfile';
 import useGameStore from '../store/gameStore';
 import useUserStore from '../store/userStore';
-import CardDeckInfo from '../modals/CardDeckInfo';
 
 interface LobbyProps {
   route: RouteProp<{
@@ -29,23 +30,20 @@ interface Player {
   drink: ImageSourcePropType;
 }
 
-interface ShowPlayersProps {
-  playerArray: Player[];
-}
-
 const joinedPlayers: Player[] = []
 
-const selectedPlayer = {username: "Placeholder", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE};
+const selectedPlayer = { username: "Placeholder", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE };
 
-// FETCH all joined players in session excluding host (max 7)
-const fetchedPlayersImitation = [ {username: "Bot Alfred", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
-                                  {username: "Bot Allu", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
-                                  {username: "Bot Pete", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
-                                  {username: "Bot Viktor", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
-                                  {username: "Bot Albert", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
-                                  {username: "Bot Sasha", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
-                                  {username: "Bot Anubis", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
-                                ]
+// FETCH all joined players in session excluding host (max 7), to make current player appear first in list (pushed first to array) [TEMP SOLUTION]
+// TODO: When fetching players, fetch players from DB and place them in the same order for everyone, and make host appear first (probably need to implement isHost boolean to Player object)
+const fetchedPlayersImitation = [{ username: "Bot Alfred", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
+{ username: "Bot Allu", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
+{ username: "Bot Pete", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
+{ username: "Bot Viktor", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
+{ username: "Bot Albert", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
+{ username: "Bot Sasha", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
+{ username: "Bot Anubis", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
+]
 
 const fetchedPlayerObjects: Player[] = fetchedPlayersImitation
 
@@ -91,33 +89,14 @@ export default function Lobby({ route, navigation }: LobbyProps) {
     else setIsCardDeckInfoModalVisible(!isCardDeckInfoModalVisible)
   };
 
-  const ShowPlayers = ({ playerArray }: ShowPlayersProps) => {
-    return (
-      <>
-        {playerArray.map((player, index) => (
-          <Pressable
-            style={styles.playerContainer}
-            //KEY set as username - implement unique ID's and replace
-            key={index}
-            onPress={() => {
-              if (player.username === currentPlayer.username) {
-                toggleAvatarSelectionModal();
-              } else {
-                toggleProfileModal();
-                checkSelectedPlayer(player);
-              }
-            }}
-          >
-            <View style={[styles.avatarCircle, player.username === currentPlayer.username && styles.currentAvatarCircle]}>
-              <Image style={styles.avatar} source={player.avatar} />
-              <Image style={styles.drink} source={player.drink} />
-            </View>
-            <Text style={styles.name} adjustsFontSizeToFit numberOfLines={1}>{player.username}</Text>
-          </Pressable>
-        ))}
-      </>
-    );
-  };
+  const avatarPressed = (player: Player) => {
+    if (player.username === currentPlayer.username) {
+      toggleAvatarSelectionModal();
+    } else {
+      toggleProfileModal();
+      checkSelectedPlayer(player);
+    }
+  }
 
   return (
     <View style={styles.gameView}>
@@ -138,7 +117,9 @@ export default function Lobby({ route, navigation }: LobbyProps) {
       </Pressable>
       <Text style={styles.deckName}>{playableDeckName}</Text>
       <View style={styles.joinedPlayers}>
-        <ShowPlayers playerArray={updatedJoinedPlayers} />
+        {updatedJoinedPlayers.map((player, index) =>
+          <PlayerInLobby onPress={() => avatarPressed(player)} player={player} index={index} currentPlayer={currentPlayer} />
+        )}
       </View>
       <View style={styles.buttonContainer}>
         {gameHost ? (
@@ -176,30 +157,6 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: '#F76D31',
   },
-  playerContainer: {
-    width: '40%',
-    marginTop: 10,
-    marginLeft: 10,
-    aspectRatio: 1.5,
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  avatarCircle: {
-    width: '48%',
-    aspectRatio: 1 / 1,
-    backgroundColor: 'white',
-    borderWidth: 2,
-    borderColor: '#00000090',
-    borderRadius: 40,
-  },
-  currentAvatarCircle: {
-    width: '48%',
-    aspectRatio: 1 / 1,
-    backgroundColor: 'white',
-    borderWidth: 2,
-    borderColor: '#F76D31',
-    borderRadius: 40,
-  },
   deckImageContainer: {
     width: 100,
     alignSelf: 'center',
@@ -222,27 +179,6 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flex: 0.3,
-  },
-  avatar: {
-    flex: 1,
-    resizeMode: 'contain',
-    width: '80%',
-    height: '80%',
-    alignSelf: 'center',
-  },
-  drink: {
-    position: 'absolute',
-    resizeMode: 'contain',
-    width: '45%',
-    height: '45%',
-    alignSelf: 'flex-end',
-    bottom: 0,
-  },
-  name: {
-    marginTop: 10,
-    fontSize: 18,
-    fontFamily: 'JosefinSans-Medium',
-    color: 'white',
   },
   deck: {
     flex: 1,
