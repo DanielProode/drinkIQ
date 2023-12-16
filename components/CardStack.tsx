@@ -1,13 +1,15 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Image } from 'expo-image';
 import { collection, getDocs } from 'firebase/firestore';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { Pressable, View, StyleSheet, Text, ImageSourcePropType } from 'react-native';
+import { Pressable, View, StyleSheet, Text } from 'react-native';
 
 import Card from './Card';
 import LoadingScreen from '../components/LoadingScreen';
-import { BASE_CARD_IMAGE, CARD_STACK_IMAGES, DEFAULT_AVATAR_IMAGE, DEFAULT_CARD_COUNT, DEFAULT_DRINK_IMAGE } from '../constants/general';
+import { BASE_CARD_IMAGE, DEFAULT_CARD_COUNT } from '../constants/general';
 import { FIREBASE_DB } from '../firebaseConfig.js';
 import useGameStore from '../store/gameStore';
+
 
 interface CardStackProps {
   onGameOver: () => void;
@@ -27,27 +29,6 @@ interface AnswersArray {
   isCorrect: boolean;
 };
 
-interface Player {
-  username: string;
-  avatar: ImageSourcePropType;
-  drink: ImageSourcePropType;
-}
-
-interface RenderPlayersProps {
-  playerArray: Player[];
-}
-
-// FETCH all players from session, including the current player, and later on check which player in list is current player, and go from there
-const fetchedPlayers = [ {username: "Bot Alfred", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
-                                  {username: "Bot Allu", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
-                                  {username: "Bot Pete", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
-                                  {username: "Bot Viktor", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
-                                  {username: "Bot Albert", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
-                                  {username: "Bot Sasha", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
-                                  {username: "Bot Anubis", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
-                                  {username: "Bot Anubis2", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
-                                ]
-
 
 export default function CardStack({ onGameOver, setPoints, setDrinks, points, drinks }: CardStackProps) {
   const [cardCount, setCardCount] = useState(DEFAULT_CARD_COUNT);
@@ -58,28 +39,107 @@ export default function CardStack({ onGameOver, setPoints, setDrinks, points, dr
   const { playableDeck } = useGameStore();
   const questionsCollection = collection(FIREBASE_DB, "packs", playableDeck, "questions");
 
-  useEffect(() => {
-    async function loadQuestions() {
-      try {
-        const querySnapshot = await getDocs(questionsCollection);
-        const tempQuestionsArray: QuestionsArray[] = [];
-        querySnapshot.forEach((question) => {
-          const questionData = question.data() as QuestionsArray;
-          tempQuestionsArray.push(questionData);
-        });
-        setQuestionsArray(tempQuestionsArray);
-        setIsLoading(false);
-      } catch (error) {
-        console.error('Error loading questions: ', error)
-        setIsLoading(false);
-      }
+  //Check if local array exists, get it if it does, fetch it with loadQuestions() if it doesn't
+  //TODO: In the future, if we want to push an update (version change), then compare if version boolean in AsyncStorage is equal to version name from DB 
+  const getArray = async (): Promise<QuestionsArray[]> => {
+    try {
+      const jsonValue = await AsyncStorage.getItem(playableDeck);
+      console.log('Checking if stored array is empty: ', jsonValue);
+      if (jsonValue != null)
+      console.log('Stored array size: ' + JSON.parse(jsonValue).length)
+      const parsedArray = (jsonValue != null && JSON.parse(jsonValue).length > DEFAULT_CARD_COUNT) ? JSON.parse(jsonValue) : await loadQuestions();
+      return Array.isArray(parsedArray) ? parsedArray : [];
+    } catch (error) {
+      console.error('Error reading questions from array: ', error);
+      throw error;
     }
-    loadQuestions();
-  }, []);
+  };
+
+  //Load questions from DB and write questions to new array
+  async function loadQuestions() {
+    try {
+      const querySnapshot = await getDocs(questionsCollection);
+      const tempQuestionsArray: QuestionsArray[] = [];
+      console.log("Stored array was empty, fetching questions...");
+      querySnapshot.forEach((question) => {
+        const questionData = question.data() as QuestionsArray;
+        tempQuestionsArray.push(questionData);
+      });
+      setIsLoading(false);
+      return tempQuestionsArray;
+    } catch (error) {
+      console.error('Error loading questions: ', error)
+      setIsLoading(false);
+      throw error;
+    }
+  };
+
+  //Write questions to new array
+  const storeArray = async (value: QuestionsArray[]) => {
+    try {
+      const jsonValue = JSON.stringify(value);
+      console.log('Storing array to AsyncStorage:', jsonValue);
+      await AsyncStorage.setItem(playableDeck, jsonValue);
+    } catch (error) {
+      console.error('Error writing questions to array: ', error)
+      throw error;
+    }
+  }
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const array = await getArray();
+        setQuestionsArray(selectPlayableQuestions(array));
+        setIsLoading(false);
+      } catch (error) {
+        setIsLoading(false);
+        console.error('Error fetching and storing data: ', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const generateRandomNumberArray = (arraySize: number): number[] => {
+    const array: number[] = [];
+    for (let i = 0; i < DEFAULT_CARD_COUNT; i++) {
+      let insertedToArray = false
+      while (!insertedToArray) {
+        const randomInt = Math.floor(Math.random() * arraySize)
+        if (!array.includes(randomInt)) {
+          array.push(randomInt);
+          insertedToArray = true
+        }
+      }
+    }
+
+    return array;
+  }
+
+  const selectPlayableQuestions = (array: QuestionsArray[]) => {
+    const tempGameQuestionArray: QuestionsArray[] = [];
+    const randomNumberArray = generateRandomNumberArray(array.length);
+    randomNumberArray.map((x) => {
+      tempGameQuestionArray.push(array[x])
+      console.log("Pushing element to playable deck: ")
+      console.log(JSON.stringify(array[x]))
+    });
+
+    for (let i = 0; i < randomNumberArray.length; i++) {
+      array = array.filter(element => element !== tempGameQuestionArray[i])
+      console.log("Removing element from main deck: ")
+      console.log(JSON.stringify(tempGameQuestionArray[i]))
+    }
+    storeArray(array);
+    return tempGameQuestionArray;
+  }
+
+
+  //Currently not in use, card stack
+  useEffect(() => {
     if (cardCount < 5 && cardCount > 0) {
-      setCardImage(CARD_STACK_IMAGES[0]);
+      setCardImage(BASE_CARD_IMAGE);
     }
   }, [cardCount]);
 
@@ -105,44 +165,11 @@ export default function CardStack({ onGameOver, setPoints, setDrinks, points, dr
     return <LoadingScreen />
   }
 
-  const stylesArray = [
-    styles.firstAvatar,
-    styles.secondAvatar,
-    styles.thirdAvatar,
-    styles.fourthAvatar,
-    styles.fifthAvatar,
-    styles.sixthAvatar,
-    styles.seventhAvatar,
-    styles.eighthAvatar,    
-  ];
-
-  const RenderPlayers = ({ playerArray }: RenderPlayersProps) => {
-    return (
-      <>
-        {playerArray.map((player, index) => (
-          //KEY set as index - implement unique ID's and replace
-          <View style={stylesArray[index]} key={index}>
-          <Pressable
-            style={styles.playerContainer}
-          >
-            <View style={styles.avatarCircle}>
-              <Image style={styles.avatar} source={player.avatar} />
-              <Image style={styles.drink} source={player.drink} />
-            </View>
-            <Text style={styles.name} adjustsFontSizeToFit numberOfLines={1}>{player.username}</Text>
-          </Pressable>
-          </View>
-        ))}
-        </>
-    );
-  };
-
   return (
     <>
-    {isCardVisible && <Card handlePoints={handlePoints} onClose={toggleCardVisibility} questionElement={questionsArray[cardCount]} cardsLeft={cardCount} />}      
-    <View style={styles.gameView}>
+      {isCardVisible && <Card handlePoints={handlePoints} onClose={toggleCardVisibility} questionElement={questionsArray[cardCount]} cardsLeft={cardCount} />}
+      <View style={styles.gameView}>
         <View style={styles.cardViewContainer}>
-          <RenderPlayers playerArray={fetchedPlayers}/>
           <Pressable
             style={styles.cardViewTouchable}
             disabled={isCardVisible}
@@ -160,8 +187,8 @@ export default function CardStack({ onGameOver, setPoints, setDrinks, points, dr
           <Text style={styles.gameDataText}>Drinks: {drinks}</Text>
         </View>
 
-        </View>
-        </>
+      </View>
+    </>
   )
 }
 
@@ -197,58 +224,6 @@ const styles = StyleSheet.create({
     fontFamily: 'JosefinSans-Medium',
     marginTop: 5,
   },
-  seventhAvatar: {
-    position: 'absolute',
-    top: '8%',
-    left: '0%',
-  },
-  firstAvatar: {
-    position: 'absolute',
-    top: '0%',
-    left: '41%',
-  },
-  fifthAvatar: {
-    position: 'absolute',
-    top: '8%',
-    left: '84%',
-  },
-  thirdAvatar: {
-    position: 'absolute',
-    top: '45%',
-    left: '86%',
-  },
-  eighthAvatar: {
-    position: 'absolute',
-    top: '78%',
-    left: '84%',
-  },
-  secondAvatar: {
-    position: 'absolute',
-    top: '86%',
-    left: '41%',
-  },
-  sixthAvatar: {
-    position: 'absolute',
-    top: '78%',
-    left: '0%',
-  },
-  fourthAvatar: {
-    position: 'absolute',
-    top: '45%',
-    left: '-2%',
-  },
-  playerContainer: {
-    width: '42%',
-    aspectRatio: 1,
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  avatarCircle: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'white',
-    borderRadius: 50,
-  },
   avatar: {
     flex: 1,
     resizeMode: 'contain',
@@ -264,12 +239,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     bottom: 0,
   },
-  name: {
-    marginTop: 5,
-    fontSize: 14,
-    fontFamily: 'JosefinSans-Medium',
-    color: 'white',
-  },
+
   text: {
     color: 'white',
     fontSize: 40,

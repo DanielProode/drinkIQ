@@ -1,20 +1,24 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { Image } from 'expo-image';
 import { useState } from 'react';
-import { ImageBackground, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import AnswerButton from './AnswerButton';
 import { QuestionsArray } from './CardStack';
-import { ANSWER_PREFIXES, CORRECT_ANSWER_IMAGE, WRONG_ANSWER_IMAGE, BASE_CARD_IMAGE } from '../constants/general';
+import { ANSWER_PREFIXES, BASE_CARD_IMAGE, DEFAULT_CARD_COUNT } from '../constants/general';
 import useGameStore from '../store/gameStore';
 
 interface CardProps {
   onClose: () => void;
   handlePoints: (answerState: boolean) => void;
-  questionElement: QuestionsArray;
+  questionElement?: QuestionsArray;
   cardsLeft: number;
 };
 
 export default function Card({ onClose, handlePoints, questionElement, cardsLeft }: CardProps) {
+  if (!questionElement) {
+    return
+  }
   const { avatar, playableCardBackground } = useGameStore();
   const [isAnswered, setIsAnswered] = useState(false);
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number | null>(null);
@@ -71,7 +75,7 @@ export default function Card({ onClose, handlePoints, questionElement, cardsLeft
         <Image source={BASE_CARD_IMAGE} style={styles.image}>
           <View style={styles.questionBox}>
             <View style={styles.questionNumberContainer}>
-              <Text style={styles.questionNumberText}>Question {10 - cardsLeft}/10</Text>
+              <Text style={styles.questionNumberText}>Question {DEFAULT_CARD_COUNT - cardsLeft} / {DEFAULT_CARD_COUNT} </Text>
             </View>
             <View style={styles.questionTextContainer}>
               <Text style={styles.questionText} adjustsFontSizeToFit numberOfLines={5}>

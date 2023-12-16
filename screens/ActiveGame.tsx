@@ -6,6 +6,8 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
 import CardStack from '../components/CardStack';
+import RenderPlayersAroundTable from '../components/RenderPlayersAroundTable';
+import { DEFAULT_AVATAR_IMAGE, DEFAULT_DRINK_IMAGE } from '../constants/general';
 import { useAuth } from '../context/authContext';
 import { FIREBASE_DB } from '../firebaseConfig.js';
 
@@ -17,6 +19,17 @@ interface ActiveGameProps {
   }>;
   navigation: NativeStackNavigationProp<any>;
 };
+
+// FETCH all players from session, including the current player, and later on check which player in list is current player, and go from there
+const fetchedPlayers = [{ username: "Bot Alfred", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
+{ username: "Bot Allu", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
+{ username: "Bot Pete", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
+{ username: "Bot Viktor", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
+{ username: "Bot Albert", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
+{ username: "Bot Sasha", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
+{ username: "Bot Anubis", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
+{ username: "Bot Anubis2", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
+]
 
 export default function ActiveGame({ route, navigation }: ActiveGameProps) {
   const { gameCode } = route.params;
@@ -60,26 +73,28 @@ export default function ActiveGame({ route, navigation }: ActiveGameProps) {
     updateUserData();
   }
 
+
   return (
     <>
       <View style={styles.gameBackground}>
-      <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
-          <Text style={styles.gameCode}>#{gameCode}</Text>
-          {isGameOver ? (
-            <>
-              <Text style={styles.gameText}>GAME OVER!</Text>
-              <Text style={styles.gameText}>Score: {correctAnswerCount - wrongAnswerCount} </Text>
-              <Text style={styles.gameText}>Drinks: {wrongAnswerCount} </Text>
-              <Button
-                onPress={() => navigation.goBack()}
-                style={styles.lobbyButton}
-                text="BACK TO LOBBY" />
-            </>
-          ) : (
-            <>
+        <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
+        <Text style={styles.gameCode}>#{gameCode}</Text>
+        {isGameOver ? (
+          <>
+            <Text style={styles.gameText}>GAME OVER!</Text>
+            <Text style={styles.gameText}>Score: {correctAnswerCount - wrongAnswerCount} </Text>
+            <Text style={styles.gameText}>Drinks: {wrongAnswerCount} </Text>
+            <Button
+              onPress={() => navigation.goBack()}
+              style={styles.lobbyButton}
+              text="BACK TO LOBBY" />
+          </>
+        ) : (
+          <>
+            <RenderPlayersAroundTable playerArray={fetchedPlayers} />
             <CardStack onGameOver={handleGameOver} points={correctAnswerCount} drinks={wrongAnswerCount} setPoints={setCorrectAnswerCount} setDrinks={setWrongAnswerCount} />
-            </>
-          )}
+          </>
+        )}
       </View>
     </>
   );
@@ -109,34 +124,6 @@ const styles = StyleSheet.create({
     marginTop: 100,
     color: 'white',
   },
-  cardsLeft: {
-    marginTop: 30,
-    fontSize: 25,
-    color: 'white',
-    fontFamily: 'Basic',
-  },
-  avatar: {
-    flex: 1,
-    resizeMode: 'contain',
-    width: '70%',
-    height: '70%',
-    alignSelf: 'center',
-  },
-  drink: {
-    flex: 1,
-    resizeMode: 'contain',
-    width: '70%',
-    height: '70%',
-    alignSelf: 'center',
-  },
-  drinkContainer: {
-    flex: 1,
-    width: 50,
-    height: 50,
-    position: 'absolute',
-    top: 260,
-    right: 120,
-  },
   lobbyButton: {
     marginTop: 40,
   },
@@ -144,19 +131,5 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'white',
     fontFamily: 'JosefinSans-Regular',
-  },
-  cardViewContainer: {
-    marginTop: 130,
-    width: 220,
-    height: 300,
-  },
-  cardViewTouchable: {
-    width: '100%',
-    height: '100%',
-    alignItems: 'center',
-  },
-  cardView: {
-    flex: 1,
-    resizeMode: 'contain',
   },
 });

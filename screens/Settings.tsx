@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { StyleSheet, View, Text } from 'react-native';
 
@@ -24,6 +25,7 @@ export default function Settings({ navigation }: SettingsProps ) {
     <View style={styles.settingsView}>
       <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
       <View style={styles.buttonContainer}>
+        <Button marginTop={20} text="Clear cache [TESTING]" onPress={() => AsyncStorage.clear()} />
         <Button marginTop={20} text="Log out" onPress={handleLogout}  />
       </View>
       
