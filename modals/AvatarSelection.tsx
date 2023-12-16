@@ -1,122 +1,103 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { useState } from 'react';
-import { FlatList, Image, ImageSourcePropType, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Image, Modal, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
+import AvatarCircle from '../components/AvatarCircle';
 import { AVATAR_ICONS, DRINK_ICONS } from '../constants/general';
 import useGameStore from '../store/gameStore';
-
+import { ref, update } from 'firebase/database';
+import { FIREBASE_RTDB } from '../firebaseConfig';
 
 interface AvatarSelectionProps {
   isVisible: boolean;
   onClose: () => void;
+  roomCode: string;
 };
 
-export default function AvatarSelection({ isVisible, onClose }: AvatarSelectionProps) {
-  const { avatar, drink, updateAvatar, updateDrink } = useGameStore();
-  const [selectedAvatarIndex, setSelectedAvatarIndex] = useState(0);
-  const [selectedDrinkIndex, setSelectedDrinkIndex] = useState(0);
+export default function AvatarSelection({ isVisible, onClose, roomCode }: AvatarSelectionProps) {
+  const { playerId, avatar, drink, updateAvatar, updateDrink } = useGameStore();
 
+  const updateAvatarAndDrinkInDatabase = async () => {
+    const playerRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/players/${playerId}`);
 
-  type AvatarCircleProps = {
-    avatarIcon: ImageSourcePropType;
-    onPress: () => void;
-    index: number;
-    isAvatar: boolean;
+    try {
+      await update(playerRef, { avatar, drink });
+      console.log(`Avatar and drink updated`);
+    } catch (error) {
+      console.error('Error updating avatar and drink in database:', error);
+    }
   }
-
-  const AvatarCircle = ({avatarIcon, onPress, index, isAvatar}: AvatarCircleProps) => (
-    <Pressable
-      style={[styles.avatarCircle,
-        isAvatar && index === selectedAvatarIndex && styles.avatarCircleSelected,
-        !isAvatar && index === selectedDrinkIndex && styles.avatarCircleSelected]}
-      onPress={() => {onPress(); 
-                      isAvatar && setSelectedAvatarIndex(index); 
-                      !isAvatar && setSelectedDrinkIndex(index); 
-                      }}>
-      <Image style={styles.avatar} source={avatarIcon} />
-    </Pressable>
-  );
 
   return (
     <Modal visible={isVisible} animationType='slide' presentationStyle='pageSheet'>
       <View style={styles.joinGameView}>
         <View style={styles.bigCircle}>
-          <Image style={styles.avatar} source={avatar} />
+          <Image style={styles.avatar} source={AVATAR_ICONS[avatar]} />
         </View>
         <View style={styles.viewContainer}>
-          <FlatList 
-          showsHorizontalScrollIndicator={false}
-          snapToInterval={30}
-          decelerationRate="fast"
-          horizontal
-          style={styles.avatarCircles}
-          data={AVATAR_ICONS}
-          renderItem={({item, index}) => <AvatarCircle avatarIcon={item} onPress={() => updateAvatar(item)} index={index} isAvatar/>}
+          <FlatList
+            showsHorizontalScrollIndicator={false}
+            snapToInterval={30}
+            decelerationRate="fast"
+            horizontal
+            style={styles.avatarCircles}
+            data={AVATAR_ICONS}
+            renderItem={({ item, index }) => <AvatarCircle avatarIcon={item} onPress={() => updateAvatar(index)} index={index} isAvatar />}
           />
 
           <LinearGradient
             // Button Linear Gradient
             colors={['transparent', '#1E1E1E80']}
             style={styles.rightGradientColor}
-            start={[0, 0]} 
+            start={[0, 0]}
             end={[1, 0]}
-            />
+          />
           <LinearGradient
             // Button Linear Gradient
             colors={['#1E1E1E80', 'transparent']}
             style={styles.leftGradientColor}
-            start={[0, 0]} 
+            start={[0, 0]}
             end={[1, 0]}
-            />
+          />
         </View>
-
         <Text style={styles.selectDrinkText}>Drink of your choice?</Text>
-
         <View style={styles.bigCircle}>
-          <Image style={styles.avatar} source={drink} />
+          <Image style={styles.avatar} source={DRINK_ICONS[drink]} />
         </View>
-
         <View style={styles.viewContainer}>
-
-            
-          <FlatList 
-          showsHorizontalScrollIndicator={false}
-          snapToInterval={30}
-          decelerationRate="fast"
-          horizontal
-          style={styles.avatarCircles}
-          data={DRINK_ICONS}
-          renderItem={({item, index}) => <AvatarCircle avatarIcon={item} onPress={() => updateDrink(item)} index={index} isAvatar={false}/>}
+          <FlatList
+            showsHorizontalScrollIndicator={false}
+            snapToInterval={30}
+            decelerationRate="fast"
+            horizontal
+            style={styles.avatarCircles}
+            data={DRINK_ICONS}
+            renderItem={({ item, index }) => <AvatarCircle avatarIcon={item} onPress={() => updateDrink(index)} index={index} isAvatar={false} />}
           />
           <LinearGradient
             // Button Linear Gradient
             colors={['transparent', '#1E1E1E80']}
             style={styles.rightGradientColor}
-            start={[0, 0]} 
+            start={[0, 0]}
             end={[1, 0]}
-            />
+          />
           <LinearGradient
             // Button Linear Gradient
             colors={['#1E1E1E80', 'transparent']}
             style={styles.leftGradientColor}
-            start={[0, 0]} 
+            start={[0, 0]}
             end={[1, 0]}
-            />
-    
-
-          </View>
-          <View style={styles.buttonContainer}>
-            <Button
-              marginTop={50}
-              onPress={onClose}
-              text="DONE"
-              buttonBgColor="#F76D31"
-              buttonBorderColor="#F76D31"
-              buttonWidthNumber={2.5} />
-          </View>
-          
-        
+          />
+        </View>
+        <View style={styles.buttonContainer}>
+          <Button
+            marginTop={50}
+            onPress={() => { onClose(), updateAvatarAndDrinkInDatabase() }}
+            text="DONE"
+            buttonBgColor="#F76D31"
+            buttonBorderColor="#F76D31"
+            buttonWidthNumber={2.5} />
+        </View>
       </View>
     </Modal>
   );
@@ -134,18 +115,18 @@ const styles = StyleSheet.create({
     bottom: 40,
     right: '-15%',
   },
-leftGradientColor: {
-  position: 'absolute',
-  left: 0,
-  width: 50,
-  height: '100%',
-},
-rightGradientColor: {
-  position: 'absolute',
-  right: 0,
-  width: 50,
-  height: '100%',
-},
+  leftGradientColor: {
+    position: 'absolute',
+    left: 0,
+    width: 50,
+    height: '100%',
+  },
+  rightGradientColor: {
+    position: 'absolute',
+    right: 0,
+    width: 50,
+    height: '100%',
+  },
   avatar: {
     flex: 1,
     resizeMode: 'contain',

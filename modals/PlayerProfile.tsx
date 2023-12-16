@@ -1,11 +1,12 @@
 import { Image, ImageSourcePropType, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
+import { AVATAR_ICONS, DRINK_ICONS } from '../constants/general';
 
 interface Player {
     username: string;
-    avatar: ImageSourcePropType;
-    drink: ImageSourcePropType;
+    avatar: number;
+    drink: number;
   }
 
 interface PlayerProfileProps {
@@ -23,8 +24,8 @@ export default function PlayerProfile({ profile, isVisible, onClose }: PlayerPro
             <Text style={styles.baseText}>Total points: </Text>
             
             <View style={styles.avatarCircle}>
-                <Image style={styles.avatar} source={profile.avatar} />
-                <Image style={styles.drink} source={profile.drink} />
+                <Image style={styles.avatar} source={AVATAR_ICONS[profile.avatar]} />
+                <Image style={styles.drink} source={DRINK_ICONS[profile.drink]} />
             </View>
 
         </View>

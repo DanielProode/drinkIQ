@@ -1,21 +1,23 @@
 import { Image } from 'expo-image';
 import React from 'react'
-import { StyleSheet, View, Text, Pressable, ImageSourcePropType } from 'react-native';
+import { StyleSheet, View, Text, Pressable } from 'react-native';
+
+import { AVATAR_ICONS, DRINK_ICONS } from '../constants/general';
 
 interface PlayerInLobbyProps {
   player: Player;
   index: number;
-  currentPlayer: Player;
+  currentUser: string;
   onPress: () => void;
 }
 
 interface Player {
   username: string;
-  avatar: ImageSourcePropType;
-  drink: ImageSourcePropType;
+  avatar: number;
+  drink: number;
 }
 
-export default function PlayerInLobby({ player, index, currentPlayer, onPress }: PlayerInLobbyProps) {
+export default function PlayerInLobby({ player, index, currentUser, onPress }: PlayerInLobbyProps) {
   return (
     <>
       <Pressable
@@ -23,9 +25,9 @@ export default function PlayerInLobby({ player, index, currentPlayer, onPress }:
         key={index}
         onPress={() => onPress()}
       >
-        <View style={[styles.avatarCircle, player.username === currentPlayer.username && styles.currentAvatarCircle]}>
-          <Image style={styles.avatar} source={player.avatar} />
-          <Image style={styles.drink} source={player.drink} />
+        <View style={[styles.avatarCircle, player.username === currentUser && styles.currentAvatarCircle]}>
+          <Image style={styles.avatar} source={AVATAR_ICONS[player.avatar]} />
+          <Image style={styles.drink} source={DRINK_ICONS[player.drink]} />
         </View>
         <Text style={styles.name} adjustsFontSizeToFit numberOfLines={1}>{player.username}</Text>
       </Pressable>
