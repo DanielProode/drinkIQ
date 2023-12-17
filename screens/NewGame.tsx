@@ -18,7 +18,7 @@ export default function NewGame({ navigation }: NewGameProps) {
   const [roomCode, setRoomCode] = useState('');
   const [error, setError] = useState('');
   const { username } = useUserStore();
-  const { updatePlayerId } = useGameStore();
+  const { playerId, updatePlayerId } = useGameStore();
   
   const handleJoinGame = async () => {
     try {
@@ -75,6 +75,7 @@ export default function NewGame({ navigation }: NewGameProps) {
       await set(newPlayerRef, {username, avatar: 0, drink: 0, isHost: true});
       updatePlayerId(newPlayerRef.key);
       console.log(`Room code ${roomCode} added to the database.`);
+      console.log(`Player ${username} with ${playerId} has joined the room.`);
     } catch (error) {
       console.error('Error adding room code to the database:', error);
     }
@@ -84,9 +85,9 @@ export default function NewGame({ navigation }: NewGameProps) {
     const roomCodeRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/players`);
     try {
       const newPlayerRef = push(roomCodeRef);
-      await set(newPlayerRef, {username, avatar: 0, drink: 0});
-      updatePlayerId(newPlayerRef.key);
-      console.log(`Player ${username} has joined the room.`);
+      await set(newPlayerRef, {username, avatar: 0, drink: 0}).then(() => console.log(newPlayerRef.key + ' player key'));
+      updatePlayerId(newPlayerRef.key)
+      console.log(`Player ${username} with ${playerId} has joined the room.`);
     } catch (error) {
       console.error('Error joining room:', error);
     }

@@ -2,7 +2,7 @@ import { RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Image } from 'expo-image';
 import { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
 import PlayerInLobby from '../components/PlayerInLobby';
@@ -13,7 +13,7 @@ import PlayerProfile from '../modals/PlayerProfile';
 import useGameStore from '../store/gameStore';
 import useUserStore from '../store/userStore';
 import { FIREBASE_RTDB } from '../firebaseConfig';
-import { onValue, ref } from 'firebase/database';
+import { onValue, ref, remove } from 'firebase/database';
 
 interface LobbyProps {
   route: RouteProp<{
@@ -37,7 +37,7 @@ interface Player {
 export default function Lobby({ route, navigation }: LobbyProps) {
   const { roomCode, gameHost } = route.params;
   const { username } = useUserStore();
-  const { playableDeck, playableDeckImage, playableDeckName, playableDeckText } = useGameStore();
+  const { playerId, playableDeck, playableDeckImage, playableDeckName, playableDeckText } = useGameStore();
   const [isAvatarSelectionModalVisible, setIsAvatarSelectionModalVisible] = useState(false);
   const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
   const [isCardDeckSelectionModalVisible, setIsCardDeckSelectionModalVisible] = useState(false);
@@ -72,6 +72,21 @@ export default function Lobby({ route, navigation }: LobbyProps) {
     }
   }
 
+  const removePlayerFromLobby = () => {
+    const playerRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/players/${playerId}`);
+    const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
+    const removePlayerRef = gameHost ? roomRef : playerRef;
+    console.log('player remove function called')
+
+    remove(removePlayerRef)
+      .then(() => {
+        console.log(`${playerId} removed from room`);
+      })
+      .catch((error) => {
+        console.error('Error removing player:', error);
+      });
+  };
+
   useEffect(() => {
     const playersRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/players`);
     const unsubscribe = onValue(playersRef, (snapshot) => {
@@ -82,6 +97,27 @@ export default function Lobby({ route, navigation }: LobbyProps) {
 
     return () => unsubscribe();
   }, []);
+
+  // Back button event
+  useEffect(
+    () =>
+      navigation.addListener('beforeRemove', (e) => {
+        e.preventDefault();
+        Alert.alert(
+          'Leave the lobby?',
+          'Are you sure you want to leave the lobby?',
+          [
+            { text: "Don't leave", style: 'cancel', onPress: () => { } },
+            {
+              text: 'Leave',
+              style: 'destructive',
+              onPress: () => {navigation.dispatch(e.data.action), removePlayerFromLobby()}
+            },
+          ]
+        );
+      }),
+    [navigation]
+  );
 
   return (
     <View style={styles.gameView}>
@@ -103,7 +139,7 @@ export default function Lobby({ route, navigation }: LobbyProps) {
       <Text style={styles.deckName}>{playableDeckName}</Text>
       <View style={styles.joinedPlayers}>
         {fetchedPlayers.map((player, index) =>
-          <PlayerInLobby onPress={() => avatarPressed(player)} player={player} index={index} currentUser={username} key={index}/>
+          <PlayerInLobby onPress={() => avatarPressed(player)} player={player} index={index} currentUser={username} key={index} />
         )}
       </View>
       <View style={styles.buttonContainer}>

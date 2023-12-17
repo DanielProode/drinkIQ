@@ -1,5 +1,5 @@
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createStackNavigator } from '@react-navigation/stack';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
@@ -28,7 +28,7 @@ type RootStackParamList = {
   Profile: undefined;
 };
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const Stack = createStackNavigator<RootStackParamList>();
 
 SplashScreen.preventAutoHideAsync();
 
@@ -68,7 +68,7 @@ export default function Router() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerTitle: '', headerTransparent: true, headerTintColor: '#A5AFB9' }}>
+      <Stack.Navigator screenOptions={{ headerTitle: '', headerTransparent: true, headerTintColor: '#A5AFB9', headerBackTitleVisible: false }}>
         {authUser === null ? (
           <>
             <Stack.Screen name="Login" component={Login} />
