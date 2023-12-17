@@ -1,6 +1,7 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { Image } from 'expo-image';
 import { useState } from 'react';
-import { Image, View, Text, TextInput, StyleSheet, TouchableWithoutFeedback, Keyboard, Pressable } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableWithoutFeedback, Keyboard, Pressable } from 'react-native';
 
 import Button from '../components/Button';
 import { useAuth } from '../context/authContext';
@@ -97,7 +98,7 @@ const styles = StyleSheet.create({
   },
   cheersIcon: {
     position: 'absolute',
-    resizeMode: 'contain',
+    contentFit: 'contain',
     width: 250,
     height: 250,
     right: 20,

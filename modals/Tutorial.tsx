@@ -1,4 +1,4 @@
-import { Image, Modal, StyleSheet, Text, View } from 'react-native';
+import { Modal, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
 

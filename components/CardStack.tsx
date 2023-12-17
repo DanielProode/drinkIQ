@@ -115,14 +115,10 @@ export default function CardStack({ onGameOver, setPoints, setDrinks, points, dr
     const randomNumberArray = generateRandomNumberArray(array.length);
     randomNumberArray.map((x) => {
       tempGameQuestionArray.push(array[x])
-      console.log("Pushing element to playable deck: ")
-      console.log(JSON.stringify(array[x]))
     });
 
     for (let i = 0; i < randomNumberArray.length; i++) {
       array = array.filter(element => element !== tempGameQuestionArray[i])
-      console.log("Removing element from main deck: ")
-      console.log(JSON.stringify(tempGameQuestionArray[i]))
     }
     storeArray(array);
     return tempGameQuestionArray;
@@ -219,14 +215,14 @@ const styles = StyleSheet.create({
   },
   avatar: {
     flex: 1,
-    resizeMode: 'contain',
+    contentFit: 'contain',
     width: '90%',
     height: '90%',
     alignSelf: 'center',
   },
   drink: {
     position: 'absolute',
-    resizeMode: 'contain',
+    contentFit: 'contain',
     width: '50%',
     height: '50%',
     alignSelf: 'flex-end',

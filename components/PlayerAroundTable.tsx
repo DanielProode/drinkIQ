@@ -36,14 +36,14 @@ export default function PlayerAroundTable({ stylesArray, player, index }: Player
 const styles = StyleSheet.create({
     avatar: {
         flex: 1,
-        resizeMode: 'contain',
+        contentFit: 'contain',
         width: '70%',
         height: '70%',
         alignSelf: 'center',
     },
     drink: {
         flex: 1,
-        resizeMode: 'contain',
+        contentFit: 'contain',
         width: '70%',
         height: '70%',
         alignSelf: 'center',

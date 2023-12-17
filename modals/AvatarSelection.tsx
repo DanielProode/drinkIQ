@@ -1,6 +1,9 @@
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { FlatList, Image, Modal, StyleSheet, Text, View } from 'react-native';
+import { useState } from 'react';
+import { FlatList, Modal, StyleSheet, Text, View } from 'react-native';
 
+import AvatarCircle from '../components/AvatarCircle';
 import Button from '../components/Button';
 import AvatarCircle from '../components/AvatarCircle';
 import { AVATAR_ICONS, DRINK_ICONS } from '../constants/general';
@@ -35,14 +38,14 @@ export default function AvatarSelection({ isVisible, onClose, roomCode }: Avatar
           <Image style={styles.avatar} source={AVATAR_ICONS[avatar]} />
         </View>
         <View style={styles.viewContainer}>
-          <FlatList
-            showsHorizontalScrollIndicator={false}
-            snapToInterval={30}
-            decelerationRate="fast"
-            horizontal
-            style={styles.avatarCircles}
-            data={AVATAR_ICONS}
-            renderItem={({ item, index }) => <AvatarCircle avatarIcon={item} onPress={() => updateAvatar(index)} index={index} isAvatar />}
+          <FlatList 
+          showsHorizontalScrollIndicator={false}
+          snapToInterval={30}
+          decelerationRate="fast"
+          horizontal
+          style={styles.avatarCircles}
+          data={AVATAR_ICONS}
+          renderItem={({item, index}) => <AvatarCircle selectedAvatarIndex={selectedAvatarIndex} setSelectedAvatarIndex={setSelectedAvatarIndex} selectedDrinkIndex={selectedDrinkIndex} setSelectedDrinkIndex={setSelectedDrinkIndex} avatarIcon={item} onPress={() => updateAvatar(item)} index={index} isAvatar/>}
           />
 
           <LinearGradient
@@ -65,14 +68,16 @@ export default function AvatarSelection({ isVisible, onClose, roomCode }: Avatar
           <Image style={styles.avatar} source={DRINK_ICONS[drink]} />
         </View>
         <View style={styles.viewContainer}>
-          <FlatList
-            showsHorizontalScrollIndicator={false}
-            snapToInterval={30}
-            decelerationRate="fast"
-            horizontal
-            style={styles.avatarCircles}
-            data={DRINK_ICONS}
-            renderItem={({ item, index }) => <AvatarCircle avatarIcon={item} onPress={() => updateDrink(index)} index={index} isAvatar={false} />}
+
+            
+          <FlatList 
+          showsHorizontalScrollIndicator={false}
+          snapToInterval={30}
+          decelerationRate="fast"
+          horizontal
+          style={styles.avatarCircles}
+          data={DRINK_ICONS}
+          renderItem={({item, index}) => <AvatarCircle selectedAvatarIndex={selectedAvatarIndex} setSelectedAvatarIndex={setSelectedAvatarIndex} selectedDrinkIndex={selectedDrinkIndex} setSelectedDrinkIndex={setSelectedDrinkIndex} avatarIcon={item} onPress={() => updateDrink(item)} index={index} isAvatar={false}/>}
           />
           <LinearGradient
             // Button Linear Gradient
@@ -129,10 +134,16 @@ const styles = StyleSheet.create({
   },
   avatar: {
     flex: 1,
-    resizeMode: 'contain',
+    contentFit: 'contain',
     width: '90%',
     height: '90%',
     alignSelf: 'center',
+  },
+  selectDrinkText: {
+    color: 'white',
+    fontFamily: 'JosefinSans-Bold',
+    marginTop: 30,
+    fontSize: 20,
   },
   deckButtonContainer: {
     width: 100,
@@ -144,14 +155,14 @@ const styles = StyleSheet.create({
   },
   drink: {
     flex: 1,
-    resizeMode: 'contain',
+    contentFit: 'contain',
     width: '70%',
     height: '70%',
     alignSelf: 'center',
   },
   cheersIcon: {
     position: 'absolute',
-    resizeMode: 'contain',
+    contentFit: 'contain',
     width: 80,
     height: 80,
     right: -30,
@@ -160,24 +171,6 @@ const styles = StyleSheet.create({
   avatarCircles: {
     flexDirection: 'row',
     marginTop: 20,
-  },
-  avatarCircle: {
-    width: 70,
-    height: 70,
-    aspectRatio: 1 / 1,
-    backgroundColor: '#d8d8d8',
-    borderRadius: 40,
-    marginRight: 10,
-  },
-  avatarCircleSelected: {
-    width: 70,
-    height: 70,
-    aspectRatio: 1 / 1,
-    backgroundColor: '#d8d8d8',
-    borderRadius: 40,
-    marginRight: 10,
-    borderWidth: 3,
-    borderColor: '#F76D31'
   },
   bigCircle: {
     marginTop: 20,
@@ -191,17 +184,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     width: '90%',
     alignItems: 'center',
-  },
-  selectAvatarText: {
-    color: 'white',
-    fontFamily: 'JosefinSans-Bold',
-    fontSize: 20,
-  },
-  selectDrinkText: {
-    color: 'white',
-    fontFamily: 'JosefinSans-Bold',
-    marginTop: 30,
-    fontSize: 20,
   },
   buttonContainer: {
     marginBottom: 50,
