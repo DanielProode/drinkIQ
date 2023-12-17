@@ -118,7 +118,7 @@ export default function Lobby({ route, navigation }: LobbyProps) {
       <Text style={styles.deckName}>{playableDeckName}</Text>
       <View style={styles.joinedPlayers}>
         {updatedJoinedPlayers.map((player, index) =>
-          <PlayerInLobby onPress={() => avatarPressed(player)} player={player} index={index} currentPlayer={currentPlayer} />
+          <PlayerInLobby onPress={() => avatarPressed(player)} key={player.username} player={player} index={index} currentPlayer={currentPlayer} />
         )}
       </View>
       <View style={styles.buttonContainer}>

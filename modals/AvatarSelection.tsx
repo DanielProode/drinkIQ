@@ -1,7 +1,9 @@
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
-import { FlatList, Image, ImageSourcePropType, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Modal, StyleSheet, Text, View } from 'react-native';
 
+import AvatarCircle from '../components/AvatarCircle';
 import Button from '../components/Button';
 import { AVATAR_ICONS, DRINK_ICONS } from '../constants/general';
 import useGameStore from '../store/gameStore';
@@ -18,26 +20,6 @@ export default function AvatarSelection({ isVisible, onClose }: AvatarSelectionP
   const [selectedDrinkIndex, setSelectedDrinkIndex] = useState(0);
 
 
-  type AvatarCircleProps = {
-    avatarIcon: ImageSourcePropType;
-    onPress: () => void;
-    index: number;
-    isAvatar: boolean;
-  }
-
-  const AvatarCircle = ({avatarIcon, onPress, index, isAvatar}: AvatarCircleProps) => (
-    <Pressable
-      style={[styles.avatarCircle,
-        isAvatar && index === selectedAvatarIndex && styles.avatarCircleSelected,
-        !isAvatar && index === selectedDrinkIndex && styles.avatarCircleSelected]}
-      onPress={() => {onPress(); 
-                      isAvatar && setSelectedAvatarIndex(index); 
-                      !isAvatar && setSelectedDrinkIndex(index); 
-                      }}>
-      <Image style={styles.avatar} source={avatarIcon} />
-    </Pressable>
-  );
-
   return (
     <Modal visible={isVisible} animationType='slide' presentationStyle='pageSheet'>
       <View style={styles.joinGameView}>
@@ -52,7 +34,7 @@ export default function AvatarSelection({ isVisible, onClose }: AvatarSelectionP
           horizontal
           style={styles.avatarCircles}
           data={AVATAR_ICONS}
-          renderItem={({item, index}) => <AvatarCircle avatarIcon={item} onPress={() => updateAvatar(item)} index={index} isAvatar/>}
+          renderItem={({item, index}) => <AvatarCircle selectedAvatarIndex={selectedAvatarIndex} setSelectedAvatarIndex={setSelectedAvatarIndex} selectedDrinkIndex={selectedDrinkIndex} setSelectedDrinkIndex={setSelectedDrinkIndex} avatarIcon={item} onPress={() => updateAvatar(item)} index={index} isAvatar/>}
           />
 
           <LinearGradient
@@ -87,7 +69,7 @@ export default function AvatarSelection({ isVisible, onClose }: AvatarSelectionP
           horizontal
           style={styles.avatarCircles}
           data={DRINK_ICONS}
-          renderItem={({item, index}) => <AvatarCircle avatarIcon={item} onPress={() => updateDrink(item)} index={index} isAvatar={false}/>}
+          renderItem={({item, index}) => <AvatarCircle selectedAvatarIndex={selectedAvatarIndex} setSelectedAvatarIndex={setSelectedAvatarIndex} selectedDrinkIndex={selectedDrinkIndex} setSelectedDrinkIndex={setSelectedDrinkIndex} avatarIcon={item} onPress={() => updateDrink(item)} index={index} isAvatar={false}/>}
           />
           <LinearGradient
             // Button Linear Gradient
@@ -148,10 +130,16 @@ rightGradientColor: {
 },
   avatar: {
     flex: 1,
-    resizeMode: 'contain',
+    contentFit: 'contain',
     width: '90%',
     height: '90%',
     alignSelf: 'center',
+  },
+  selectDrinkText: {
+    color: 'white',
+    fontFamily: 'JosefinSans-Bold',
+    marginTop: 30,
+    fontSize: 20,
   },
   deckButtonContainer: {
     width: 100,
@@ -163,14 +151,14 @@ rightGradientColor: {
   },
   drink: {
     flex: 1,
-    resizeMode: 'contain',
+    contentFit: 'contain',
     width: '70%',
     height: '70%',
     alignSelf: 'center',
   },
   cheersIcon: {
     position: 'absolute',
-    resizeMode: 'contain',
+    contentFit: 'contain',
     width: 80,
     height: 80,
     right: -30,
@@ -179,24 +167,6 @@ rightGradientColor: {
   avatarCircles: {
     flexDirection: 'row',
     marginTop: 20,
-  },
-  avatarCircle: {
-    width: 70,
-    height: 70,
-    aspectRatio: 1 / 1,
-    backgroundColor: '#d8d8d8',
-    borderRadius: 40,
-    marginRight: 10,
-  },
-  avatarCircleSelected: {
-    width: 70,
-    height: 70,
-    aspectRatio: 1 / 1,
-    backgroundColor: '#d8d8d8',
-    borderRadius: 40,
-    marginRight: 10,
-    borderWidth: 3,
-    borderColor: '#F76D31'
   },
   bigCircle: {
     marginTop: 20,
@@ -210,17 +180,6 @@ rightGradientColor: {
     marginTop: 10,
     width: '90%',
     alignItems: 'center',
-  },
-  selectAvatarText: {
-    color: 'white',
-    fontFamily: 'JosefinSans-Bold',
-    fontSize: 20,
-  },
-  selectDrinkText: {
-    color: 'white',
-    fontFamily: 'JosefinSans-Bold',
-    marginTop: 30,
-    fontSize: 20,
   },
   buttonContainer: {
     marginBottom: 50,

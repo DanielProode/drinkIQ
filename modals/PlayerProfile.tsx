@@ -1,4 +1,5 @@
-import { Image, ImageSourcePropType, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image } from 'expo-image';
+import { ImageSourcePropType, Modal, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
 
@@ -61,14 +62,14 @@ const styles = StyleSheet.create({
   },
   avatar: {
     flex: 1,
-    resizeMode: 'contain',
+    contentFit: 'contain',
     width: '80%',
     height: '80%',
     alignSelf: 'center',
   },
   drink: {
     position: 'absolute',
-    resizeMode: 'contain',
+    contentFit: 'contain',
     width: '45%',
     height: '45%',
     alignSelf: 'flex-end',
@@ -84,7 +85,7 @@ const styles = StyleSheet.create({
   },
   cheersIcon: {
     position: 'absolute',
-    resizeMode: 'contain',
+    contentFit: 'contain',
     width: 80,
     height: 80,
     right: -30,

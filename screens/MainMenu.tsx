@@ -1,6 +1,7 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { Image } from 'expo-image';
 import { useState } from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
 import { DRINKIQ_LOGO_IMAGE } from '../constants/general';
@@ -63,7 +64,7 @@ const styles = StyleSheet.create({
   },
   cheersIcon: {
     position: 'absolute',
-    resizeMode: 'contain',
+    contentFit: 'contain',
     width: 250,
     height: 250,
     right: 20,
