@@ -92,7 +92,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           updatePacksOwned(docData.packs_owned);
           setAuthUser(userObject);
         } else {
-          console.log("User info document missing");
+          console.error("User info document missing");
         }
       } catch (error) {
         console.error('Error fetching user info: ', error);

@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
   },
   avatar: {
     flex: 1,
-    resizeMode: 'contain',
+    contentFit: 'contain',
     width: '80%',
     height: '80%',
     alignSelf: 'center',
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   },
   drink: {
     position: 'absolute',
-    resizeMode: 'contain',
+    contentFit: 'contain',
     width: '45%',
     height: '45%',
     alignSelf: 'flex-end',

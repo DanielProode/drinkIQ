@@ -1,5 +1,6 @@
+import { Image } from 'expo-image';
 import { useState } from "react";
-import { Pressable, View, Text, Image, StyleSheet, ImageProps } from "react-native";
+import { Pressable, View, Text, StyleSheet, ImageProps } from "react-native";
 
 import CardDeckInfo from "../modals/CardDeckInfo";
 import useUserStore from "../store/userStore";

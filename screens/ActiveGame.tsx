@@ -103,7 +103,7 @@ export default function ActiveGame({ route, navigation }: ActiveGameProps) {
         ) : (
           <>
             {fetchedPlayers.map((player, index) =>
-              <PlayerAroundTable stylesArray={stylesArray[index]} player={player} index={index} />
+              <PlayerAroundTable stylesArray={stylesArray[index]} key={player.username} player={player} index={index} />
             )}
 
             <CardStack onGameOver={handleGameOver} points={correctAnswerCount} drinks={wrongAnswerCount} setPoints={setCorrectAnswerCount} setDrinks={setWrongAnswerCount} />

@@ -3,9 +3,8 @@ import { Image } from 'expo-image';
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import AnswerButton from './AnswerButton';
-import { QuestionsArray } from './CardStack';
-import { ANSWER_PREFIXES, BASE_CARD_IMAGE, DEFAULT_CARD_COUNT } from '../constants/general';
+import Answer from './Answer';
+import { BASE_CARD_IMAGE, DEFAULT_CARD_COUNT } from '../constants/general';
 import useGameStore from '../store/gameStore';
 
 interface CardProps {
@@ -15,15 +14,25 @@ interface CardProps {
   cardsLeft: number;
 };
 
+export interface QuestionsArray {
+  question: string;
+  answers: AnswersArray[]
+};
+
+interface AnswersArray {
+  text: string;
+  isCorrect: boolean;
+};
+
 export default function Card({ onClose, handlePoints, questionElement, cardsLeft }: CardProps) {
   if (!questionElement) {
     return
   }
-  const { avatar, playableCardBackground } = useGameStore();
+  const { playableCardBackground } = useGameStore();
   const [isAnswered, setIsAnswered] = useState(false);
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number | null>(null);
   const [isAnswerCorrect, setIsAnswerCorrect] = useState(false);
-  const correctAnswerIndex = questionElement.answers.findIndex((answer) => answer.isCorrect);
+
 
   const handleAnswerSelection = (answerIndex: number) => {
     if (!isAnswered) {
@@ -42,8 +51,22 @@ export default function Card({ onClose, handlePoints, questionElement, cardsLeft
     setIsAnswered(true);
   };
 
+  const randomize = (array: AnswersArray[]) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  const [randomizedAnswerArray] = useState(() => randomize(questionElement.answers));
+
   const renderAnswers = () => {
-    return questionElement.answers.map((answer, answerIndex) => {
+
+    console.log("Calling renderAnswers function...")
+
+    return randomizedAnswerArray.map((answer, answerIndex) => {
+      const correctAnswerIndex = randomizedAnswerArray.findIndex((answer) => answer.isCorrect);
       const isSelected = answerIndex === selectedAnswerIndex;
       const isCorrect = answerIndex === correctAnswerIndex;
       const answerStyle = [
@@ -54,19 +77,9 @@ export default function Card({ onClose, handlePoints, questionElement, cardsLeft
         !isCorrect && isAnswered && { color: '#00000050' }
       ];
       return (
-        <AnswerButton
-          key={answerIndex}
-          isAnswered={isAnswered}
-          text={ANSWER_PREFIXES[answerIndex] + answer.text}
-          style={answerStyle}
-          textStyle={textStyle}
-          onPress={() => { 
-            handleAnswerSelection(answerIndex);
-            setIsAnswered(true);
-          }}
-        />
+        <Answer key={answerIndex} answerIndex={answerIndex} isAnswered={isAnswered} answer={answer} answerStyle={answerStyle} textStyle={textStyle} handleAnswerSelection={handleAnswerSelection} setIsAnswered={setIsAnswered} />
       );
-    });
+    })
   };
 
   return (
@@ -83,7 +96,7 @@ export default function Card({ onClose, handlePoints, questionElement, cardsLeft
                 {!isAnswered && questionElement.question}
               </Text>
             </View>
-            
+
           </View>
           <View style={styles.answerButtonView}>
             {renderAnswers()}
@@ -100,11 +113,11 @@ export default function Card({ onClose, handlePoints, questionElement, cardsLeft
                 <Text style={styles.nextButtonText}>→</Text>
               </Pressable>}
           </View>
-          </Image>
+        </Image>
       </View>
-        <View style={styles.deckCircle}>
-          <Image style={styles.deckLogo} source={playableCardBackground} />
-        </View>
+      <View style={styles.deckCircle}>
+        <Image style={styles.deckLogo} source={playableCardBackground} />
+      </View>
     </View>
   );
 };
@@ -140,7 +153,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#00000099',
   },
   image: {
-    resizeMode: 'contain',
+    contentFit: 'contain',
     height: '100%',
   },
   background: {
