@@ -1,13 +1,13 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { get, push, ref, set } from 'firebase/database';
 import { useRef, useState } from 'react';
 import { Keyboard, StyleSheet, Text, TextInput, View, TouchableWithoutFeedback } from 'react-native';
-import { get, push, ref, set } from 'firebase/database';
 
-import useUserStore from '../store/userStore';
-import useGameStore from '../store/gameStore';
 import Button from '../components/Button';
-import { FIREBASE_RTDB } from '../firebaseConfig.js';
 import { GAME_CODE_MAX, GAME_CODE_MIN } from '../constants/general';
+import { FIREBASE_RTDB } from '../firebaseConfig.js';
+import useGameStore from '../store/gameStore';
+import useUserStore from '../store/userStore';
 
 interface NewGameProps {
   navigation: NativeStackNavigationProp<any>;

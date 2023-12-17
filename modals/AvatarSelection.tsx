@@ -1,15 +1,14 @@
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
+import { ref, update } from 'firebase/database';
 import { useState } from 'react';
 import { FlatList, Modal, StyleSheet, Text, View } from 'react-native';
 
 import AvatarCircle from '../components/AvatarCircle';
 import Button from '../components/Button';
-import AvatarCircle from '../components/AvatarCircle';
 import { AVATAR_ICONS, DRINK_ICONS } from '../constants/general';
-import useGameStore from '../store/gameStore';
-import { ref, update } from 'firebase/database';
 import { FIREBASE_RTDB } from '../firebaseConfig';
+import useGameStore from '../store/gameStore';
 
 interface AvatarSelectionProps {
   isVisible: boolean;
@@ -19,6 +18,8 @@ interface AvatarSelectionProps {
 
 export default function AvatarSelection({ isVisible, onClose, roomCode }: AvatarSelectionProps) {
   const { playerId, avatar, drink, updateAvatar, updateDrink } = useGameStore();
+  const [selectedAvatarIndex, setSelectedAvatarIndex] = useState(0);
+  const [selectedDrinkIndex, setSelectedDrinkIndex] = useState(0);
 
   const updateAvatarAndDrinkInDatabase = async () => {
     const playerRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/players/${playerId}`);
@@ -45,7 +46,7 @@ export default function AvatarSelection({ isVisible, onClose, roomCode }: Avatar
           horizontal
           style={styles.avatarCircles}
           data={AVATAR_ICONS}
-          renderItem={({item, index}) => <AvatarCircle selectedAvatarIndex={selectedAvatarIndex} setSelectedAvatarIndex={setSelectedAvatarIndex} selectedDrinkIndex={selectedDrinkIndex} setSelectedDrinkIndex={setSelectedDrinkIndex} avatarIcon={item} onPress={() => updateAvatar(item)} index={index} isAvatar/>}
+          renderItem={({item, index}) => <AvatarCircle selectedAvatarIndex={selectedAvatarIndex} setSelectedAvatarIndex={setSelectedAvatarIndex} selectedDrinkIndex={selectedDrinkIndex} setSelectedDrinkIndex={setSelectedDrinkIndex} avatarIcon={item} onPress={() => updateAvatar(index)} index={index} isAvatar/>}
           />
 
           <LinearGradient
@@ -77,7 +78,7 @@ export default function AvatarSelection({ isVisible, onClose, roomCode }: Avatar
           horizontal
           style={styles.avatarCircles}
           data={DRINK_ICONS}
-          renderItem={({item, index}) => <AvatarCircle selectedAvatarIndex={selectedAvatarIndex} setSelectedAvatarIndex={setSelectedAvatarIndex} selectedDrinkIndex={selectedDrinkIndex} setSelectedDrinkIndex={setSelectedDrinkIndex} avatarIcon={item} onPress={() => updateDrink(item)} index={index} isAvatar={false}/>}
+          renderItem={({item, index}) => <AvatarCircle selectedAvatarIndex={selectedAvatarIndex} setSelectedAvatarIndex={setSelectedAvatarIndex} selectedDrinkIndex={selectedDrinkIndex} setSelectedDrinkIndex={setSelectedDrinkIndex} avatarIcon={item} onPress={() => updateDrink(index)} index={index} isAvatar={false}/>}
           />
           <LinearGradient
             // Button Linear Gradient

@@ -1,5 +1,5 @@
 import { Image } from 'expo-image';
-import { ImageSourcePropType, Modal, StyleSheet, Text, View } from 'react-native';
+import { Modal, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
 import { AVATAR_ICONS, DRINK_ICONS } from '../constants/general';
