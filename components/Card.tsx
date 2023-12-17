@@ -3,10 +3,9 @@ import { Image } from 'expo-image';
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import AnswerButton from './AnswerButton';
-import { ANSWER_PREFIXES, BASE_CARD_IMAGE, DEFAULT_CARD_COUNT } from '../constants/general';
-import useGameStore from '../store/gameStore';
 import Answer from './Answer';
+import { BASE_CARD_IMAGE, DEFAULT_CARD_COUNT } from '../constants/general';
+import useGameStore from '../store/gameStore';
 
 interface CardProps {
   onClose: () => void;
@@ -52,22 +51,22 @@ export default function Card({ onClose, handlePoints, questionElement, cardsLeft
     setIsAnswered(true);
   };
 
+  const randomize = (array: AnswersArray[]) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  const [randomizedAnswerArray] = useState(() => randomize(questionElement.answers));
+
   const renderAnswers = () => {
 
     console.log("Calling renderAnswers function...")
 
-    const randomize = (array: AnswersArray[]) => {
-      for (let i = array.length - 1; i > 0; i--) { 
-        const j = Math.floor(Math.random() * (i + 1)); 
-        [array[i], array[j]] = [array[j], array[i]]; 
-      } 
-      return array; 
-    }
-
-    return randomize(questionElement.answers).map((answer, answerIndex) => {
-      console.log("Answers for the question: ")
-      console.log(JSON.stringify(questionElement.answers))
-      const correctAnswerIndex = questionElement.answers.findIndex((answer) => answer.isCorrect);
+    return randomizedAnswerArray.map((answer, answerIndex) => {
+      const correctAnswerIndex = randomizedAnswerArray.findIndex((answer) => answer.isCorrect);
       const isSelected = answerIndex === selectedAnswerIndex;
       const isCorrect = answerIndex === correctAnswerIndex;
       const answerStyle = [
@@ -78,9 +77,9 @@ export default function Card({ onClose, handlePoints, questionElement, cardsLeft
         !isCorrect && isAnswered && { color: '#00000050' }
       ];
       return (
-        <Answer key={answerIndex} answerIndex={answerIndex} isAnswered={isAnswered} answer={answer} answerStyle={answerStyle} textStyle={textStyle} handleAnswerSelection={handleAnswerSelection} setIsAnswered={setIsAnswered}/>
-    );
-  })
+        <Answer key={answerIndex} answerIndex={answerIndex} isAnswered={isAnswered} answer={answer} answerStyle={answerStyle} textStyle={textStyle} handleAnswerSelection={handleAnswerSelection} setIsAnswered={setIsAnswered} />
+      );
+    })
   };
 
   return (
@@ -97,7 +96,7 @@ export default function Card({ onClose, handlePoints, questionElement, cardsLeft
                 {!isAnswered && questionElement.question}
               </Text>
             </View>
-            
+
           </View>
           <View style={styles.answerButtonView}>
             {renderAnswers()}
@@ -114,11 +113,11 @@ export default function Card({ onClose, handlePoints, questionElement, cardsLeft
                 <Text style={styles.nextButtonText}>→</Text>
               </Pressable>}
           </View>
-          </Image>
+        </Image>
       </View>
-        <View style={styles.deckCircle}>
-          <Image style={styles.deckLogo} source={playableCardBackground} />
-        </View>
+      <View style={styles.deckCircle}>
+        <Image style={styles.deckLogo} source={playableCardBackground} />
+      </View>
     </View>
   );
 };

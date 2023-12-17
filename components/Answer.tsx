@@ -1,5 +1,4 @@
 import React from 'react'
-import { StyleSheet } from 'react-native';
 
 import AnswerButton from './AnswerButton';
 import { ANSWER_PREFIXES } from '../constants/general';
@@ -16,6 +15,7 @@ interface AnswerProps {
 }
 
 export default function Answer({ answerIndex, isAnswered, answer, answerStyle, textStyle, handleAnswerSelection, setIsAnswered }: AnswerProps) {
+  
   return (
     <>
       <AnswerButton
@@ -32,8 +32,3 @@ export default function Answer({ answerIndex, isAnswered, answer, answerStyle, t
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  
-});
-
