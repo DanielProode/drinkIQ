@@ -111,7 +111,7 @@ export default function Lobby({ route, navigation }: LobbyProps) {
             {
               text: 'Leave',
               style: 'destructive',
-              onPress: () => {navigation.dispatch(e.data.action), removePlayerFromLobby()}
+              onPress: () => {navigation.dispatch(e.data.action); removePlayerFromLobby();}
             },
           ]
         );

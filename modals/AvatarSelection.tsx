@@ -92,7 +92,7 @@ export default function AvatarSelection({ isVisible, onClose, roomCode }: Avatar
         <View style={styles.buttonContainer}>
           <Button
             marginTop={50}
-            onPress={() => { onClose(), updateAvatarAndDrinkInDatabase() }}
+            onPress={() => { onClose(); updateAvatarAndDrinkInDatabase(); }}
             text="DONE"
             buttonBgColor="#F76D31"
             buttonBorderColor="#F76D31"
