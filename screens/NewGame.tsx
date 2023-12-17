@@ -1,9 +1,13 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useState } from 'react';
+import { get, push, ref, set } from 'firebase/database';
+import { useRef, useState } from 'react';
 import { Keyboard, StyleSheet, Text, TextInput, View, TouchableWithoutFeedback } from 'react-native';
 
 import Button from '../components/Button';
 import { GAME_CODE_MAX, GAME_CODE_MIN } from '../constants/general';
+import { FIREBASE_RTDB } from '../firebaseConfig.js';
+import useGameStore from '../store/gameStore';
+import useUserStore from '../store/userStore';
 
 interface NewGameProps {
   navigation: NativeStackNavigationProp<any>;
@@ -11,13 +15,83 @@ interface NewGameProps {
 
 export default function NewGame({ navigation }: NewGameProps) {
   const [disabled, setDisabled] = useState(true);
-  const [gameCode, setGameCode] = useState('');
+  const [roomCode, setRoomCode] = useState('');
+  const [error, setError] = useState('');
+  const { username } = useUserStore();
+  const { playerId, updatePlayerId } = useGameStore();
+  const playerIdRef = useRef<string | null>(null);
+  
+  const handleJoinGame = async () => {
+    try {
+      const codeExists = await checkRoomCode(roomCode);
+      if (codeExists) {
+        setError('')
+        await addPlayerToRoom(roomCode);
+        updatePlayerId(playerIdRef.current);
+        console.log(`Player ${username} with ID: ${playerId} has joined the room.`);
+        navigation.navigate('Lobby', { roomCode });
+      } else {
+        setError(`Room ${roomCode} does not exist.`);
+      }
+    } catch (error) {
+      console.error('Error starting the game:', error);
+    }
+  };
 
-  // In the future, check if active game already exists with generated code
+  const handleHostGame = async () => {
+    try {
+      let roomCode = generateGameCode();
+      while (await checkRoomCode(roomCode)) {
+        roomCode = generateGameCode();
+      }
+
+      await addRoomCode(roomCode);
+      updatePlayerId(playerIdRef.current);
+      console.log(`Player ${username} with ID: ${playerId} has joined the room.`);
+      navigation.navigate('Lobby', { roomCode, gameHost: true });
+    } catch (error) {
+      console.error('Error starting the game:', error);
+    }
+  };
+
   const generateGameCode = () => {
     const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
-    const generatedGameCode = randomInt(GAME_CODE_MIN, GAME_CODE_MAX).toString()
+    const generatedGameCode = randomInt(GAME_CODE_MIN, GAME_CODE_MAX).toString();
+    console.log('Generated room code ' + generatedGameCode)
     return generatedGameCode;
+  };
+
+  const checkRoomCode = async (roomCode: string) => {
+    const roomCodeRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
+    try {
+      const snapshot = await get(roomCodeRef);
+      return snapshot.exists();
+    } catch (error) {
+      console.error('Error checking room code:', error);
+      return false;
+    }
+  };
+
+  const addRoomCode = async (roomCode: string) => {
+    const roomCodeRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/players`);
+    try {
+      // Set initial room data here
+      const newPlayerRef = push(roomCodeRef);
+      await set(newPlayerRef, {username, avatar: 0, drink: 0, isHost: true}).then(() => {playerIdRef.current = newPlayerRef.key});
+      console.log(`Room code ${roomCode} added to the database.`);
+    } catch (error) {
+      console.error('Error adding room code to the database:', error);
+    }
+  };
+
+  const addPlayerToRoom = async (roomCode: string) => {
+    try {
+      const roomCodeRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/players`);
+      const newPlayerRef = push(roomCodeRef);
+      await set(newPlayerRef, {username, avatar: 0, drink: 0}).then(() => {playerIdRef.current = newPlayerRef.key});
+    } catch (error) {
+      console.error('Error joining room:', error);
+    }
   };
 
   const onChanged = (text: string) => {
@@ -29,7 +103,7 @@ export default function NewGame({ navigation }: NewGameProps) {
         newText = newText + text[i];
       }
     }
-    setGameCode(newText);
+    setRoomCode(newText);
 
     if (text.length === 6) {
       setDisabled(false);
@@ -41,25 +115,26 @@ export default function NewGame({ navigation }: NewGameProps) {
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} >
       <View style={styles.newGameView}>
-      <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
+        <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
         <View style={styles.gameCodeContainer}>
           <Text style={styles.hashtag}>#</Text>
           <TextInput
             style={styles.gameCodeInput}
             onChangeText={(text) => onChanged(text)}
-            value={gameCode}
-            onSubmitEditing={(value) => setGameCode(value.nativeEvent.text)}
+            value={roomCode}
+            onSubmitEditing={(value) => setRoomCode(value.nativeEvent.text)}
             placeholder="XXXXXX"
             keyboardType="numeric"
             maxLength={6}
             placeholderTextColor="#FFFFFF80"
           />
         </View>
+        {error && <Text style={styles.error}>{error}</Text>}
         <View style={styles.buttonContainer}>
           <Button
             onPress={() => {
               Keyboard.dismiss();
-              navigation.navigate('Lobby', { gameCode })
+              handleJoinGame();
             }}
             text="JOIN GAME"
             disabled={disabled}
@@ -68,9 +143,7 @@ export default function NewGame({ navigation }: NewGameProps) {
         </View>
         <Text style={styles.hostGameText}>Want to create your own game?</Text>
         <View style={styles.hostGameButton}>
-          <Button onPress={() => {
-            navigation.navigate('Lobby', { gameCode: generateGameCode(), gameHost: true });
-          }}
+          <Button onPress={handleHostGame}
             text="HOST GAME"
             buttonBgColor="#D36C50"
             buttonBorderColor="#D36C50" />
@@ -132,5 +205,9 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
     marginTop: 130,
+  },
+  error: {
+    color: 'red',
+    marginTop: 20,
   },
 });

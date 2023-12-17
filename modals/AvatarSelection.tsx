@@ -1,30 +1,42 @@
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
+import { ref, update } from 'firebase/database';
 import { useState } from 'react';
 import { FlatList, Modal, StyleSheet, Text, View } from 'react-native';
 
 import AvatarCircle from '../components/AvatarCircle';
 import Button from '../components/Button';
 import { AVATAR_ICONS, DRINK_ICONS } from '../constants/general';
+import { FIREBASE_RTDB } from '../firebaseConfig';
 import useGameStore from '../store/gameStore';
-
 
 interface AvatarSelectionProps {
   isVisible: boolean;
   onClose: () => void;
+  roomCode: string;
 };
 
-export default function AvatarSelection({ isVisible, onClose }: AvatarSelectionProps) {
-  const { avatar, drink, updateAvatar, updateDrink } = useGameStore();
+export default function AvatarSelection({ isVisible, onClose, roomCode }: AvatarSelectionProps) {
+  const { playerId, avatar, drink, updateAvatar, updateDrink } = useGameStore();
   const [selectedAvatarIndex, setSelectedAvatarIndex] = useState(0);
   const [selectedDrinkIndex, setSelectedDrinkIndex] = useState(0);
 
+  const updateAvatarAndDrinkInDatabase = async () => {
+    const playerRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/players/${playerId}`);
+
+    try {
+      await update(playerRef, { avatar, drink });
+      console.log(`Avatar and drink updated`);
+    } catch (error) {
+      console.error('Error updating avatar and drink in database:', error);
+    }
+  }
 
   return (
     <Modal visible={isVisible} animationType='slide' presentationStyle='pageSheet'>
       <View style={styles.joinGameView}>
         <View style={styles.bigCircle}>
-          <Image style={styles.avatar} source={avatar} />
+          <Image style={styles.avatar} source={AVATAR_ICONS[avatar]} />
         </View>
         <View style={styles.viewContainer}>
           <FlatList 
@@ -34,31 +46,28 @@ export default function AvatarSelection({ isVisible, onClose }: AvatarSelectionP
           horizontal
           style={styles.avatarCircles}
           data={AVATAR_ICONS}
-          renderItem={({item, index}) => <AvatarCircle selectedAvatarIndex={selectedAvatarIndex} setSelectedAvatarIndex={setSelectedAvatarIndex} selectedDrinkIndex={selectedDrinkIndex} setSelectedDrinkIndex={setSelectedDrinkIndex} avatarIcon={item} onPress={() => updateAvatar(item)} index={index} isAvatar/>}
+          renderItem={({item, index}) => <AvatarCircle selectedAvatarIndex={selectedAvatarIndex} setSelectedAvatarIndex={setSelectedAvatarIndex} selectedDrinkIndex={selectedDrinkIndex} setSelectedDrinkIndex={setSelectedDrinkIndex} avatarIcon={item} onPress={() => updateAvatar(index)} index={index} isAvatar/>}
           />
 
           <LinearGradient
             // Button Linear Gradient
             colors={['transparent', '#1E1E1E80']}
             style={styles.rightGradientColor}
-            start={[0, 0]} 
+            start={[0, 0]}
             end={[1, 0]}
-            />
+          />
           <LinearGradient
             // Button Linear Gradient
             colors={['#1E1E1E80', 'transparent']}
             style={styles.leftGradientColor}
-            start={[0, 0]} 
+            start={[0, 0]}
             end={[1, 0]}
-            />
+          />
         </View>
-
         <Text style={styles.selectDrinkText}>Drink of your choice?</Text>
-
         <View style={styles.bigCircle}>
-          <Image style={styles.avatar} source={drink} />
+          <Image style={styles.avatar} source={DRINK_ICONS[drink]} />
         </View>
-
         <View style={styles.viewContainer}>
 
             
@@ -69,36 +78,32 @@ export default function AvatarSelection({ isVisible, onClose }: AvatarSelectionP
           horizontal
           style={styles.avatarCircles}
           data={DRINK_ICONS}
-          renderItem={({item, index}) => <AvatarCircle selectedAvatarIndex={selectedAvatarIndex} setSelectedAvatarIndex={setSelectedAvatarIndex} selectedDrinkIndex={selectedDrinkIndex} setSelectedDrinkIndex={setSelectedDrinkIndex} avatarIcon={item} onPress={() => updateDrink(item)} index={index} isAvatar={false}/>}
+          renderItem={({item, index}) => <AvatarCircle selectedAvatarIndex={selectedAvatarIndex} setSelectedAvatarIndex={setSelectedAvatarIndex} selectedDrinkIndex={selectedDrinkIndex} setSelectedDrinkIndex={setSelectedDrinkIndex} avatarIcon={item} onPress={() => updateDrink(index)} index={index} isAvatar={false}/>}
           />
           <LinearGradient
             // Button Linear Gradient
             colors={['transparent', '#1E1E1E80']}
             style={styles.rightGradientColor}
-            start={[0, 0]} 
+            start={[0, 0]}
             end={[1, 0]}
-            />
+          />
           <LinearGradient
             // Button Linear Gradient
             colors={['#1E1E1E80', 'transparent']}
             style={styles.leftGradientColor}
-            start={[0, 0]} 
+            start={[0, 0]}
             end={[1, 0]}
-            />
-    
-
-          </View>
-          <View style={styles.buttonContainer}>
-            <Button
-              marginTop={50}
-              onPress={onClose}
-              text="DONE"
-              buttonBgColor="#F76D31"
-              buttonBorderColor="#F76D31"
-              buttonWidthNumber={2.5} />
-          </View>
-          
-        
+          />
+        </View>
+        <View style={styles.buttonContainer}>
+          <Button
+            marginTop={50}
+            onPress={() => { onClose(); updateAvatarAndDrinkInDatabase(); }}
+            text="DONE"
+            buttonBgColor="#F76D31"
+            buttonBorderColor="#F76D31"
+            buttonWidthNumber={2.5} />
+        </View>
       </View>
     </Modal>
   );
@@ -116,18 +121,18 @@ const styles = StyleSheet.create({
     bottom: 40,
     right: '-15%',
   },
-leftGradientColor: {
-  position: 'absolute',
-  left: 0,
-  width: 50,
-  height: '100%',
-},
-rightGradientColor: {
-  position: 'absolute',
-  right: 0,
-  width: 50,
-  height: '100%',
-},
+  leftGradientColor: {
+    position: 'absolute',
+    left: 0,
+    width: 50,
+    height: '100%',
+  },
+  rightGradientColor: {
+    position: 'absolute',
+    right: 0,
+    width: 50,
+    height: '100%',
+  },
   avatar: {
     flex: 1,
     contentFit: 'contain',
