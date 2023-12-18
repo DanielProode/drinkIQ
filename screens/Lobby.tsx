@@ -15,6 +15,7 @@ import PlayerProfile from '../modals/PlayerProfile';
 import useGameStore from '../store/gameStore';
 import useUserStore from '../store/userStore';
 import { useAuth } from '../context/authContext';
+import { CARD_PACKS } from '../constants/general';
 
 interface LobbyProps {
   route: RouteProp<{
@@ -36,7 +37,7 @@ interface Player {
 export default function Lobby({ route, navigation }: LobbyProps) {
   const { roomCode, gameHost } = route.params;
   const { username } = useUserStore();
-  const { playableDeck, playableDeckImage, playableDeckName, playableDeckText } = useGameStore();
+  const { playableDeckIndex, updatePlayableDeckIndex } = useGameStore();
   const [isAvatarSelectionModalVisible, setIsAvatarSelectionModalVisible] = useState(false);
   const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
   const [isCardDeckSelectionModalVisible, setIsCardDeckSelectionModalVisible] = useState(false);
@@ -89,15 +90,21 @@ export default function Lobby({ route, navigation }: LobbyProps) {
   };
 
   useEffect(() => {
-    const playerRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/players`);
-    const unsubscribe = onValue(playerRef, (snapshot) => {
-      if (!snapshot.val()) {
+    const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
+    const unsubscribe = onValue(roomRef, (snapshot) => {
+      const roomData = snapshot.val();
+
+      if (roomData) {
+        const cardDeckRef: number = roomData.cardDeck;
+        const playersData: Player = roomData.players;
+        const playersArray = Object.values(playersData);
+
+        setFetchedPlayers(playersArray);
+        updatePlayableDeckIndex(cardDeckRef);
+      } else {
         isLobbyDestroyed = true;
         navigation.navigate('NewGame');
       }
-      const playersData: Player = snapshot.val() || {};
-      const playersArray = Object.values(playersData);
-      setFetchedPlayers(playersArray);
     });
 
     return () => unsubscribe();
@@ -107,7 +114,7 @@ export default function Lobby({ route, navigation }: LobbyProps) {
   useEffect(
     () =>
       navigation.addListener('beforeRemove', (e) => {
-        if (isLobbyDestroyed) {return};
+        if (isLobbyDestroyed) { return };
         e.preventDefault();
         Alert.alert(
           'Leave the lobby?',
@@ -117,32 +124,31 @@ export default function Lobby({ route, navigation }: LobbyProps) {
             {
               text: 'Leave',
               style: 'destructive',
-              onPress: () => {navigation.dispatch(e.data.action); removePlayerFromLobby();}
+              onPress: () => { navigation.dispatch(e.data.action); removePlayerFromLobby(); }
             },
           ]
         );
       }),
-    [navigation, isLobbyDestroyed]
-  );
+    [navigation, isLobbyDestroyed]);
 
   return (
     <View style={styles.gameView}>
       <AvatarSelection isVisible={isAvatarSelectionModalVisible} onClose={toggleAvatarSelectionModal} roomCode={roomCode} />
       <PlayerProfile profile={selectedProfile} isVisible={isProfileModalVisible} onClose={toggleProfileModal} />
-      <CardDeckSelection onClose={toggleCardDeckSelectionModal} isVisible={isCardDeckSelectionModalVisible} />
+      <CardDeckSelection onClose={toggleCardDeckSelectionModal} isVisible={isCardDeckSelectionModalVisible} roomCode={roomCode} />
       <CardDeckInfo onClose={toggleCardDeckSelectionModal} isVisible={isCardDeckInfoModalVisible} pack={{
-        id: playableDeck,
-        name: playableDeckName,
-        image: playableDeckImage,
-        previewImage: playableDeckImage,
-        text: playableDeckText,
+        id: CARD_PACKS[playableDeckIndex].id,
+        name: CARD_PACKS[playableDeckIndex].name,
+        image: CARD_PACKS[playableDeckIndex].image,
+        previewImage: CARD_PACKS[playableDeckIndex].previewImage,
+        text: CARD_PACKS[playableDeckIndex].text,
       }} />
       <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
       <Text style={styles.gameCode}>#{roomCode}</Text>
       <Pressable style={styles.deckImageContainer} onPress={() => { toggleCardDeckSelectionModal() }}>
-        <Image style={styles.deck} source={playableDeckImage} />
+        <Image style={styles.deck} source={CARD_PACKS[playableDeckIndex].image} />
       </Pressable>
-      <Text style={styles.deckName}>{playableDeckName}</Text>
+      <Text style={styles.deckName}>{CARD_PACKS[playableDeckIndex].name}</Text>
       <View style={styles.joinedPlayers}>
         {fetchedPlayers.map((player, index) =>
           <PlayerInLobby onPress={() => avatarPressed(player)} player={player} index={index} currentUser={username} key={index} />

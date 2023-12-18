@@ -8,6 +8,7 @@ import { GAME_CODE_MAX, GAME_CODE_MIN } from '../constants/general';
 import { FIREBASE_RTDB } from '../firebaseConfig.js';
 import useUserStore from '../store/userStore';
 import { useAuth } from '../context/authContext';
+import useGameStore from '../store/gameStore';
 
 interface NewGameProps {
   navigation: NativeStackNavigationProp<any>;
@@ -18,6 +19,7 @@ export default function NewGame({ navigation }: NewGameProps) {
   const [roomCode, setRoomCode] = useState('');
   const [error, setError] = useState('');
   const { username } = useUserStore();
+  const { avatar, drink } = useGameStore();
   const { authUser } = useAuth();
   const userId = authUser ? authUser.uid : '';
 
@@ -60,7 +62,7 @@ export default function NewGame({ navigation }: NewGameProps) {
   const addPlayerToRoom = async (roomCode: string) => {
     try {
       const playersRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/players`);
-      await update(playersRef, { [userId]: { username, avatar: 0, drink: 0 }});
+      await update(playersRef, { [userId]: { username, avatar, drink }});
     } catch (error) {
       console.error('Error joining room:', error);
     }
@@ -68,9 +70,9 @@ export default function NewGame({ navigation }: NewGameProps) {
 
   const createRoom = async (roomCode: string) => {
     try {
-      const roomCodeRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/players`);
+      const roomCodeRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
       // Set initial room data here
-      await set(roomCodeRef, { [userId]: { username, avatar: 0, drink: 0, isHost: true } });
+      await set(roomCodeRef, { cardDeck: 0, players: { [userId]: { username, avatar, drink, isHost: true } }});
       console.log(`Room code ${roomCode} added to the database.`);
     } catch (error) {
       console.error('Error adding room to the database:', error);
