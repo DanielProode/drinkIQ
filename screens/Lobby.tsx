@@ -14,6 +14,7 @@ import CardDeckSelection from '../modals/CardDeckSelection';
 import PlayerProfile from '../modals/PlayerProfile';
 import useGameStore from '../store/gameStore';
 import useUserStore from '../store/userStore';
+import { useAuth } from '../context/authContext';
 
 interface LobbyProps {
   route: RouteProp<{
@@ -32,18 +33,19 @@ interface Player {
   isHost?: boolean;
 }
 
-// TODO: When fetching players, fetch players from DB and place them in the same order for everyone, and make host appear first (probably need to implement isHost boolean to Player object)
-
 export default function Lobby({ route, navigation }: LobbyProps) {
   const { roomCode, gameHost } = route.params;
   const { username } = useUserStore();
-  const { playerId, playableDeck, playableDeckImage, playableDeckName, playableDeckText } = useGameStore();
+  const { playableDeck, playableDeckImage, playableDeckName, playableDeckText } = useGameStore();
   const [isAvatarSelectionModalVisible, setIsAvatarSelectionModalVisible] = useState(false);
   const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
   const [isCardDeckSelectionModalVisible, setIsCardDeckSelectionModalVisible] = useState(false);
   const [isCardDeckInfoModalVisible, setIsCardDeckInfoModalVisible] = useState(false);
   const [fetchedPlayers, setFetchedPlayers] = useState<Player[]>([]);
   const [selectedProfile, setSelectedProfile] = useState({ username: "Placeholder", avatar: 0, drink: 0 });
+  const { authUser } = useAuth();
+  const userId = authUser ? authUser.uid : '';
+  let isLobbyDestroyed = false;
 
   const toggleAvatarSelectionModal = () => {
     setIsAvatarSelectionModalVisible(!isAvatarSelectionModalVisible);
@@ -73,14 +75,13 @@ export default function Lobby({ route, navigation }: LobbyProps) {
   }
 
   const removePlayerFromLobby = () => {
-    const playerRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/players/${playerId}`);
+    const playerRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/players/${userId}`);
     const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
     const removePlayerRef = gameHost ? roomRef : playerRef;
-    console.log('player remove function called')
 
     remove(removePlayerRef)
       .then(() => {
-        console.log(`${playerId} removed from room`);
+        console.log(`${userId} removed from room`);
       })
       .catch((error) => {
         console.error('Error removing player:', error);
@@ -88,8 +89,12 @@ export default function Lobby({ route, navigation }: LobbyProps) {
   };
 
   useEffect(() => {
-    const playersRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/players`);
-    const unsubscribe = onValue(playersRef, (snapshot) => {
+    const playerRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/players`);
+    const unsubscribe = onValue(playerRef, (snapshot) => {
+      if (!snapshot.val()) {
+        isLobbyDestroyed = true;
+        navigation.navigate('NewGame');
+      }
       const playersData: Player = snapshot.val() || {};
       const playersArray = Object.values(playersData);
       setFetchedPlayers(playersArray);
@@ -102,6 +107,7 @@ export default function Lobby({ route, navigation }: LobbyProps) {
   useEffect(
     () =>
       navigation.addListener('beforeRemove', (e) => {
+        if (isLobbyDestroyed) {return};
         e.preventDefault();
         Alert.alert(
           'Leave the lobby?',
@@ -116,7 +122,7 @@ export default function Lobby({ route, navigation }: LobbyProps) {
           ]
         );
       }),
-    [navigation]
+    [navigation, isLobbyDestroyed]
   );
 
   return (

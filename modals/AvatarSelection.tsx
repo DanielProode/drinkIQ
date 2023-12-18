@@ -9,6 +9,7 @@ import Button from '../components/Button';
 import { AVATAR_ICONS, DRINK_ICONS } from '../constants/general';
 import { FIREBASE_RTDB } from '../firebaseConfig';
 import useGameStore from '../store/gameStore';
+import { useAuth } from '../context/authContext';
 
 interface AvatarSelectionProps {
   isVisible: boolean;
@@ -17,12 +18,14 @@ interface AvatarSelectionProps {
 };
 
 export default function AvatarSelection({ isVisible, onClose, roomCode }: AvatarSelectionProps) {
-  const { playerId, avatar, drink, updateAvatar, updateDrink } = useGameStore();
+  const { avatar, drink, updateAvatar, updateDrink } = useGameStore();
   const [selectedAvatarIndex, setSelectedAvatarIndex] = useState(0);
   const [selectedDrinkIndex, setSelectedDrinkIndex] = useState(0);
+  const { authUser } = useAuth();
+  const userId = authUser ? authUser.uid : '';
 
   const updateAvatarAndDrinkInDatabase = async () => {
-    const playerRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/players/${playerId}`);
+    const playerRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/players/${userId}`);
 
     try {
       await update(playerRef, { avatar, drink });

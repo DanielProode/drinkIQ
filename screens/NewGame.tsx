@@ -1,13 +1,13 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { equalTo, get, orderByChild, push, query, ref, set } from 'firebase/database';
-import { useRef, useState } from 'react';
+import { get, ref, set, update } from 'firebase/database';
+import { useState } from 'react';
 import { Keyboard, StyleSheet, Text, TextInput, View, TouchableWithoutFeedback } from 'react-native';
 
 import Button from '../components/Button';
 import { GAME_CODE_MAX, GAME_CODE_MIN } from '../constants/general';
 import { FIREBASE_RTDB } from '../firebaseConfig.js';
-import useGameStore from '../store/gameStore';
 import useUserStore from '../store/userStore';
+import { useAuth } from '../context/authContext';
 
 interface NewGameProps {
   navigation: NativeStackNavigationProp<any>;
@@ -18,8 +18,8 @@ export default function NewGame({ navigation }: NewGameProps) {
   const [roomCode, setRoomCode] = useState('');
   const [error, setError] = useState('');
   const { username } = useUserStore();
-  const { playerId, updatePlayerId } = useGameStore();
-  const playerIdRef = useRef<string | null>(null);
+  const { authUser } = useAuth();
+  const userId = authUser ? authUser.uid : '';
 
   const handleJoinGame = async () => {
     try {
@@ -35,8 +35,7 @@ export default function NewGame({ navigation }: NewGameProps) {
         return;
       }
       await addPlayerToRoom(roomCode);
-      updatePlayerId(playerIdRef.current);
-      console.log(`Player ${username} with ID: ${playerId} has joined the room.`);
+      console.log(`Player ${username} has joined the room.`);
       navigation.navigate('Lobby', { roomCode });
     } catch (error) {
       console.error('Error joining the game: ', error);
@@ -51,8 +50,7 @@ export default function NewGame({ navigation }: NewGameProps) {
       }
 
       await createRoom(roomCode);
-      updatePlayerId(playerIdRef.current);
-      console.log(`Player ${username} with ID: ${playerId} has joined the room.`);
+      console.log(`Player ${username} has joined the room.`);
       navigation.navigate('Lobby', { roomCode, gameHost: true });
     } catch (error) {
       console.error('Error starting the game:', error);
@@ -62,8 +60,7 @@ export default function NewGame({ navigation }: NewGameProps) {
   const addPlayerToRoom = async (roomCode: string) => {
     try {
       const playersRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/players`);
-      const newPlayerRef = push(playersRef);
-      await set(newPlayerRef, { username, avatar: 0, drink: 0 }).then(() => { playerIdRef.current = newPlayerRef.key });
+      await update(playersRef, { [userId]: { username, avatar: 0, drink: 0 }});
     } catch (error) {
       console.error('Error joining room:', error);
     }
@@ -72,9 +69,8 @@ export default function NewGame({ navigation }: NewGameProps) {
   const createRoom = async (roomCode: string) => {
     try {
       const roomCodeRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/players`);
-      const newPlayerRef = push(roomCodeRef);
       // Set initial room data here
-      await set(newPlayerRef, { username, avatar: 0, drink: 0, isHost: true }).then(() => { playerIdRef.current = newPlayerRef.key });
+      await set(roomCodeRef, { [userId]: { username, avatar: 0, drink: 0, isHost: true } });
       console.log(`Room code ${roomCode} added to the database.`);
     } catch (error) {
       console.error('Error adding room to the database:', error);
@@ -109,22 +105,6 @@ export default function NewGame({ navigation }: NewGameProps) {
     } catch (error) {
       console.error('Error checking room code:', error);
       return false;
-    }
-  };
-
-  //TODO: Use UID instead of username
-  const checkPlayer = async (roomCode: string) => {
-    try {
-      const playersRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/players`);
-      const findPlayerQuery = query(playersRef, orderByChild('username'), equalTo(username));
-      const snapshot = await get(findPlayerQuery);
-      if (snapshot.exists()) {
-        console.log('Player already exists in lobby with key ' + snapshot.key)
-      } else {
-        console.log('No matching users found')
-      }
-    } catch (error) {
-      console.error('Error checking players:', error);
     }
   };
 
