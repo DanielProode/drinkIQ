@@ -1,5 +1,5 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { get, push, ref, set } from 'firebase/database';
+import { equalTo, get, orderByChild, push, query, ref, set } from 'firebase/database';
 import { useRef, useState } from 'react';
 import { Keyboard, StyleSheet, Text, TextInput, View, TouchableWithoutFeedback } from 'react-native';
 
@@ -20,21 +20,26 @@ export default function NewGame({ navigation }: NewGameProps) {
   const { username } = useUserStore();
   const { playerId, updatePlayerId } = useGameStore();
   const playerIdRef = useRef<string | null>(null);
-  
+
   const handleJoinGame = async () => {
     try {
+      setError('')
       const codeExists = await checkRoomCode(roomCode);
-      if (codeExists) {
-        setError('')
-        await addPlayerToRoom(roomCode);
-        updatePlayerId(playerIdRef.current);
-        console.log(`Player ${username} with ID: ${playerId} has joined the room.`);
-        navigation.navigate('Lobby', { roomCode });
-      } else {
-        setError(`Room ${roomCode} does not exist.`);
+      if (!codeExists) {
+        setError(`Room ${roomCode} does not exist`);
+        return;
       }
+      const isRoomFull = await checkNumberOfPlayers(roomCode);
+      if (isRoomFull) {
+        setError(`Room ${roomCode} is already full`);
+        return;
+      }
+      await addPlayerToRoom(roomCode);
+      updatePlayerId(playerIdRef.current);
+      console.log(`Player ${username} with ID: ${playerId} has joined the room.`);
+      navigation.navigate('Lobby', { roomCode });
     } catch (error) {
-      console.error('Error starting the game:', error);
+      console.error('Error joining the game: ', error);
     }
   };
 
@@ -45,12 +50,34 @@ export default function NewGame({ navigation }: NewGameProps) {
         roomCode = generateGameCode();
       }
 
-      await addRoomCode(roomCode);
+      await createRoom(roomCode);
       updatePlayerId(playerIdRef.current);
       console.log(`Player ${username} with ID: ${playerId} has joined the room.`);
       navigation.navigate('Lobby', { roomCode, gameHost: true });
     } catch (error) {
       console.error('Error starting the game:', error);
+    }
+  };
+
+  const addPlayerToRoom = async (roomCode: string) => {
+    try {
+      const playersRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/players`);
+      const newPlayerRef = push(playersRef);
+      await set(newPlayerRef, { username, avatar: 0, drink: 0 }).then(() => { playerIdRef.current = newPlayerRef.key });
+    } catch (error) {
+      console.error('Error joining room:', error);
+    }
+  };
+
+  const createRoom = async (roomCode: string) => {
+    try {
+      const roomCodeRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/players`);
+      const newPlayerRef = push(roomCodeRef);
+      // Set initial room data here
+      await set(newPlayerRef, { username, avatar: 0, drink: 0, isHost: true }).then(() => { playerIdRef.current = newPlayerRef.key });
+      console.log(`Room code ${roomCode} added to the database.`);
+    } catch (error) {
+      console.error('Error adding room to the database:', error);
     }
   };
 
@@ -62,8 +89,8 @@ export default function NewGame({ navigation }: NewGameProps) {
   };
 
   const checkRoomCode = async (roomCode: string) => {
-    const roomCodeRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
     try {
+      const roomCodeRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
       const snapshot = await get(roomCodeRef);
       return snapshot.exists();
     } catch (error) {
@@ -72,25 +99,32 @@ export default function NewGame({ navigation }: NewGameProps) {
     }
   };
 
-  const addRoomCode = async (roomCode: string) => {
-    const roomCodeRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/players`);
+  const checkNumberOfPlayers = async (roomCode: string) => {
     try {
-      // Set initial room data here
-      const newPlayerRef = push(roomCodeRef);
-      await set(newPlayerRef, {username, avatar: 0, drink: 0, isHost: true}).then(() => {playerIdRef.current = newPlayerRef.key});
-      console.log(`Room code ${roomCode} added to the database.`);
+      const playersRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/players`);
+      const snapshot = await get(playersRef);
+      const numberOfPlayers = snapshot.size;
+      const isRoomFull = numberOfPlayers >= 8 ? true : false;
+      return isRoomFull;
     } catch (error) {
-      console.error('Error adding room code to the database:', error);
+      console.error('Error checking room code:', error);
+      return false;
     }
   };
 
-  const addPlayerToRoom = async (roomCode: string) => {
+  //TODO: Use UID instead of username
+  const checkPlayer = async (roomCode: string) => {
     try {
-      const roomCodeRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/players`);
-      const newPlayerRef = push(roomCodeRef);
-      await set(newPlayerRef, {username, avatar: 0, drink: 0}).then(() => {playerIdRef.current = newPlayerRef.key});
+      const playersRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/players`);
+      const findPlayerQuery = query(playersRef, orderByChild('username'), equalTo(username));
+      const snapshot = await get(findPlayerQuery);
+      if (snapshot.exists()) {
+        console.log('Player already exists in lobby with key ' + snapshot.key)
+      } else {
+        console.log('No matching users found')
+      }
     } catch (error) {
-      console.error('Error joining room:', error);
+      console.error('Error checking players:', error);
     }
   };
 
