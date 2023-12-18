@@ -7,6 +7,8 @@ import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
 import PlayerInLobby from '../components/PlayerInLobby';
+import { CARD_PACKS } from '../constants/general';
+import { useAuth } from '../context/authContext';
 import { FIREBASE_RTDB } from '../firebaseConfig';
 import AvatarSelection from '../modals/AvatarSelection';
 import CardDeckInfo from '../modals/CardDeckInfo';
@@ -14,8 +16,6 @@ import CardDeckSelection from '../modals/CardDeckSelection';
 import PlayerProfile from '../modals/PlayerProfile';
 import useGameStore from '../store/gameStore';
 import useUserStore from '../store/userStore';
-import { useAuth } from '../context/authContext';
-import { CARD_PACKS } from '../constants/general';
 
 interface LobbyProps {
   route: RouteProp<{

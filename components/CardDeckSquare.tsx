@@ -3,14 +3,14 @@ import { ImageProps, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import useUserStore from '../store/userStore';
 
-interface CardDeckSquare {
+interface CardDeckSquareProps {
   cardPack: { id: string, name: string, image: ImageProps, previewImage: ImageProps, text: string; }
   index: number;
   selectedCardIndex: number;
   handlePress: (index: number) => void;
 };
 
-export default function CardDeckSquare({ cardPack, index, selectedCardIndex, handlePress }: CardDeckSquare) {
+export default function CardDeckSquare({ cardPack, index, selectedCardIndex, handlePress }: CardDeckSquareProps) {
   const { packs_owned } = useUserStore();
 
   return (

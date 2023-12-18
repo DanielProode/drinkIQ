@@ -1,14 +1,14 @@
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
+import { ref, update } from 'firebase/database';
 import { useState } from 'react';
 import { Modal, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
 import CardDeckSquare from '../components/CardDeckSquare';
 import { CARD_PACKS } from '../constants/general';
-import useGameStore from '../store/gameStore';
-import { ref, update } from 'firebase/database';
 import { FIREBASE_RTDB } from '../firebaseConfig';
+import useGameStore from '../store/gameStore';
 
 interface CardDeckSelectionProps {
   roomCode: string;
@@ -54,7 +54,7 @@ export default function CardDeckSelection({ roomCode, isVisible, onClose, }: Car
           <Button
             marginTop={20}
             text="CONTINUE"
-            onPress={() => {onClose(), updatePlayableDeckInDatabase()}}
+            onPress={() => {onClose(); updatePlayableDeckInDatabase()}}
             buttonBgColor="#F76D31"
             buttonBorderColor="#F76D31" />
         </View>

@@ -7,9 +7,9 @@ import { FlatList, Modal, StyleSheet, Text, View } from 'react-native';
 import AvatarCircle from '../components/AvatarCircle';
 import Button from '../components/Button';
 import { AVATAR_ICONS, DRINK_ICONS } from '../constants/general';
+import { useAuth } from '../context/authContext';
 import { FIREBASE_RTDB } from '../firebaseConfig';
 import useGameStore from '../store/gameStore';
-import { useAuth } from '../context/authContext';
 
 interface AvatarSelectionProps {
   isVisible: boolean;

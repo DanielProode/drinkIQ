@@ -5,10 +5,10 @@ import { Keyboard, StyleSheet, Text, TextInput, View, TouchableWithoutFeedback }
 
 import Button from '../components/Button';
 import { GAME_CODE_MAX, GAME_CODE_MIN } from '../constants/general';
-import { FIREBASE_RTDB } from '../firebaseConfig.js';
-import useUserStore from '../store/userStore';
 import { useAuth } from '../context/authContext';
+import { FIREBASE_RTDB } from '../firebaseConfig.js';
 import useGameStore from '../store/gameStore';
+import useUserStore from '../store/userStore';
 
 interface NewGameProps {
   navigation: NativeStackNavigationProp<any>;
@@ -102,7 +102,7 @@ export default function NewGame({ navigation }: NewGameProps) {
       const playersRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/players`);
       const snapshot = await get(playersRef);
       const numberOfPlayers = snapshot.size;
-      const isRoomFull = numberOfPlayers >= 8 ? true : false;
+      const isRoomFull = numberOfPlayers >= 8;
       return isRoomFull;
     } catch (error) {
       console.error('Error checking room code:', error);

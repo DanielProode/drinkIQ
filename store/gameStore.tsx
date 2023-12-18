@@ -1,7 +1,5 @@
-import { ImageSourcePropType } from "react-native";
 import { create } from "zustand";
 
-import { DEFAULT_DECK_IMAGE, DEFAULT_DECK_PREVIEW_IMAGE, DEFAULT_PACK, DEFAULT_PACK_NAME, DEFAULT_DECK_TEXT } from "../constants/general";
 
 type GameChoices = {
   playerId: string | null;
