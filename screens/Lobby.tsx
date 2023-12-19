@@ -68,7 +68,6 @@ export default function Lobby({ route, navigation }: LobbyProps) {
   const avatarPressed = (player: Player) => {
     if (player.username === username) {
       toggleAvatarSelectionModal();
-      console.log(fetchedPlayers);
     } else {
       toggleProfileModal();
       checkSelectedPlayer(player);
@@ -93,7 +92,6 @@ export default function Lobby({ route, navigation }: LobbyProps) {
     const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
     const unsubscribe = onValue(roomRef, (snapshot) => {
       const roomData = snapshot.val();
-
       if (roomData) {
         const cardDeckRef: number = roomData.cardDeck;
         const playersData: Player = roomData.players;
@@ -134,18 +132,13 @@ export default function Lobby({ route, navigation }: LobbyProps) {
   return (
     <View style={styles.gameView}>
       <AvatarSelection isVisible={isAvatarSelectionModalVisible} onClose={toggleAvatarSelectionModal} roomCode={roomCode} />
-      <PlayerProfile profile={selectedProfile} isVisible={isProfileModalVisible} onClose={toggleProfileModal} />
-      <CardDeckSelection onClose={toggleCardDeckSelectionModal} isVisible={isCardDeckSelectionModalVisible} roomCode={roomCode} />
-      <CardDeckInfo onClose={toggleCardDeckSelectionModal} isVisible={isCardDeckInfoModalVisible} pack={{
-        id: CARD_PACKS[playableDeckIndex].id,
-        name: CARD_PACKS[playableDeckIndex].name,
-        image: CARD_PACKS[playableDeckIndex].image,
-        previewImage: CARD_PACKS[playableDeckIndex].previewImage,
-        text: CARD_PACKS[playableDeckIndex].text,
-      }} />
+      <PlayerProfile isVisible={isProfileModalVisible} onClose={toggleProfileModal} profile={selectedProfile} />
+      <CardDeckSelection isVisible={isCardDeckSelectionModalVisible} onClose={toggleCardDeckSelectionModal} roomCode={roomCode} />
+      <CardDeckInfo isVisible={isCardDeckInfoModalVisible} onClose={toggleCardDeckSelectionModal} pack={CARD_PACKS[playableDeckIndex]} />
+
       <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
       <Text style={styles.gameCode}>#{roomCode}</Text>
-      <Pressable style={styles.deckImageContainer} onPress={() => { toggleCardDeckSelectionModal() }}>
+      <Pressable style={styles.deckImageContainer} onPress={toggleCardDeckSelectionModal}>
         <Image style={styles.deck} source={CARD_PACKS[playableDeckIndex].image} />
       </Pressable>
       <Text style={styles.deckName}>{CARD_PACKS[playableDeckIndex].name}</Text>
@@ -154,6 +147,7 @@ export default function Lobby({ route, navigation }: LobbyProps) {
           <PlayerInLobby onPress={() => avatarPressed(player)} player={player} index={index} currentUser={username} key={index} />
         )}
       </View>
+
       <View style={styles.buttonContainer}>
         {gameHost ? (
           <Button
