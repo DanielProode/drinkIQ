@@ -6,7 +6,7 @@ import { Pressable, View, StyleSheet, Text } from 'react-native';
 
 import Card from './Card';
 import LoadingScreen from '../components/LoadingScreen';
-import { BASE_CARD_IMAGE, DEFAULT_CARD_COUNT } from '../constants/general';
+import { BASE_CARD_IMAGE, CARD_PACKS, DEFAULT_CARD_COUNT } from '../constants/general';
 import { FIREBASE_DB } from '../firebaseConfig.js';
 import useGameStore from '../store/gameStore';
 
@@ -36,14 +36,14 @@ export default function CardStack({ onGameOver, setPoints, setDrinks, points, dr
   const [isCardVisible, setIsCardVisible] = useState(false);
   const [questionsArray, setQuestionsArray] = useState<QuestionsArray[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { playableDeck } = useGameStore();
-  const questionsCollection = collection(FIREBASE_DB, "packs", playableDeck, "questions");
+  const { playableDeckIndex } = useGameStore();
+  const questionsCollection = collection(FIREBASE_DB, "packs", CARD_PACKS[playableDeckIndex].id, "questions");
 
   //Check if local array exists, get it if it does, fetch it with loadQuestions() if it doesn't
   //TODO: In the future, if we want to push an update (version change), then compare if version boolean in AsyncStorage is equal to version name from DB 
   const getArray = async (): Promise<QuestionsArray[]> => {
     try {
-      const jsonValue = await AsyncStorage.getItem(playableDeck);
+      const jsonValue = await AsyncStorage.getItem(CARD_PACKS[playableDeckIndex].id);
       const parsedArray = (jsonValue != null && JSON.parse(jsonValue).length > DEFAULT_CARD_COUNT) ? JSON.parse(jsonValue) : await loadQuestions();
       return Array.isArray(parsedArray) ? parsedArray : [];
     } catch (error) {
@@ -72,7 +72,7 @@ export default function CardStack({ onGameOver, setPoints, setDrinks, points, dr
   const storeArray = async (value: QuestionsArray[]) => {
     try {
       const jsonValue = JSON.stringify(value);
-      await AsyncStorage.setItem(playableDeck, jsonValue);
+      await AsyncStorage.setItem(CARD_PACKS[playableDeckIndex].id, jsonValue);
     } catch (error) {
       console.error('Error writing questions to array: ', error)
       throw error;

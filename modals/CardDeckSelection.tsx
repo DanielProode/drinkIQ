@@ -1,59 +1,38 @@
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
+import { ref, update } from 'firebase/database';
 import { useState } from 'react';
-import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Modal, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
-import { CARD_PACKS, DEFAULT_DECK_PREVIEW_IMAGE, DEFAULT_PACK_NAME } from '../constants/general';
+import CardDeckSquare from '../components/CardDeckSquare';
+import { CARD_PACKS } from '../constants/general';
+import { FIREBASE_RTDB } from '../firebaseConfig';
 import useGameStore from '../store/gameStore';
-import useUserStore from '../store/userStore';
 
 interface CardDeckSelectionProps {
+  roomCode: string;
   isVisible: boolean;
   onClose: () => void;
 };
 
-export default function CardDeckSelection({ isVisible, onClose }: CardDeckSelectionProps) {
-  const [selectedCardIndex, setSelectedCardIndex] = useState(-1);
-  const { updatePlayableDeckImage, updatePlayableDeck, updatePlayableDeckName, updatePlayableCardBackground, updatePlayableDeckText } = useGameStore();
-  const { packs_owned } = useUserStore();
-  const [selectedCardDeck, setSelectedCardDeck] = useState(DEFAULT_DECK_PREVIEW_IMAGE);
-  const [selectedCardDeckName, setSelectedCardDeckName] = useState(DEFAULT_PACK_NAME);
+export default function CardDeckSelection({ roomCode, isVisible, onClose, }: CardDeckSelectionProps) {
+  const [selectedCardIndex, setSelectedCardIndex] = useState(0);
+  const { playableDeckIndex, updatePlayableDeckIndex } = useGameStore();
 
-  const renderDecks = () => {
-    return CARD_PACKS.map((cardPack, index) => {
-      const isSelected = selectedCardIndex === index;
-      return (
-        <View style={styles.cardsContainer} key={index}>
-          <Pressable
-            key={index}
-            style={({ pressed }) => [
-              { opacity: pressed ? 0.5 : 1.0 },
-              styles.cardDeckContainer,
-              isSelected && styles.cardDeckContainerSelected,
-            ]}
-            onPress={() => {
-              updatePlayableDeckImage(cardPack.previewImage)
-              updatePlayableDeck(cardPack.id)
-              updatePlayableDeckName(cardPack.name)
-              updatePlayableCardBackground(cardPack.image)
-              updatePlayableDeckText(cardPack.text)
-              setSelectedCardIndex(index)
-              setSelectedCardDeck(cardPack.previewImage)
-              setSelectedCardDeckName(cardPack.name)
-            }}
-            disabled={!(packs_owned && packs_owned.includes(cardPack.id))} >
-            <Image style={styles.cardDeck} source={cardPack.previewImage} />
-            {!(packs_owned && packs_owned.includes(cardPack.id)) && <View style={styles.overlay} />}
-          </Pressable>
-          {!(packs_owned && packs_owned.includes(cardPack.id)) && (
-            <View style={styles.priceContainer}>
-              <Text style={styles.priceText}>BUY FOR 4.99€</Text>
-            </View>
-          )}
-        </View>
-      );
-    });
+  const updatePlayableDeckInDatabase = async () => {
+    const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
+    try {
+      await update(roomRef, { cardDeck: playableDeckIndex });
+      console.log(`Playable card deck updated`);
+    } catch (error) {
+      console.error('Error updating playable card deck in database:', error);
+    }
+  }
+
+  const handlePress = (index: number) => {
+    setSelectedCardIndex(index);
+    updatePlayableDeckIndex(index);
   }
 
   return (
@@ -65,15 +44,17 @@ export default function CardDeckSelection({ isVisible, onClose }: CardDeckSelect
           style={styles.background}
         />
         <View style={styles.decksContainer}>
-          <Image style={styles.selectedCardDeck} source={selectedCardDeck} />
-          <Text style={styles.selectedCardDeckName}>{selectedCardDeckName}</Text>
+          <Image style={styles.selectedCardDeck} source={CARD_PACKS[selectedCardIndex].image} />
+          <Text style={styles.selectedCardDeckName}>{CARD_PACKS[selectedCardIndex].name}</Text>
           <View style={styles.viewContainer}>
-            {renderDecks()}
+            {CARD_PACKS.map((cardPack, index) => (
+              <CardDeckSquare cardPack={cardPack} index={index} selectedCardIndex={selectedCardIndex} handlePress={handlePress} key={cardPack.id} />
+            ))}
           </View>
           <Button
             marginTop={20}
             text="CONTINUE"
-            onPress={onClose}
+            onPress={() => {onClose(); updatePlayableDeckInDatabase()}}
             buttonBgColor="#F76D31"
             buttonBorderColor="#F76D31" />
         </View>
@@ -97,10 +78,6 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
   },
-  cardDeck: {
-    flex: 1,
-    width: '100%',
-  },
   selectedCardDeck: {
     height: 200,
     width: 200,
@@ -113,27 +90,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 100,
   },
-  cardDeckContainer: {
-    width: 100,
-    height: 100,
-    borderRadius: 10,
-    marginHorizontal: 10,
-    overflow: 'hidden',
-    marginTop: 10,
-  },
-  cardDeckContainerSelected: {
-    borderWidth: 1,
-    borderColor: '#F76D31',
-  },
-  overlay: {
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: '#00000099',
-    position: 'absolute',
-    zIndex: 1,
-  },
   viewContainer: {
     flexDirection: 'row',
     marginTop: 20,
@@ -142,24 +98,5 @@ const styles = StyleSheet.create({
   decksContainer: {
     alignItems: 'center',
     width: '95%',
-  },
-  text: {
-    color: 'white',
-    fontSize: 24,
-    fontFamily: 'Basic',
-    marginTop: 20,
-  },
-  priceContainer: {
-    alignItems: 'center',
-    marginTop: 5,
-  },
-  priceText: {
-    fontSize: 16,
-    color: 'white',
-    fontFamily: 'Basic',
-  },
-  cardsContainer: {
-    flex: 1,
-    width: '100%',
   },
 });
