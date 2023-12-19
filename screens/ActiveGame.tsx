@@ -8,6 +8,8 @@ import Button from '../components/Button';
 import CardStack from '../components/CardStack';
 import PlayerAroundTable from '../components/PlayerAroundTable';
 import { DEFAULT_AVATAR_IMAGE, DEFAULT_DRINK_IMAGE } from '../constants/general';
+import { BACKGROUND_COLOR, ORANGE, WHITE } from '../constants/styles/colors';
+import { FONT_FAMILY_REGULAR, HEADER_FONT_SIZE, LOGO_FONT_FAMILY_REGULAR, REGULAR_LOGO_FONT_SIZE } from '../constants/styles/typography';
 import { useAuth } from '../context/authContext';
 import { FIREBASE_DB } from '../firebaseConfig.js';
 
@@ -118,34 +120,34 @@ const styles = StyleSheet.create({
   gameBackground: {
     alignItems: 'center',
     flex: 1,
-    backgroundColor: '#1E1E1E',
+    backgroundColor: BACKGROUND_COLOR,
   },
   drinkIQLogo: {
-    fontFamily: 'JetbrainsMono-Bold',
+    fontFamily: LOGO_FONT_FAMILY_REGULAR,
     marginTop: 50,
-    fontSize: 30,
-    color: 'white',
+    fontSize: REGULAR_LOGO_FONT_SIZE,
+    color: WHITE,
     letterSpacing: 3,
   },
   drinkIQOrange: {
-    fontFamily: 'JetbrainsMono-Bold',
+    fontFamily: LOGO_FONT_FAMILY_REGULAR,
     marginTop: 50,
-    fontSize: 30,
-    color: '#F76D31',
+    fontSize: REGULAR_LOGO_FONT_SIZE,
+    color: ORANGE,
   },
   gameText: {
-    fontFamily: 'JetbrainsMono-Bold',
-    fontSize: 30,
+    fontFamily: LOGO_FONT_FAMILY_REGULAR,
+    fontSize: REGULAR_LOGO_FONT_SIZE,
     marginTop: 100,
-    color: 'white',
+    color: WHITE,
   },
   lobbyButton: {
     marginTop: 80,
   },
   gameCode: {
-    fontSize: 20,
-    color: 'white',
-    fontFamily: 'JosefinSans-Regular',
+    fontSize: HEADER_FONT_SIZE,
+    color: WHITE,
+    fontFamily: FONT_FAMILY_REGULAR,
   },
   seventhAvatar: {
     position: 'absolute',

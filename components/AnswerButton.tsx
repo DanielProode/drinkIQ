@@ -1,5 +1,8 @@
 import { Dimensions, Pressable, StyleSheet, Text } from 'react-native';
 
+import { BACKGROUND_COLOR, GREY, WHITE } from '../constants/styles/colors';
+import { FONT_FAMILY_REGULAR, MEDIUM_FONT_SIZE } from '../constants/styles/typography';
+
 interface AnswerButtonProps {
   text: string;
   onPress: () => void;
@@ -23,20 +26,20 @@ export default function AnswerButton({ text, onPress, isAnswered, style, textSty
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: WHITE,
     justifyContent: 'center',
     width: width / 1.7,
     height: 50,
     borderRadius: 5,
-    borderColor: '#D3D3D3',
+    borderColor: GREY,
     borderWidth: 1,
     marginTop: 10,
   },
   text: {
-    color: '#1E1E1E',
-    fontSize: 16,
+    color: BACKGROUND_COLOR,
+    fontSize: MEDIUM_FONT_SIZE,
     textAlign: 'left',
     paddingLeft: 10,
-    fontFamily: 'JosefinSans-Regular',
+    fontFamily: FONT_FAMILY_REGULAR,
   },
 });

@@ -3,6 +3,8 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { StyleSheet, View, Text } from 'react-native';
 
 import Button from '../components/Button';
+import { BACKGROUND_COLOR, ORANGE, WHITE } from '../constants/styles/colors';
+import { LOGO_FONT_FAMILY_REGULAR, REGULAR_LOGO_FONT_SIZE } from '../constants/styles/typography';
 import { useAuth } from '../context/authContext';
 
 
@@ -36,16 +38,16 @@ export default function Settings({ navigation }: SettingsProps ) {
 const styles = StyleSheet.create({
   settingsView: {
     flex: 1,
-    backgroundColor: '#1E1E1E',
+    backgroundColor: BACKGROUND_COLOR,
     alignItems: 'center',
   },
   drinkIQLogo: {
-    fontFamily: 'JetbrainsMono-Bold',
+    fontFamily: LOGO_FONT_FAMILY_REGULAR,
     marginTop: 55,
     alignSelf: 'flex-start',
     marginLeft: 30,
-    fontSize: 30,
-    color: '#F2F2F2',
+    fontSize: REGULAR_LOGO_FONT_SIZE,
+    color: WHITE,
     letterSpacing: 3,
     },
   buttonContainer: {
@@ -53,6 +55,6 @@ const styles = StyleSheet.create({
     flex: 1,
     },
   drinkIQOrange: {
-    color: '#F76D31',
+    color: ORANGE,
     },
 });

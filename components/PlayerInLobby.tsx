@@ -3,6 +3,8 @@ import React from 'react'
 import { StyleSheet, View, Text, Pressable } from 'react-native';
 
 import { AVATAR_ICONS, DRINK_ICONS } from '../constants/general';
+import { LIGHTBLACK, ORANGE, WHITE } from '../constants/styles/colors';
+import { FONT_FAMILY_MEDIUM, REGULAR_FONT_SIZE } from '../constants/styles/typography';
 
 interface PlayerInLobbyProps {
   player: Player;
@@ -48,9 +50,9 @@ const styles = StyleSheet.create({
   avatarCircle: {
     width: '48%',
     aspectRatio: 1 / 1,
-    backgroundColor: 'white',
+    backgroundColor: WHITE,
     borderWidth: 2,
-    borderColor: '#00000090',
+    borderColor: LIGHTBLACK,
     borderRadius: 40,
   },
   avatar: {
@@ -63,9 +65,9 @@ const styles = StyleSheet.create({
   currentAvatarCircle: {
     width: '48%',
     aspectRatio: 1 / 1,
-    backgroundColor: 'white',
+    backgroundColor: WHITE,
     borderWidth: 2,
-    borderColor: '#F76D31',
+    borderColor: ORANGE,
     borderRadius: 40,
   },
   drink: {
@@ -78,9 +80,9 @@ const styles = StyleSheet.create({
   },
   name: {
     marginTop: 10,
-    fontSize: 18,
-    fontFamily: 'JosefinSans-Medium',
-    color: 'white',
+    fontSize: REGULAR_FONT_SIZE,
+    fontFamily: FONT_FAMILY_MEDIUM,
+    color: WHITE,
   },
 });
 

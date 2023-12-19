@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableWithoutFeedback, Keyboard, Pressable } from 'react-native';
 
 import Button from '../components/Button';
+import { ALMOSTWHITE, BACKGROUND_COLOR, LIGHTGREY, MEDIUMGREY, ORANGE, TRANSPARENTGREY, WHITE } from '../constants/styles/colors';
+import { BIG_LOGO_FONT_SIZE, FONT_FAMILY_BOLD, FONT_FAMILY_REGULAR, LOGO_FONT_FAMILY_REGULAR, REGULAR_FONT_SIZE } from '../constants/styles/typography';
 import { useAuth } from '../context/authContext';
 import TermsAndConditions from '../modals/TermsAndConditions';
 
@@ -41,7 +43,7 @@ export default function Login({ navigation }: LoginProps) {
         <View style={styles.textInputContainer}>
           <TextInput
             style={styles.input}
-            placeholderTextColor='#ABABAB80'
+            placeholderTextColor={TRANSPARENTGREY}
             placeholder='Email'
             autoCapitalize='none'
             onChangeText={(text) => setEmail(text)}
@@ -49,7 +51,7 @@ export default function Login({ navigation }: LoginProps) {
           />
           <TextInput
             style={styles.input}
-            placeholderTextColor='#ABABAB80'
+            placeholderTextColor={TRANSPARENTGREY}
             placeholder='Password'
             autoCapitalize='none'
             onChangeText={(text) => setPassword(text)}
@@ -84,17 +86,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: '#1E1E1E',
+    backgroundColor: BACKGROUND_COLOR,
   },
   drinkIQLogo: {
-    fontFamily: 'JetbrainsMono-Bold',
+    fontFamily: LOGO_FONT_FAMILY_REGULAR,
     marginTop: 150,
-    fontSize: 60,
-    color: 'white',
+    fontSize: BIG_LOGO_FONT_SIZE,
+    color: WHITE,
     letterSpacing: 3,
   },
   drinkIQOrange: {
-    color: '#F76D31',
+    color: ORANGE,
   },
   cheersIcon: {
     position: 'absolute',
@@ -114,13 +116,13 @@ const styles = StyleSheet.create({
     width: '80%',
     height: 40,
     borderBottomWidth: 1,
-    borderColor: '#ccc',
+    borderColor: MEDIUMGREY,
     borderRadius: 5,
     padding: 10,
     marginBottom: 45,
-    fontFamily: 'JosefinSans-Bold',
-    fontSize: 18,
-    color: '#ABABAB',
+    fontFamily: FONT_FAMILY_BOLD,
+    fontSize: REGULAR_FONT_SIZE,
+    color: LIGHTGREY,
   },
   buttonContainer: {
     alignItems: 'center',
@@ -136,16 +138,16 @@ const styles = StyleSheet.create({
     width: 300,
     textAlign: 'center',
     marginBottom: 20,
-    color: '#FFFFFF95',
-    fontFamily: 'JosefinSans-Regular',
+    color: ALMOSTWHITE,
+    fontFamily: FONT_FAMILY_REGULAR,
   },
   signUpText: {
-    color: '#FFFFFF95',
-    fontFamily: 'JosefinSans-Regular',
+    color: ALMOSTWHITE,
+    fontFamily: FONT_FAMILY_REGULAR,
   },
   innerText: {
-    fontFamily: 'JosefinSans-Bold',
-    color: 'white',
+    fontFamily: FONT_FAMILY_BOLD,
+    color: WHITE,
   },
   error: {
     color: 'red',

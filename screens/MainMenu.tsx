@@ -5,6 +5,8 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
 import { DRINKIQ_LOGO_IMAGE } from '../constants/general';
+import { BACKGROUND_COLOR, ORANGE, WHITE } from '../constants/styles/colors';
+import { BIG_LOGO_FONT_SIZE, FONT_FAMILY_REGULAR, LOGO_FONT_FAMILY_REGULAR, REGULAR_LOGO_FONT_SIZE } from '../constants/styles/typography';
 import Tutorial from '../modals/Tutorial';
 
 interface MainMenuProps {
@@ -60,7 +62,7 @@ const styles = StyleSheet.create({
   mainView: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: '#1E1E1E',
+    backgroundColor: BACKGROUND_COLOR,
   },
   cheersIcon: {
     position: 'absolute',
@@ -72,14 +74,14 @@ const styles = StyleSheet.create({
     opacity: 0.3,
   },
   drinkIQLogo: {
-    fontFamily: 'JetbrainsMono-Bold',
+    fontFamily: LOGO_FONT_FAMILY_REGULAR,
     marginTop: 150,
-    fontSize: 60,
-    color: 'white',
+    fontSize: BIG_LOGO_FONT_SIZE,
+    color: WHITE,
     letterSpacing: 3,
   },
   drinkIQOrange: {
-    color: '#F76D31',
+    color: ORANGE,
   },
   logoContainer: {
     alignItems: 'center',
@@ -87,10 +89,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   welcomeMessage: {
-    fontSize: 30,
+    fontSize: REGULAR_LOGO_FONT_SIZE,
     textAlign: 'center',
-    fontFamily: 'Basic',
-    color: 'white',
+    fontFamily: FONT_FAMILY_REGULAR,
+    color: WHITE,
   },
   bodyContainer: {
     flex: 4,

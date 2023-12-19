@@ -2,6 +2,9 @@ import { Image } from 'expo-image';
 import React from 'react'
 import { StyleSheet, View, Text, Pressable, ImageSourcePropType, ViewStyle } from 'react-native';
 
+import { WHITE } from '../constants/styles/colors';
+import { FONT_FAMILY_MEDIUM, REGULAR_FONT_SIZE } from '../constants/styles/typography';
+
 interface PlayerAroundTableProps {
     player: Player;
     index: number;
@@ -57,14 +60,14 @@ const styles = StyleSheet.create({
     avatarCircle: {
         width: '100%',
         height: '100%',
-        backgroundColor: 'white',
+        backgroundColor: WHITE,
         borderRadius: 50,
     },
     name: {
         marginTop: 5,
-        fontSize: 14,
-        fontFamily: 'JosefinSans-Medium',
-        color: 'white',
+        fontSize: REGULAR_FONT_SIZE,
+        fontFamily: FONT_FAMILY_MEDIUM,
+        color: WHITE,
     },
 
 });

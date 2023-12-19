@@ -1,12 +1,16 @@
 import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { WHITE, BLACK, LIGHTGREY } from '../constants/styles/colors';
+import { FONT_FAMILY_BOLD, REGULAR_FONT_SIZE } from '../constants/styles/typography';
+
+
 const width = Dimensions.get('window').width;
 
 let buttonWidth = 1.3;
 
-let buttonColor = '#000000';
+let buttonColor = BLACK;
 
-let buttonBrdrColor = '#FFFFFF';
+let buttonBrdrColor = WHITE;
 
 export default function Button({ text, onPress, disabled, marginTop, buttonWidthNumber, buttonBgColor, buttonBorderColor }: any) {
 
@@ -16,13 +20,13 @@ export default function Button({ text, onPress, disabled, marginTop, buttonWidth
   if (buttonBgColor != null) {
     buttonColor = buttonBgColor;
   } else {
-    buttonColor = '#000000';
+    buttonColor = BLACK;
   }
 
   if (buttonBorderColor != null) {
     buttonBrdrColor = buttonBorderColor;
   } else {
-    buttonBrdrColor = '#FFFFFF';
+    buttonBrdrColor = WHITE;
   }
   
 
@@ -35,7 +39,7 @@ export default function Button({ text, onPress, disabled, marginTop, buttonWidth
       onPress={onPress}
       disabled={disabled}>
       <View style={disabled ? {...styles.btnDisabledContainer, width: width / buttonWidth} : {...styles.btnContainer, width: width / buttonWidth, backgroundColor: buttonColor, borderColor: buttonBrdrColor}}>
-        <Text style={disabled ? {...styles.btnText, color: '#FFFFFF30'} : styles.btnText }> {text} </Text>
+        <Text style={disabled ? {...styles.btnText, color: LIGHTGREY} : styles.btnText }> {text} </Text>
       </View>
     </Pressable>
     </View>
@@ -44,16 +48,16 @@ export default function Button({ text, onPress, disabled, marginTop, buttonWidth
 
 const styles = StyleSheet.create({
   btnContainer: {
+    borderColor: WHITE,
     paddingVertical: 8,
     borderRadius: 15,
     borderWidth: 2,
-    borderColor: '#FFFFFF',
     height: 70,
     justifyContent: 'center',
   },
   btnDisabledContainer: {
-    backgroundColor: '#FFFFFF30',
-    borderColor: '#FFFFFF30',
+    backgroundColor: LIGHTGREY,
+    borderColor: LIGHTGREY,
     paddingVertical: 8,
     borderRadius: 15,
     borderWidth: 2,
@@ -61,10 +65,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   btnText: {
-    color: '#FFFFFF',
-    fontSize: 18,
+    color: WHITE,
+    fontSize: REGULAR_FONT_SIZE,
     textTransform: 'uppercase',
     textAlign: 'center',
-    fontFamily: 'JosefinSans-Bold',
+    fontFamily: FONT_FAMILY_BOLD,
   },
 });

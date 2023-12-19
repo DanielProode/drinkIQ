@@ -1,6 +1,8 @@
 import { Image } from 'expo-image';
 import { ImageProps, Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { ALMOSTBLACK, ORANGE, WHITE } from '../constants/styles/colors';
+import { FONT_FAMILY_REGULAR, MEDIUM_FONT_SIZE } from '../constants/styles/typography';
 import useUserStore from '../store/userStore';
 
 interface CardDeckSquareProps {
@@ -48,22 +50,22 @@ const styles = StyleSheet.create({
   },
   cardDeckContainerSelected: {
     borderWidth: 1,
-    borderColor: '#F76D31',
+    borderColor: ORANGE,
   },
   overlay: {
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: '#00000099',
+    backgroundColor: ALMOSTBLACK,
     position: 'absolute',
     zIndex: 1,
     justifyContent: 'center',
   },
   priceText: {
-    fontSize: 16,
-    color: 'white',
-    fontFamily: 'Basic',
+    fontSize: MEDIUM_FONT_SIZE,
+    color: WHITE,
+    fontFamily: FONT_FAMILY_REGULAR,
     textAlign: 'center',
     textShadowRadius: 7,
     textShadowColor: 'black',

@@ -5,6 +5,8 @@ import { Keyboard, StyleSheet, Text, TextInput, View, TouchableWithoutFeedback }
 
 import Button from '../components/Button';
 import { GAME_CODE_MAX, GAME_CODE_MIN } from '../constants/general';
+import { BACKGROUND_COLOR, ORANGE, WHITE } from '../constants/styles/colors';
+import { FONT_FAMILY_BOLD, LOGO_FONT_FAMILY_REGULAR, MEDIUM_LOGO_FONT_SIZE, REGULAR_FONT_SIZE, REGULAR_LOGO_FONT_SIZE, TITLE_FONT_SIZE } from '../constants/styles/typography';
 import { useAuth } from '../context/authContext';
 import { FIREBASE_RTDB } from '../firebaseConfig.js';
 import useGameStore from '../store/gameStore';
@@ -191,18 +193,18 @@ export default function NewGame({ navigation }: NewGameProps) {
 const styles = StyleSheet.create({
   newGameView: {
     alignItems: 'center',
-    backgroundColor: '#1E1E1E',
+    backgroundColor: BACKGROUND_COLOR,
     flex: 1,
   },
   drinkIQLogo: {
-    fontFamily: 'JetbrainsMono-Bold',
+    fontFamily: LOGO_FONT_FAMILY_REGULAR,
     marginTop: 50,
-    fontSize: 30,
-    color: 'white',
+    fontSize: REGULAR_LOGO_FONT_SIZE,
+    color: WHITE,
     letterSpacing: 3,
   },
   drinkIQOrange: {
-    color: '#F76D31',
+    color: ORANGE,
   },
   buttonContainer: {
     marginTop: 30,
@@ -215,7 +217,7 @@ const styles = StyleSheet.create({
   },
   hashtag: {
     color: 'gray',
-    fontSize: 40,
+    fontSize: MEDIUM_LOGO_FONT_SIZE,
     marginTop: 20,
   },
   gameCodeInput: {
@@ -225,9 +227,9 @@ const styles = StyleSheet.create({
     padding: 10,
     borderColor: 'gray',
     textAlign: 'center',
-    fontFamily: 'JosefinSans-Bold',
-    fontSize: 24,
-    color: 'white',
+    fontFamily: FONT_FAMILY_BOLD,
+    fontSize: TITLE_FONT_SIZE,
+    color: WHITE,
   },
   hostGameButton: {
     alignItems: 'center',
@@ -236,9 +238,9 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   hostGameText: {
-    fontFamily: 'JosefinSans-Bold',
-    color: 'white',
-    fontSize: 18,
+    fontFamily: FONT_FAMILY_BOLD,
+    color: WHITE,
+    fontSize: REGULAR_FONT_SIZE,
     marginTop: 130,
   },
   error: {

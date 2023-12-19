@@ -3,6 +3,8 @@ import { arrayUnion, doc, updateDoc } from "firebase/firestore";
 import { Modal, View, Text, StyleSheet, ImageSourcePropType } from "react-native";
 
 import Button from "../components/Button";
+import { BACKGROUND_COLOR, BLACK, WHITE } from '../constants/styles/colors';
+import { FONT_FAMILY_BOLD, FONT_FAMILY_REGULAR, HEADER_FONT_SIZE, REGULAR_FONT_SIZE } from '../constants/styles/typography';
 import { useAuth } from "../context/authContext";
 import { FIREBASE_DB } from "../firebaseConfig";
 import useUserStore from "../store/userStore";
@@ -73,33 +75,33 @@ export default function CardDeckInfo({ isVisible, onClose, pack }: CardDeckInfoP
 
 const styles = StyleSheet.create({
   deckImageAndText: {
-    backgroundColor: '#1E1E1E',
+    backgroundColor: BACKGROUND_COLOR,
   },
   imageView: {
     alignItems: 'center',
     height: 200,
     marginTop: 100,
-    backgroundColor: '#1E1E1E',
+    backgroundColor: BACKGROUND_COLOR,
   },
   buyText: {
     marginTop: 20,
     marginBottom: 20,
-    fontSize: 20,
-    color: 'white',
-    fontFamily: 'Basic',
+    fontSize: HEADER_FONT_SIZE,
+    color: WHITE,
+    fontFamily: FONT_FAMILY_REGULAR,
   },
   packName: {
     marginTop: 20,
-    fontFamily: 'JosefinSans-Bold',
-    color: 'white',
+    fontFamily: FONT_FAMILY_BOLD,
+    color: WHITE,
     alignSelf: 'center',
   },
   modal: {
     flex: 1,
-    backgroundColor: '#1E1E1E',
+    backgroundColor: BACKGROUND_COLOR,
     padding: 35,
     alignItems: 'center',
-    shadowColor: '#000',
+    shadowColor: BLACK,
     justifyContent: 'space-between',
   },
   modalImage: {
@@ -109,16 +111,16 @@ const styles = StyleSheet.create({
   modalText: {
     marginTop: 10,
     marginBottom: 10,
-    fontSize: 18,
-    color: 'white',
-    fontFamily: 'JosefinSans-Regular',
+    fontSize: REGULAR_FONT_SIZE,
+    color: WHITE,
+    fontFamily: FONT_FAMILY_REGULAR,
   },
   modalTextBold: {
     marginTop: 10,
     marginBottom: 10,
-    fontSize: 18,
-    color: 'white',
-    fontFamily: 'JosefinSans-Bold',
+    fontSize: REGULAR_FONT_SIZE,
+    color: WHITE,
+    fontFamily: FONT_FAMILY_BOLD,
   },
   modalButtons: {
     justifyContent: 'flex-end',

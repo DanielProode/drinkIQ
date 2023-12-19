@@ -5,6 +5,8 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import Answer from './Answer';
 import { BASE_CARD_IMAGE, CARD_PACKS, DEFAULT_CARD_COUNT } from '../constants/general';
+import { ALMOSTBLACK, GREY, LIGHTBLACK, CORRECT, WRONG, WHITE } from '../constants/styles/colors';
+import { FONT_FAMILY_MEDIUM, FONT_FAMILY_REGULAR, HEADER_FONT_SIZE, MEDIUM_LOGO_FONT_SIZE, REGULAR_FONT_SIZE, TITLE_FONT_SIZE } from '../constants/styles/typography';
 import useGameStore from '../store/gameStore';
 
 interface CardProps {
@@ -70,11 +72,11 @@ export default function Card({ onClose, handlePoints, questionElement, cardsLeft
       const isSelected = answerIndex === selectedAnswerIndex;
       const isCorrect = answerIndex === correctAnswerIndex;
       const answerStyle = [
-        isSelected && (isCorrect ? { backgroundColor: '#A0E595' } : { backgroundColor: '#F07070' }),
-        isAnswered && !isSelected && answer.isCorrect && { backgroundColor: '#A0E595' },
+        isSelected && (isCorrect ? { backgroundColor: CORRECT } : { backgroundColor: WRONG }),
+        isAnswered && !isSelected && answer.isCorrect && { backgroundColor: CORRECT },
       ];
       const textStyle = [
-        !isCorrect && isAnswered && { color: '#00000050' }
+        !isCorrect && isAnswered && { color: LIGHTBLACK }
       ];
       return (
         <Answer key={answerIndex} answerIndex={answerIndex} isAnswered={isAnswered} answer={answer} answerStyle={answerStyle} textStyle={textStyle} handleAnswerSelection={handleAnswerSelection} setIsAnswered={setIsAnswered} />
@@ -135,10 +137,10 @@ const styles = StyleSheet.create({
     marginTop: 80,
     width: 280,
     height: 140,
-    backgroundColor: 'white',
+    backgroundColor: WHITE,
     borderRadius: 10,
     borderWidth: 5,
-    borderColor: 'white',
+    borderColor: WHITE,
     alignSelf: 'center',
     justifyContent: 'center',
   },
@@ -150,7 +152,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     zIndex: 1,
-    backgroundColor: '#00000099',
+    backgroundColor: ALMOSTBLACK,
   },
   image: {
     contentFit: 'contain',
@@ -166,9 +168,9 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   questionNumberText: {
-    fontSize: 18,
+    fontSize: REGULAR_FONT_SIZE,
     marginTop: 20,
-    fontFamily: 'JosefinSans-Medium',
+    fontFamily: FONT_FAMILY_MEDIUM,
     textAlign: 'center',
   },
   questionTextContainer: {
@@ -176,8 +178,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   questionText: {
-    fontSize: 24,
-    fontFamily: 'JosefinSans-Regular',
+    fontSize: TITLE_FONT_SIZE,
+    fontFamily: FONT_FAMILY_REGULAR,
     textAlign: 'center',
   },
   nextButtonContainer: {
@@ -190,15 +192,14 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   nextButton: {
-    backgroundColor: 'white',
-    borderColor: '#D3D3D3',
+    backgroundColor: WHITE,
+    borderColor: GREY,
     flex: 1,
     borderWidth: 1,
     borderRadius: 50,
   },
   nextButtonText: {
-    fontFamily: 'Basic',
-    fontSize: 38,
+    fontSize: MEDIUM_LOGO_FONT_SIZE,
     alignSelf: 'center',
   },
   answerButtonView: {
@@ -207,9 +208,9 @@ const styles = StyleSheet.create({
   },
   answerResult: {
     alignSelf: 'center',
-    fontFamily: 'Basic',
+    fontFamily: FONT_FAMILY_MEDIUM,
     marginTop: 200,
-    fontSize: 20,
+    fontSize: HEADER_FONT_SIZE,
     color: 'red',
     zIndex: 3,
   },
@@ -222,7 +223,7 @@ const styles = StyleSheet.create({
     height: 100,
     alignSelf: 'center',
     borderRadius: 80,
-    borderColor: 'white',
+    borderColor: WHITE,
     borderWidth: 2,
     justifyContent: 'flex-start',
   },
