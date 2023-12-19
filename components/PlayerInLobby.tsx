@@ -6,9 +6,8 @@ import { AVATAR_ICONS, DRINK_ICONS } from '../constants/general';
 
 interface PlayerInLobbyProps {
   player: Player;
-  index: number;
   currentUser: string;
-  onPress: () => void;
+  handlePress: () => void;
 }
 
 interface Player {
@@ -17,21 +16,16 @@ interface Player {
   drink: number;
 }
 
-export default function PlayerInLobby({ player, index, currentUser, onPress }: PlayerInLobbyProps) {
+export default function PlayerInLobby({ player, currentUser, handlePress }: PlayerInLobbyProps) {
   return (
     <>
-      <Pressable
-        style={styles.playerContainer}
-        key={index}
-        onPress={() => onPress()}
-      >
+      <Pressable style={styles.playerContainer} onPress={handlePress}>
         <View style={[styles.avatarCircle, player.username === currentUser && styles.currentAvatarCircle]}>
           <Image style={styles.avatar} source={AVATAR_ICONS[player.avatar]} />
           <Image style={styles.drink} source={DRINK_ICONS[player.drink]} />
         </View>
         <Text style={styles.name} adjustsFontSizeToFit numberOfLines={1}>{player.username}</Text>
       </Pressable>
-
     </>
   );
 };

@@ -1,7 +1,7 @@
 import { RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Image } from 'expo-image';
-import { onValue, ref, remove } from 'firebase/database';
+import { onValue, ref, remove, update } from 'firebase/database';
 import { useEffect, useState } from 'react';
 import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 
@@ -26,7 +26,7 @@ interface LobbyProps {
   navigation: NativeStackNavigationProp<any>;
 };
 
-interface Player {
+export interface Player {
   username: string;
   avatar: number;
   drink: number;
@@ -72,6 +72,16 @@ export default function Lobby({ route, navigation }: LobbyProps) {
     }
   }
 
+  const startGame = async () => {
+    try {
+      const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
+      await update(roomRef, { isGameStarted: true });
+      console.log(`Game started`);
+    } catch (error) {
+      console.error('Error starting game:', error);
+    }
+  };
+
   const removePlayerFromLobby = () => {
     const playerRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/players/${userId}`);
     const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
@@ -90,6 +100,7 @@ export default function Lobby({ route, navigation }: LobbyProps) {
     const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
     const unsubscribe = onValue(roomRef, (snapshot) => {
       const roomData = snapshot.val();
+      if (roomData.isGameStarted) navigation.navigate('ActiveGame', { fetchedPlayers })
       if (roomData) {
         const cardDeckRef: number = roomData.cardDeck;
         const playersData: Player = roomData.players;
@@ -142,7 +153,7 @@ export default function Lobby({ route, navigation }: LobbyProps) {
       <Text style={styles.deckName}>{CARD_PACKS[playableDeckIndex].name}</Text>
       <View style={styles.joinedPlayers}>
         {fetchedPlayers.map((player, index) =>
-          <PlayerInLobby onPress={() => avatarPressed(player)} player={player} index={index} currentUser={username} key={index} />
+          <PlayerInLobby handlePress={() => avatarPressed(player)} player={player} currentUser={username} key={index} />
         )}
       </View>
 
@@ -150,8 +161,7 @@ export default function Lobby({ route, navigation }: LobbyProps) {
         {gameHost ? (
           <Button
             marginTop={10}
-            onPress={() =>
-              navigation.navigate('ActiveGame')}
+            onPress={startGame}
             text="START GAME"
             buttonBgColor="#F76D31"
             buttonBorderColor="#F76D31" />

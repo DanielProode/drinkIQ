@@ -78,7 +78,7 @@ export default function NewGame({ navigation }: NewGameProps) {
     try {
       const roomCodeRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
       // Set initial room data here
-      await set(roomCodeRef, { gameHost: userId, cardDeck: 0, players: { [userId]: { username, avatar, drink } }});
+      await set(roomCodeRef, { gameHost: userId, cardDeck: 0, isGameStarted: false, players: { [userId]: { username, avatar, drink } }});
       console.log(`Room code ${roomCode} added to the database.`);
     } catch (error) {
       console.error('Error adding room to the database:', error);

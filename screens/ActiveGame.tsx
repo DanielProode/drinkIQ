@@ -1,34 +1,30 @@
 import { RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { doc, updateDoc, increment } from "firebase/firestore";
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
 import CardStack from '../components/CardStack';
 import PlayerAroundTable from '../components/PlayerAroundTable';
-import { DEFAULT_AVATAR_IMAGE, DEFAULT_DRINK_IMAGE } from '../constants/general';
 import { useAuth } from '../context/authContext';
 import { FIREBASE_DB } from '../firebaseConfig.js';
-import { onValue, ref } from 'firebase/database';
 import useGameStore from '../store/gameStore';
+import { Player } from './Lobby';
 
 interface ActiveGameProps {
+  route: RouteProp<{
+    ActiveGame: {
+      fetchedPlayers: Player[];
+    }
+  }>;
   navigation: NativeStackNavigationProp<any>;
 };
 
 // FETCH all players from session, including the current player, and later on check which player in list is current player, and go from there
-const fetchedPlayers = [{ username: "Bot Alfred", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
-{ username: "Bot Allu", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
-{ username: "Bot Pete", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
-{ username: "Bot Viktor", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
-{ username: "Bot Albert", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
-{ username: "Bot Sasha", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
-{ username: "Bot Anubis", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
-{ username: "Bot Anubis2", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
-]
 
-export default function ActiveGame({ navigation }: ActiveGameProps) {
+export default function ActiveGame({ route, navigation }: ActiveGameProps) {
+  const { fetchedPlayers } = route.params;
   const [isGameOver, setIsGameOver] = useState(false);
   const [correctAnswerCount, setCorrectAnswerCount] = useState<number>(0);
   const [wrongAnswerCount, setWrongAnswerCount] = useState<number>(0);
@@ -81,26 +77,6 @@ export default function ActiveGame({ navigation }: ActiveGameProps) {
     updateUserData();
   }
 
-  // useEffect(() => {
-  //   const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
-  //   const unsubscribe = onValue(roomRef, (snapshot) => {
-  //     const roomData = snapshot.val();
-  //     if (roomData) {
-  //       const cardDeckRef: number = roomData.cardDeck;
-  //       const playersData: Player = roomData.players;
-  //       const playersArray = Object.values(playersData);
-
-  //       setFetchedPlayers(playersArray);
-  //       updatePlayableDeckIndex(cardDeckRef);
-  //     } else {
-  //       isLobbyDestroyed = true;
-  //       navigation.navigate('NewGame');
-  //     }
-  //   });
-
-  //   return () => unsubscribe();
-  // }, []);
-
   return (
     <>
       <View style={styles.gameBackground}>
@@ -119,7 +95,7 @@ export default function ActiveGame({ navigation }: ActiveGameProps) {
         ) : (
           <>
             {fetchedPlayers.map((player, index) =>
-              <PlayerAroundTable stylesArray={stylesArray[index]} key={player.username} player={player} index={index} />
+              <PlayerAroundTable stylesArray={stylesArray[index]} key={player.username} player={player} />
             )}
 
             <CardStack onGameOver={handleGameOver} points={correctAnswerCount} drinks={wrongAnswerCount} setPoints={setCorrectAnswerCount} setDrinks={setWrongAnswerCount} />
