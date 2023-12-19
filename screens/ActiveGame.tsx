@@ -4,13 +4,13 @@ import { doc, updateDoc, increment } from "firebase/firestore";
 import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
+import { Player } from './Lobby';
 import Button from '../components/Button';
 import CardStack from '../components/CardStack';
 import PlayerAroundTable from '../components/PlayerAroundTable';
 import { useAuth } from '../context/authContext';
 import { FIREBASE_DB } from '../firebaseConfig.js';
 import useGameStore from '../store/gameStore';
-import { Player } from './Lobby';
 
 interface ActiveGameProps {
   route: RouteProp<{

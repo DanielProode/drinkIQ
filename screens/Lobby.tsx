@@ -100,18 +100,21 @@ export default function Lobby({ route, navigation }: LobbyProps) {
     const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
     const unsubscribe = onValue(roomRef, (snapshot) => {
       const roomData = snapshot.val();
-      if (roomData.isGameStarted) navigation.navigate('ActiveGame', { fetchedPlayers })
-      if (roomData) {
-        const cardDeckRef: number = roomData.cardDeck;
-        const playersData: Player = roomData.players;
-        const playersArray = Object.values(playersData);
-
-        setFetchedPlayers(playersArray);
-        updatePlayableDeckIndex(cardDeckRef);
-      } else {
+      if (!roomData) {
         isLobbyDestroyed = true;
         navigation.navigate('NewGame');
+        return;
       }
+      if (roomData.isGameStarted && fetchedPlayers.length > 0) {
+        navigation.navigate('ActiveGame', { fetchedPlayers })
+        return;
+      }
+      const cardDeckRef: number = roomData.cardDeck;
+      const playersData: Player = roomData.players;
+      const playersArray = Object.values(playersData);
+
+      setFetchedPlayers(playersArray);
+      updatePlayableDeckIndex(cardDeckRef);
     });
 
     return () => unsubscribe();
