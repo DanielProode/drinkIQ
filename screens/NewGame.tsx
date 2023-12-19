@@ -16,10 +16,9 @@ interface NewGameProps {
 
 export default function NewGame({ navigation }: NewGameProps) {
   const [disabled, setDisabled] = useState(true);
-  const [roomCode, setRoomCode] = useState('');
   const [error, setError] = useState('');
   const { username } = useUserStore();
-  const { avatar, drink } = useGameStore();
+  const { avatar, drink, roomCode, updateRoomCode } = useGameStore();
   const { authUser } = useAuth();
   const userId = authUser ? authUser.uid : '';
 
@@ -40,10 +39,10 @@ export default function NewGame({ navigation }: NewGameProps) {
       console.log(`Player ${username} has joined the room.`);
       const isPlayerHost = await checkIsGameHost(roomCode);
       if (isPlayerHost) { 
-        navigation.navigate('Lobby', { roomCode, gameHost: true }); 
+        navigation.navigate('Lobby', { gameHost: true }); 
       }
       else { 
-        navigation.navigate('Lobby', { roomCode }); 
+        navigation.navigate('Lobby', { gameHost: false }); 
       }
     } catch (error) {
       console.error('Error joining the game: ', error);
@@ -52,14 +51,15 @@ export default function NewGame({ navigation }: NewGameProps) {
 
   const handleHostGame = async () => {
     try {
-      let roomCode = generateGameCode();
-      while (await checkRoomCode(roomCode)) {
-        roomCode = generateGameCode();
+      let generatedRoomCode = generateGameCode();
+      while (await checkRoomCode(generatedRoomCode)) {
+        generatedRoomCode = generateGameCode();
       }
 
-      await createRoom(roomCode);
+      await createRoom(generatedRoomCode);
+      updateRoomCode(generatedRoomCode)
       console.log(`Player ${username} has joined the room.`);
-      navigation.navigate('Lobby', { roomCode, gameHost: true });
+      navigation.navigate('Lobby', { gameHost: true });
     } catch (error) {
       console.error('Error starting the game:', error);
     }
@@ -138,7 +138,7 @@ export default function NewGame({ navigation }: NewGameProps) {
         newText = newText + text[i];
       }
     }
-    setRoomCode(newText);
+    updateRoomCode(newText);
 
     if (text.length === 6) {
       setDisabled(false);
@@ -157,7 +157,7 @@ export default function NewGame({ navigation }: NewGameProps) {
             style={styles.gameCodeInput}
             onChangeText={(text) => onChanged(text)}
             value={roomCode}
-            onSubmitEditing={(value) => setRoomCode(value.nativeEvent.text)}
+            onSubmitEditing={(value) => updateRoomCode(value.nativeEvent.text)}
             placeholder="XXXXXX"
             keyboardType="numeric"
             maxLength={6}

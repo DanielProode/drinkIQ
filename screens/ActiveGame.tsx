@@ -1,7 +1,7 @@
 import { RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { doc, updateDoc, increment } from "firebase/firestore";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
@@ -10,13 +10,10 @@ import PlayerAroundTable from '../components/PlayerAroundTable';
 import { DEFAULT_AVATAR_IMAGE, DEFAULT_DRINK_IMAGE } from '../constants/general';
 import { useAuth } from '../context/authContext';
 import { FIREBASE_DB } from '../firebaseConfig.js';
+import { onValue, ref } from 'firebase/database';
+import useGameStore from '../store/gameStore';
 
 interface ActiveGameProps {
-  route: RouteProp<{
-    ActiveGame: {
-      gameCode: string;
-    }
-  }>;
   navigation: NativeStackNavigationProp<any>;
 };
 
@@ -31,12 +28,12 @@ const fetchedPlayers = [{ username: "Bot Alfred", avatar: DEFAULT_AVATAR_IMAGE, 
 { username: "Bot Anubis2", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
 ]
 
-export default function ActiveGame({ route, navigation }: ActiveGameProps) {
-  const { gameCode } = route.params;
+export default function ActiveGame({ navigation }: ActiveGameProps) {
   const [isGameOver, setIsGameOver] = useState(false);
   const [correctAnswerCount, setCorrectAnswerCount] = useState<number>(0);
   const [wrongAnswerCount, setWrongAnswerCount] = useState<number>(0);
   const { authUser } = useAuth();
+  const { roomCode } = useGameStore();
   let gameWon = 0;
 
   const stylesArray = [
@@ -84,12 +81,31 @@ export default function ActiveGame({ route, navigation }: ActiveGameProps) {
     updateUserData();
   }
 
+  // useEffect(() => {
+  //   const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
+  //   const unsubscribe = onValue(roomRef, (snapshot) => {
+  //     const roomData = snapshot.val();
+  //     if (roomData) {
+  //       const cardDeckRef: number = roomData.cardDeck;
+  //       const playersData: Player = roomData.players;
+  //       const playersArray = Object.values(playersData);
+
+  //       setFetchedPlayers(playersArray);
+  //       updatePlayableDeckIndex(cardDeckRef);
+  //     } else {
+  //       isLobbyDestroyed = true;
+  //       navigation.navigate('NewGame');
+  //     }
+  //   });
+
+  //   return () => unsubscribe();
+  // }, []);
 
   return (
     <>
       <View style={styles.gameBackground}>
         <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
-        <Text style={styles.gameCode}>#{gameCode}</Text>
+        <Text style={styles.gameCode}>#{roomCode}</Text>
         {isGameOver ? (
           <>
             <Text style={styles.gameText}>GAME OVER!</Text>

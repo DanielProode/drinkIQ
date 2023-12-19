@@ -14,11 +14,10 @@ import useGameStore from '../store/gameStore';
 interface AvatarSelectionProps {
   isVisible: boolean;
   onClose: () => void;
-  roomCode: string;
 };
 
-export default function AvatarSelection({ isVisible, onClose, roomCode }: AvatarSelectionProps) {
-  const { avatar, drink, updateAvatar, updateDrink } = useGameStore();
+export default function AvatarSelection({ isVisible, onClose }: AvatarSelectionProps) {
+  const { roomCode, avatar, drink, updateAvatar, updateDrink } = useGameStore();
   const [selectedAvatarIndex, setSelectedAvatarIndex] = useState(0);
   const [selectedDrinkIndex, setSelectedDrinkIndex] = useState(0);
   const { authUser } = useAuth();

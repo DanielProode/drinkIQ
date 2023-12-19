@@ -20,7 +20,6 @@ import useUserStore from '../store/userStore';
 interface LobbyProps {
   route: RouteProp<{
     Lobby: {
-      roomCode: string;
       gameHost: boolean;
     }
   }>;
@@ -31,13 +30,12 @@ interface Player {
   username: string;
   avatar: number;
   drink: number;
-  isHost?: boolean;
 }
 
 export default function Lobby({ route, navigation }: LobbyProps) {
-  const { roomCode, gameHost } = route.params;
+  const { gameHost } = route.params;
   const { username } = useUserStore();
-  const { playableDeckIndex, updatePlayableDeckIndex } = useGameStore();
+  const { roomCode, playableDeckIndex, updatePlayableDeckIndex } = useGameStore();
   const [isAvatarSelectionModalVisible, setIsAvatarSelectionModalVisible] = useState(false);
   const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
   const [isCardDeckSelectionModalVisible, setIsCardDeckSelectionModalVisible] = useState(false);
@@ -131,9 +129,9 @@ export default function Lobby({ route, navigation }: LobbyProps) {
 
   return (
     <View style={styles.gameView}>
-      <AvatarSelection isVisible={isAvatarSelectionModalVisible} onClose={toggleAvatarSelectionModal} roomCode={roomCode} />
+      <AvatarSelection isVisible={isAvatarSelectionModalVisible} onClose={toggleAvatarSelectionModal} />
       <PlayerProfile isVisible={isProfileModalVisible} onClose={toggleProfileModal} profile={selectedProfile} />
-      <CardDeckSelection isVisible={isCardDeckSelectionModalVisible} onClose={toggleCardDeckSelectionModal} roomCode={roomCode} />
+      <CardDeckSelection isVisible={isCardDeckSelectionModalVisible} onClose={toggleCardDeckSelectionModal} />
       <CardDeckInfo isVisible={isCardDeckInfoModalVisible} onClose={toggleCardDeckSelectionModal} pack={CARD_PACKS[playableDeckIndex]} />
 
       <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
@@ -153,7 +151,7 @@ export default function Lobby({ route, navigation }: LobbyProps) {
           <Button
             marginTop={10}
             onPress={() =>
-              navigation.navigate('ActiveGame', { roomCode })}
+              navigation.navigate('ActiveGame')}
             text="START GAME"
             buttonBgColor="#F76D31"
             buttonBorderColor="#F76D31" />
