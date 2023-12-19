@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import Answer from './Answer';
-import { BASE_CARD_IMAGE, DEFAULT_CARD_COUNT } from '../constants/general';
+import { BASE_CARD_IMAGE, CARD_PACKS, DEFAULT_CARD_COUNT } from '../constants/general';
 import useGameStore from '../store/gameStore';
 
 interface CardProps {
@@ -28,7 +28,7 @@ export default function Card({ onClose, handlePoints, questionElement, cardsLeft
   if (!questionElement) {
     return
   }
-  const { playableCardBackground } = useGameStore();
+  const { playableDeckIndex } = useGameStore();
   const [isAnswered, setIsAnswered] = useState(false);
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number | null>(null);
   const [isAnswerCorrect, setIsAnswerCorrect] = useState(false);
@@ -116,7 +116,7 @@ export default function Card({ onClose, handlePoints, questionElement, cardsLeft
         </Image>
       </View>
       <View style={styles.deckCircle}>
-        <Image style={styles.deckLogo} source={playableCardBackground} />
+        <Image style={styles.deckLogo} source={CARD_PACKS[playableDeckIndex].image} />
       </View>
     </View>
   );
