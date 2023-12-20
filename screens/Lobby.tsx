@@ -75,7 +75,7 @@ export default function Lobby({ route, navigation }: LobbyProps) {
   const startGame = async () => {
     try {
       const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
-      await update(roomRef, { isGameStarted: true });
+      await update(roomRef, { isSessionStarted: true, isGameOver: false, currentTurn: 0 });
       console.log(`Game started`);
     } catch (error) {
       console.error('Error starting game:', error);
@@ -105,8 +105,8 @@ export default function Lobby({ route, navigation }: LobbyProps) {
         navigation.navigate('NewGame');
         return;
       }
-      if (roomData.isGameStarted && fetchedPlayers.length > 0) {
-        navigation.navigate('ActiveGame', { fetchedPlayers })
+      if (roomData.isSessionStarted) {
+        navigation.navigate('ActiveGame')
         return;
       }
       const cardDeckRef: number = roomData.cardDeck;

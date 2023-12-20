@@ -8,7 +8,7 @@ import LoadingScreen from '../components/LoadingScreen';
 import { useAuth } from '../context/authContext';
 import ActiveGame from '../screens/ActiveGame';
 import CardDecks from '../screens/CardDecks';
-import Lobby, { Player } from '../screens/Lobby';
+import Lobby from '../screens/Lobby';
 import Login from '../screens/Login';
 import MainMenu from '../screens/MainMenu';
 import NewGame from '../screens/NewGame';
@@ -17,7 +17,7 @@ import Register from '../screens/Register'
 import Settings from '../screens/Settings'
 
 type RootStackParamList = {
-  ActiveGame: { fetchedPlayers: Player[] };
+  ActiveGame: undefined;
   Lobby: { gameHost: boolean };
   Login: undefined;
   Register: undefined;

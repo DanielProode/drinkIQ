@@ -1,35 +1,33 @@
-import { RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { onValue, ref, update } from 'firebase/database';
 import { doc, updateDoc, increment } from "firebase/firestore";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { Player } from './Lobby';
 import Button from '../components/Button';
 import CardStack from '../components/CardStack';
+import LoadingScreen from '../components/LoadingScreen';
 import PlayerAroundTable from '../components/PlayerAroundTable';
 import { useAuth } from '../context/authContext';
-import { FIREBASE_DB } from '../firebaseConfig.js';
+import { FIREBASE_DB, FIREBASE_RTDB } from '../firebaseConfig.js';
 import useGameStore from '../store/gameStore';
+import useUserStore from '../store/userStore';
 
 interface ActiveGameProps {
-  route: RouteProp<{
-    ActiveGame: {
-      fetchedPlayers: Player[];
-    }
-  }>;
   navigation: NativeStackNavigationProp<any>;
 };
 
-// FETCH all players from session, including the current player, and later on check which player in list is current player, and go from there
-
-export default function ActiveGame({ route, navigation }: ActiveGameProps) {
-  const { fetchedPlayers } = route.params;
+export default function ActiveGame({ navigation }: ActiveGameProps) {
   const [isGameOver, setIsGameOver] = useState(false);
+  const [gameHost, setGameHost] = useState('');
   const [correctAnswerCount, setCorrectAnswerCount] = useState<number>(0);
   const [wrongAnswerCount, setWrongAnswerCount] = useState<number>(0);
+  const [fetchedPlayers, setFetchedPlayers] = useState<Player[]>([]);
+  const [currentTurnIndex, setCurrentTurnIndex] = useState<number>(0);
   const { authUser } = useAuth();
   const { roomCode } = useGameStore();
+  const { username } = useUserStore();
   let gameWon = 0;
 
   const stylesArray = [
@@ -43,14 +41,14 @@ export default function ActiveGame({ route, navigation }: ActiveGameProps) {
     styles.eighthAvatar,
   ];
 
-  const checkGameWinner = () => {
-    if (wrongAnswerCount < correctAnswerCount) {
-      gameWon = 1;
-    }
-    else {
-      gameWon = 0;
-    }
-  }
+  // TODO: Instead of username check UID or something in the future
+  const isCurrentPlayersTurn = () => fetchedPlayers[currentTurnIndex].username === username;
+
+  const checkGameWinner = () =>  { gameWon = wrongAnswerCount < correctAnswerCount ? 1 : 0; }
+  
+  // If the current index is the last in the array return the first player
+  // Otherwise, return the next index in the array
+  const getNextPlayerIndex = (currentIndex: number): number => (currentIndex === fetchedPlayers.length - 1 ? 0 : currentIndex + 1);
 
   const updateUserData = async () => {
     try {
@@ -70,11 +68,73 @@ export default function ActiveGame({ route, navigation }: ActiveGameProps) {
     }
   }
 
-  const handleGameOver = () => {
-    console.log("Game over!");
-    checkGameWinner();
+  const updateCurrentTurnInDatabase = async () => {
+    const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
+
+    try {
+      await update(roomRef, { currentTurn: getNextPlayerIndex(currentTurnIndex) });
+      console.log(`Current turn player with index: ` + currentTurnIndex);
+    } catch (error) {
+      console.error('Error updating current turn in database:', error);
+    }
+  }
+
+  const updateGameOverInDatabase = async () => {
     setIsGameOver(true);
+    const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
+
+    try {
+      await update(roomRef, { isGameOver: true });
+      console.log(`Game over`);
+    } catch (error) {
+      console.error('Error ending game:', error);
+    }
+  };
+
+  const endSessionInDatabase = async () => {
+    const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
+
+    try {
+      await update(roomRef, { isSessionStarted: false, isGameOver: false });
+      console.log(`Session ended`);
+    } catch (error) {
+      console.error('Error ending session:', error);
+    }
+  };
+
+  const handleGameOver = () => {
+    checkGameWinner();
     updateUserData();
+    updateGameOverInDatabase();
+  }
+
+  useEffect(() => {
+    const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
+    const unsubscribe = onValue(roomRef, (snapshot) => {
+      const roomData = snapshot.val();
+      if (roomData.isSessionStarted === false) {
+        navigation.goBack();
+        return;
+      }
+      if (roomData) {
+        const turnData: number = roomData.currentTurn;
+        const gameOver: boolean = roomData.isGameOver;
+        const hostData: string = roomData.gameHost;
+        const playersData: Player = roomData.players;
+        const playersArray = Object.values(playersData);
+
+        setCurrentTurnIndex(turnData);
+        setGameHost(hostData);
+        setFetchedPlayers(playersArray);
+        setIsGameOver(gameOver);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  if (fetchedPlayers.length === 0) {
+    return <LoadingScreen />
   }
 
   return (
@@ -82,15 +142,14 @@ export default function ActiveGame({ route, navigation }: ActiveGameProps) {
       <View style={styles.gameBackground}>
         <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
         <Text style={styles.gameCode}>#{roomCode}</Text>
+        <Text style={styles.gameCode}>Current turn: {fetchedPlayers[currentTurnIndex].username}</Text>
         {isGameOver ? (
           <>
             <Text style={styles.gameText}>GAME OVER!</Text>
             <Text style={styles.gameText}>Score: {correctAnswerCount - wrongAnswerCount} </Text>
             <Text style={styles.gameText}>Drinks: {wrongAnswerCount} </Text>
-            <Button
-              onPress={() => navigation.goBack()}
-              style={styles.lobbyButton}
-              text="BACK TO LOBBY" />
+
+            {authUser?.uid === gameHost && <Button onPress={() => { navigation.goBack(); endSessionInDatabase(); }} style={styles.lobbyButton} text="BACK TO LOBBY" />}
           </>
         ) : (
           <>
@@ -98,7 +157,7 @@ export default function ActiveGame({ route, navigation }: ActiveGameProps) {
               <PlayerAroundTable stylesArray={stylesArray[index]} key={player.username} player={player} />
             )}
 
-            <CardStack onGameOver={handleGameOver} points={correctAnswerCount} drinks={wrongAnswerCount} setPoints={setCorrectAnswerCount} setDrinks={setWrongAnswerCount} />
+            <CardStack onGameOver={handleGameOver} points={correctAnswerCount} drinks={wrongAnswerCount} setPoints={setCorrectAnswerCount} setDrinks={setWrongAnswerCount} updateTurn={updateCurrentTurnInDatabase} isTurn={isCurrentPlayersTurn()} />
           </>
         )}
       </View>

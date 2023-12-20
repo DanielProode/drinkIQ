@@ -1,8 +1,9 @@
 import { Image } from 'expo-image';
 import React from 'react'
 import { StyleSheet, View, Text, Pressable, ViewStyle } from 'react-native';
-import { Player } from '../screens/Lobby';
+
 import { AVATAR_ICONS, DRINK_ICONS } from '../constants/general';
+import { Player } from '../screens/Lobby';
 
 interface PlayerAroundTableProps {
   player: Player;
