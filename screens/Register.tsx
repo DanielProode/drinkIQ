@@ -4,6 +4,8 @@ import { View, Text, TextInput, StyleSheet, Pressable, TouchableWithoutFeedback,
 
 import Button from '../components/Button';
 import { DEFAULT_PACK } from '../constants/general';
+import { ALMOSTWHITE, BACKGROUND_COLOR, LIGHTGREY, MEDIUMGREY, PRIMARY_COLOR, TRANSPARENTGREY, SECONDARY_COLOR } from '../constants/styles/colors';
+import { FONT_FAMILY_BOLD, FONT_FAMILY_REGULAR, LOGO_FONT_FAMILY_REGULAR, MEDIUM_LOGO_FONT_SIZE, REGULAR_FONT_SIZE, REGULAR_LOGO_FONT_SIZE } from '../constants/styles/typography';
 import { useAuth } from '../context/authContext';
 import { FIREBASE_DB } from '../firebaseConfig.js';
 import TermsAndConditions from '../modals/TermsAndConditions';
@@ -51,7 +53,7 @@ export default function Register() {
         <View style={styles.textInputContainer}>
           <TextInput
             style={styles.input}
-            placeholderTextColor='#ABABAB80'
+            placeholderTextColor={TRANSPARENTGREY}
             placeholder='Nickname'
             autoCapitalize='none'
             onChangeText={(text) => setNickname(text)}
@@ -59,7 +61,7 @@ export default function Register() {
           />
           <TextInput
             style={styles.input}
-            placeholderTextColor='#ABABAB80'
+            placeholderTextColor={TRANSPARENTGREY}
             placeholder='Email'
             autoCapitalize='none'
             onChangeText={(text) => setEmail(text)}
@@ -68,7 +70,7 @@ export default function Register() {
           <TextInput
             style={styles.input}
             placeholder='Password'
-            placeholderTextColor='#ABABAB80'
+            placeholderTextColor={TRANSPARENTGREY}
             autoCapitalize='none'
             textContentType="oneTimeCode" // Hacky solution to disable iOS password autofill
             onChangeText={(text) => setPassword(text)}
@@ -78,7 +80,7 @@ export default function Register() {
           />
           <TextInput
             style={styles.input}
-            placeholderTextColor='#ABABAB80'
+            placeholderTextColor={TRANSPARENTGREY}
             placeholder='Confirm Password'
             autoCapitalize='none'
             textContentType="oneTimeCode" // Hacky solution to disable iOS password autofill
@@ -109,17 +111,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: '#1E1E1E',
+    backgroundColor: BACKGROUND_COLOR,
   },
   drinkIQLogo: {
     marginTop: 100,
-    fontFamily: 'JetbrainsMono-Bold',
-    fontSize: 40,
-    color: 'white',
+    fontFamily: LOGO_FONT_FAMILY_REGULAR,
+    fontSize: MEDIUM_LOGO_FONT_SIZE,
+    color: SECONDARY_COLOR,
     letterSpacing: 3,
   },
   drinkIQOrange: {
-    color: '#F76D31',
+    color: PRIMARY_COLOR,
   },
   textInputContainer: {
     marginTop: 100,
@@ -127,22 +129,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 32,
+    fontSize: REGULAR_LOGO_FONT_SIZE,
     marginBottom: 20,
-    color: 'white',
-    fontFamily: 'Basic',
+    color: SECONDARY_COLOR,
+    fontFamily: FONT_FAMILY_REGULAR,
   },
   input: {
     width: '80%',
     height: 40,
     borderBottomWidth: 1,
-    borderColor: '#ccc',
+    borderColor: MEDIUMGREY,
     borderRadius: 5,
     padding: 10,
     marginBottom: 45,
-    fontFamily: 'JosefinSans-Bold',
-    fontSize: 18,
-    color: '#ABABAB',
+    fontFamily: FONT_FAMILY_BOLD,
+    fontSize: REGULAR_FONT_SIZE,
+    color: LIGHTGREY,
   },
   buttonContainer: {
     flex: 1,
@@ -157,8 +159,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   innerText: {
-    fontFamily: 'JosefinSans-Bold',
-    color: '#FFFFFF95',
+    fontFamily: FONT_FAMILY_BOLD,
+    color: ALMOSTWHITE,
   },
   outerText: {
     position: 'absolute',
@@ -166,7 +168,7 @@ const styles = StyleSheet.create({
     width: 300,
     textAlign: 'center',
     marginBottom: 20,
-    color: '#FFFFFF95',
-    fontFamily: 'JosefinSans-Regular',
+    color: ALMOSTWHITE,
+    fontFamily: FONT_FAMILY_REGULAR,
   },
 });

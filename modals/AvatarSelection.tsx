@@ -1,5 +1,4 @@
 import { Image } from 'expo-image';
-import { LinearGradient } from 'expo-linear-gradient';
 import { ref, update } from 'firebase/database';
 import { useState } from 'react';
 import { FlatList, Modal, StyleSheet, Text, View } from 'react-native';
@@ -7,6 +6,8 @@ import { FlatList, Modal, StyleSheet, Text, View } from 'react-native';
 import AvatarCircle from '../components/AvatarCircle';
 import Button from '../components/Button';
 import { AVATAR_ICONS, DRINK_ICONS } from '../constants/general';
+import { BACKGROUND_COLOR, GREY, SECONDARY_COLOR } from '../constants/styles/colors';
+import { FONT_FAMILY_BOLD, HEADER_FONT_SIZE } from '../constants/styles/typography';
 import { useAuth } from '../context/authContext';
 import { FIREBASE_RTDB } from '../firebaseConfig';
 import useGameStore from '../store/gameStore';
@@ -51,20 +52,6 @@ export default function AvatarSelection({ isVisible, onClose }: AvatarSelectionP
           renderItem={({item, index}) => <AvatarCircle selectedAvatarIndex={selectedAvatarIndex} setSelectedAvatarIndex={setSelectedAvatarIndex} selectedDrinkIndex={selectedDrinkIndex} setSelectedDrinkIndex={setSelectedDrinkIndex} avatarIcon={item} onPress={() => updateAvatar(index)} index={index} isAvatar/>}
           />
 
-          <LinearGradient
-            // Button Linear Gradient
-            colors={['transparent', '#1E1E1E80']}
-            style={styles.rightGradientColor}
-            start={[0, 0]}
-            end={[1, 0]}
-          />
-          <LinearGradient
-            // Button Linear Gradient
-            colors={['#1E1E1E80', 'transparent']}
-            style={styles.leftGradientColor}
-            start={[0, 0]}
-            end={[1, 0]}
-          />
         </View>
         <Text style={styles.selectDrinkText}>Drink of your choice?</Text>
         <View style={styles.bigCircle}>
@@ -81,20 +68,6 @@ export default function AvatarSelection({ isVisible, onClose }: AvatarSelectionP
           style={styles.avatarCircles}
           data={DRINK_ICONS}
           renderItem={({item, index}) => <AvatarCircle selectedAvatarIndex={selectedAvatarIndex} setSelectedAvatarIndex={setSelectedAvatarIndex} selectedDrinkIndex={selectedDrinkIndex} setSelectedDrinkIndex={setSelectedDrinkIndex} avatarIcon={item} onPress={() => updateDrink(index)} index={index} isAvatar={false}/>}
-          />
-          <LinearGradient
-            // Button Linear Gradient
-            colors={['transparent', '#1E1E1E80']}
-            style={styles.rightGradientColor}
-            start={[0, 0]}
-            end={[1, 0]}
-          />
-          <LinearGradient
-            // Button Linear Gradient
-            colors={['#1E1E1E80', 'transparent']}
-            style={styles.leftGradientColor}
-            start={[0, 0]}
-            end={[1, 0]}
           />
         </View>
         <View style={styles.buttonContainer}>
@@ -115,7 +88,7 @@ const styles = StyleSheet.create({
   joinGameView: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: '#1E1E1E',
+    backgroundColor: BACKGROUND_COLOR,
   },
   drinkContainer: {
     width: 50,
@@ -143,10 +116,10 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   selectDrinkText: {
-    color: 'white',
-    fontFamily: 'JosefinSans-Bold',
+    color: SECONDARY_COLOR,
+    fontFamily: FONT_FAMILY_BOLD,
     marginTop: 30,
-    fontSize: 20,
+    fontSize: HEADER_FONT_SIZE,
   },
   deckButtonContainer: {
     width: 100,
@@ -179,7 +152,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: '35.0%',
     aspectRatio: 1 / 1,
-    backgroundColor: '#d8d8d8',
+    backgroundColor: GREY,
     borderRadius: 200,
   },
   viewContainer: {

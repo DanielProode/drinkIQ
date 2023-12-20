@@ -8,6 +8,8 @@ import { Pressable, View, StyleSheet, Text } from 'react-native';
 import Card from './Card';
 import LoadingScreen from '../components/LoadingScreen';
 import { BASE_CARD_IMAGE, CARD_PACKS, DEFAULT_CARD_COUNT } from '../constants/general';
+import { SECONDARY_COLOR } from '../constants/styles/colors';
+import { FONT_FAMILY_MEDIUM } from '../constants/styles/typography';
 import { FIREBASE_DB, FIREBASE_RTDB } from '../firebaseConfig.js';
 import useGameStore from '../store/gameStore';
 
@@ -271,8 +273,8 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   gameDataText: {
-    color: 'white',
-    fontFamily: 'JosefinSans-Medium',
+    color: SECONDARY_COLOR,
+    fontFamily: FONT_FAMILY_MEDIUM,
     marginTop: 5,
   },
   avatar: {
@@ -290,17 +292,4 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     bottom: 0,
   },
-
-  text: {
-    color: 'white',
-    fontSize: 40,
-  },
-  gameText: {
-    flex: 1,
-    display: 'none',
-    marginTop: 5,
-    fontSize: 12,
-    color: 'white',
-    fontFamily: 'Basic',
-  }
 });

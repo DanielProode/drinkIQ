@@ -2,6 +2,9 @@ import { Image } from 'expo-image';
 import React from 'react'
 import { StyleSheet, View, Text, Pressable, ViewStyle } from 'react-native';
 
+import { SECONDARY_COLOR } from '../constants/styles/colors';
+import { FONT_FAMILY_MEDIUM, REGULAR_FONT_SIZE } from '../constants/styles/typography';
+
 import { AVATAR_ICONS, DRINK_ICONS } from '../constants/general';
 import { Player } from '../screens/Lobby';
 
@@ -27,38 +30,38 @@ export default function PlayerAroundTable({ stylesArray, player }: PlayerAroundT
 };
 
 const styles = StyleSheet.create({
-  avatar: {
-    flex: 1,
-    contentFit: 'contain',
-    width: '70%',
-    height: '70%',
-    alignSelf: 'center',
-  },
-  drink: {
-    flex: 1,
-    contentFit: 'contain',
-    width: '70%',
-    height: '70%',
-    alignSelf: 'center',
-  },
-  playerContainer: {
-    width: '42%',
-    aspectRatio: 1,
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  avatarCircle: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'white',
-    borderRadius: 50,
-  },
-  name: {
-    marginTop: 5,
-    fontSize: 14,
-    fontFamily: 'JosefinSans-Medium',
-    color: 'white',
-  },
+    avatar: {
+        flex: 1,
+        contentFit: 'contain',
+        width: '70%',
+        height: '70%',
+        alignSelf: 'center',
+    },
+    drink: {
+        flex: 1,
+        contentFit: 'contain',
+        width: '70%',
+        height: '70%',
+        alignSelf: 'center',
+    },
+    playerContainer: {
+        width: '42%',
+        aspectRatio: 1,
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
+    avatarCircle: {
+        width: '100%',
+        height: '100%',
+        backgroundColor: SECONDARY_COLOR,
+        borderRadius: 50,
+    },
+    name: {
+        marginTop: 5,
+        fontSize: REGULAR_FONT_SIZE,
+        fontFamily: FONT_FAMILY_MEDIUM,
+        color: SECONDARY_COLOR,
+    },
 
 });
 

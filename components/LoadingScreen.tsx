@@ -1,6 +1,9 @@
 import React from 'react'
 import { ActivityIndicator, StyleSheet, View, Text } from 'react-native';
 
+import { BACKGROUND_COLOR, SECONDARY_COLOR } from '../constants/styles/colors';
+import { HEADER_FONT_SIZE } from '../constants/styles/typography';
+
 export default function LoadingScreen() {
   return (
     <View style={[styles.container]}>
@@ -15,12 +18,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignContent: 'center',
-    backgroundColor: '#1E1E1E'
+    backgroundColor: BACKGROUND_COLOR
   },
   loadingText: {
     marginTop: 40,
-    fontSize: 20,
-    color: 'white',
+    fontSize: HEADER_FONT_SIZE,
+    color: SECONDARY_COLOR,
     justifyContent: 'center',
     alignContent: 'center',
     alignSelf: 'center',

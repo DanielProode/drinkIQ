@@ -1,5 +1,8 @@
 import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
+import { BACKGROUND_COLOR, SECONDARY_COLOR } from '../constants/styles/colors';
+import { FONT_FAMILY_REGULAR, HEADER_FONT_SIZE, REGULAR_LOGO_FONT_SIZE } from '../constants/styles/typography';
+
 interface TermsAndConditionsProps {
   isVisible: boolean;
   onClose: () => void;
@@ -30,7 +33,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#1E1E1E',
+    backgroundColor: BACKGROUND_COLOR,
   },
   termsContent: {
     width: '90%',
@@ -44,20 +47,20 @@ const styles = StyleSheet.create({
     right: 0,
   },
   closeButtonText: {
-    fontFamily: 'Basic',
-    color: 'white',
-    fontSize: 30,
+    fontFamily: FONT_FAMILY_REGULAR,
+    color: SECONDARY_COLOR,
+    fontSize: REGULAR_LOGO_FONT_SIZE,
   },
   termsTitle: {
-    color: 'white',
-    fontSize: 20,
-    fontFamily: 'Basic',
+    color: SECONDARY_COLOR,
+    fontSize: HEADER_FONT_SIZE,
+    fontFamily: FONT_FAMILY_REGULAR,
     textAlign: 'center',
     marginBottom: 30
   },
   termsParagraph: {
     marginTop: 10,
-    color: 'white',
+    color: SECONDARY_COLOR,
     textAlign: 'center',
   },
 });
