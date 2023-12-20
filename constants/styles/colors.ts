@@ -8,7 +8,7 @@ export const CORRECT = '#A0E595'
 export const WRONG = '#F07070'
 
 // GRAYSCALE
-export const ALMOSTSECONDARY_COLOR = '#FFFFFF95'
+export const ALMOSTWHITE = '#FFFFFF95'
 export const TRANSPARENTGREY = '#ABABAB80'
 export const LIGHTGREY = '#FFFFFF30'
 export const MEDIUMGREY = '#CCCCCC'

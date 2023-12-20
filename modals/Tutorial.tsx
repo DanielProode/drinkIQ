@@ -14,7 +14,7 @@ export default function Tutorial({ isVisible, onClose }: TutorialProps) {
   return (
     <Modal visible={isVisible} animationType='slide' presentationStyle='pageSheet'>
       <View style={styles.tutorialView}>
-      <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQPRIMARY_COLOR}>IQ</Text></Text>
+      <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
         <View style={styles.viewContainer}>
             <Text style={styles.tutorialTextHeader}>How to play?</Text>
             <Text style={styles.tutorialText}>Each player takes turns answering questions. When it's your turn, your icon will get an PRIMARY_COLOR border.</Text>
@@ -47,7 +47,7 @@ drinkIQLogo: {
     color: SECONDARY_COLOR,
     letterSpacing: 3,
     },
-drinkIQPRIMARY_COLOR: {
+drinkIQOrange: {
     fontFamily: LOGO_FONT_FAMILY_REGULAR,
     marginTop: 50,
     fontSize: REGULAR_LOGO_FONT_SIZE,

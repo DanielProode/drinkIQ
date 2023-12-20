@@ -138,7 +138,7 @@ export default function Lobby({ route, navigation }: LobbyProps) {
       <CardDeckSelection isVisible={isCardDeckSelectionModalVisible} onClose={toggleCardDeckSelectionModal} roomCode={roomCode} />
       <CardDeckInfo isVisible={isCardDeckInfoModalVisible} onClose={toggleCardDeckSelectionModal} pack={CARD_PACKS[playableDeckIndex]} />
 
-      <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQPRIMARY_COLOR}>IQ</Text></Text>
+      <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
       <Text style={styles.gameCode}>#{roomCode}</Text>
       <Pressable style={styles.deckImageContainer} onPress={toggleCardDeckSelectionModal}>
         <Image style={styles.deck} source={CARD_PACKS[playableDeckIndex].image} />
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
     color: SECONDARY_COLOR,
     letterSpacing: 3,
   },
-  drinkIQPRIMARY_COLOR: {
+  drinkIQOrange: {
     fontFamily: LOGO_FONT_FAMILY_REGULAR,
     marginTop: 50,
     fontSize: REGULAR_LOGO_FONT_SIZE,

@@ -90,7 +90,7 @@ export default function ActiveGame({ route, navigation }: ActiveGameProps) {
   return (
     <>
       <View style={styles.gameBackground}>
-        <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQPRIMARY_COLOR}>IQ</Text></Text>
+        <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
         <Text style={styles.gameCode}>#{gameCode}</Text>
         {isGameOver ? (
           <>
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     color: SECONDARY_COLOR,
     letterSpacing: 3,
   },
-  drinkIQPRIMARY_COLOR: {
+  drinkIQOrange: {
     fontFamily: LOGO_FONT_FAMILY_REGULAR,
     marginTop: 50,
     fontSize: REGULAR_LOGO_FONT_SIZE,

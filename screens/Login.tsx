@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableWithoutFeedback, Keyboard, Pressable } from 'react-native';
 
 import Button from '../components/Button';
-import { ALMOSTSECONDARY_COLOR, BACKGROUND_COLOR, LIGHTGREY, MEDIUMGREY, PRIMARY_COLOR, TRANSPARENTGREY, SECONDARY_COLOR } from '../constants/styles/colors';
+import { ALMOSTWHITE, BACKGROUND_COLOR, LIGHTGREY, MEDIUMGREY, PRIMARY_COLOR, TRANSPARENTGREY, SECONDARY_COLOR } from '../constants/styles/colors';
 import { BIG_LOGO_FONT_SIZE, FONT_FAMILY_BOLD, FONT_FAMILY_REGULAR, LOGO_FONT_FAMILY_REGULAR, REGULAR_FONT_SIZE } from '../constants/styles/typography';
 import { useAuth } from '../context/authContext';
 import TermsAndConditions from '../modals/TermsAndConditions';
@@ -39,7 +39,7 @@ export default function Login({ navigation }: LoginProps) {
         <TermsAndConditions isVisible={isModalVisible} onClose={toggleModal} />
         <Image style={styles.cheersIcon}
           source={require('../assets/images/cheers_icon.png')} />
-        <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQPRIMARY_COLOR}>IQ</Text></Text>
+        <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
         <View style={styles.textInputContainer}>
           <TextInput
             style={styles.input}
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     color: SECONDARY_COLOR,
     letterSpacing: 3,
   },
-  drinkIQPRIMARY_COLOR: {
+  drinkIQOrange: {
     color: PRIMARY_COLOR,
   },
   cheersIcon: {
@@ -138,11 +138,11 @@ const styles = StyleSheet.create({
     width: 300,
     textAlign: 'center',
     marginBottom: 20,
-    color: ALMOSTSECONDARY_COLOR,
+    color: ALMOSTWHITE,
     fontFamily: FONT_FAMILY_REGULAR,
   },
   signUpText: {
-    color: ALMOSTSECONDARY_COLOR,
+    color: ALMOSTWHITE,
     fontFamily: FONT_FAMILY_REGULAR,
   },
   innerText: {

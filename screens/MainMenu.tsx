@@ -25,7 +25,7 @@ export default function MainMenu({ navigation }: MainMenuProps) {
     <View style={styles.mainView}>
       <Tutorial onClose={toggleTutorialModal} isVisible={isTutorialModalVisible} />
       <Image style={styles.cheersIcon} source={DRINKIQ_LOGO_IMAGE} />
-      <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQPRIMARY_COLOR}>IQ</Text></Text>
+      <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
       <View style={styles.bodyContainer}>
         <View >
           <Button onPress={() => {
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     color: SECONDARY_COLOR,
     letterSpacing: 3,
   },
-  drinkIQPRIMARY_COLOR: {
+  drinkIQOrange: {
     color: PRIMARY_COLOR,
   },
   logoContainer: {

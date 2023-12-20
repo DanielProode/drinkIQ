@@ -152,7 +152,7 @@ export default function NewGame({ navigation }: NewGameProps) {
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} >
       <View style={styles.newGameView}>
-        <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQPRIMARY_COLOR}>IQ</Text></Text>
+        <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
         <View style={styles.gameCodeContainer}>
           <Text style={styles.hashtag}>#</Text>
           <TextInput
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
     color: SECONDARY_COLOR,
     letterSpacing: 3,
   },
-  drinkIQPRIMARY_COLOR: {
+  drinkIQOrange: {
     color: PRIMARY_COLOR,
   },
   buttonContainer: {

@@ -25,7 +25,7 @@ export default function Settings({ navigation }: SettingsProps ) {
 
   return (
     <View style={styles.settingsView}>
-      <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQPRIMARY_COLOR}>IQ</Text></Text>
+      <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
       <View style={styles.buttonContainer}>
         <Button marginTop={20} text="Clear cache [TESTING]" onPress={() => AsyncStorage.clear()} />
         <Button marginTop={20} text="Log out" onPress={handleLogout}  />
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flex: 1,
     },
-  drinkIQPRIMARY_COLOR: {
+  drinkIQOrange: {
     color: PRIMARY_COLOR,
     },
 });

@@ -17,7 +17,7 @@ export default function Profile({ navigation }: ProfileProps) {
 
   return (
     <View style={styles.profileView}>
-      <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQPRIMARY_COLOR}>IQ</Text></Text>
+      <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
       <Text style={styles.profileNameText}>Nickname: {username}</Text>
       <View style={styles.profileData}>
         <View style={styles.row}>
@@ -26,13 +26,13 @@ export default function Profile({ navigation }: ProfileProps) {
             <Text style={styles.descriptionText}>Games Won</Text>
           </View>
           <View style={styles.rowElement}>
-            <Text style={styles.numberTextPRIMARY_COLOR}>0</Text>
+            <Text style={styles.numberTextOrange}>0</Text>
             <Text style={styles.descriptionText}>Games Played</Text>
           </View>
         </View>
         <View style={styles.row}>
           <View style={styles.rowElement}>
-            <Text style={styles.numberTextPRIMARY_COLOR}>{total_drinks}</Text>
+            <Text style={styles.numberTextOrange}>{total_drinks}</Text>
             <Text style={styles.descriptionText}>Drinks taken</Text>
           </View>
           <View style={styles.rowElement}>
@@ -46,7 +46,7 @@ export default function Profile({ navigation }: ProfileProps) {
             <Text style={styles.descriptionText}>Friends</Text>
           </View>
           <View style={styles.rowElement}>
-            <Text style={styles.numberTextPRIMARY_COLOR}>{packs_owned.length}</Text>
+            <Text style={styles.numberTextOrange}>{packs_owned.length}</Text>
             <Text style={styles.descriptionText}>Packs owned</Text>
           </View>
         </View>
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     marginLeft: 30,
     letterSpacing: 3,
   },
-  drinkIQPRIMARY_COLOR: {
+  drinkIQOrange: {
     color: PRIMARY_COLOR,
   },
   profileNameText: {
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     width: 200,
   },
-  numberTextPRIMARY_COLOR: {
+  numberTextOrange: {
     color: PRIMARY_COLOR,
     fontSize: BIG_LOGO_FONT_SIZE,
     fontFamily: FONT_FAMILY_BOLD,
