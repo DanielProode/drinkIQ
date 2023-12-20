@@ -2,7 +2,7 @@ import { Image } from 'expo-image';
 import React from 'react'
 import { StyleSheet, View, Text, Pressable, ImageSourcePropType, ViewStyle } from 'react-native';
 
-import { WHITE } from '../constants/styles/colors';
+import { SECONDARY_COLOR } from '../constants/styles/colors';
 import { FONT_FAMILY_MEDIUM, REGULAR_FONT_SIZE } from '../constants/styles/typography';
 
 interface PlayerAroundTableProps {
@@ -60,14 +60,14 @@ const styles = StyleSheet.create({
     avatarCircle: {
         width: '100%',
         height: '100%',
-        backgroundColor: WHITE,
+        backgroundColor: SECONDARY_COLOR,
         borderRadius: 50,
     },
     name: {
         marginTop: 5,
         fontSize: REGULAR_FONT_SIZE,
         fontFamily: FONT_FAMILY_MEDIUM,
-        color: WHITE,
+        color: SECONDARY_COLOR,
     },
 
 });

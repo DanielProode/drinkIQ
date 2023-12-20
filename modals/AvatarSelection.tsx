@@ -6,7 +6,7 @@ import { FlatList, Modal, StyleSheet, Text, View } from 'react-native';
 import AvatarCircle from '../components/AvatarCircle';
 import Button from '../components/Button';
 import { AVATAR_ICONS, DRINK_ICONS } from '../constants/general';
-import { BACKGROUND_COLOR, GREY, WHITE } from '../constants/styles/colors';
+import { BACKGROUND_COLOR, GREY, SECONDARY_COLOR } from '../constants/styles/colors';
 import { FONT_FAMILY_BOLD, HEADER_FONT_SIZE } from '../constants/styles/typography';
 import { useAuth } from '../context/authContext';
 import { FIREBASE_RTDB } from '../firebaseConfig';
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   selectDrinkText: {
-    color: WHITE,
+    color: SECONDARY_COLOR,
     fontFamily: FONT_FAMILY_BOLD,
     marginTop: 30,
     fontSize: HEADER_FONT_SIZE,

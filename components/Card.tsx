@@ -5,7 +5,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import Answer from './Answer';
 import { BASE_CARD_IMAGE, CARD_PACKS, DEFAULT_CARD_COUNT } from '../constants/general';
-import { ALMOSTBLACK, GREY, LIGHTBLACK, CORRECT, WRONG, WHITE } from '../constants/styles/colors';
+import { ALMOSTBLACK, GREY, LIGHTBLACK, CORRECT, WRONG, SECONDARY_COLOR } from '../constants/styles/colors';
 import { FONT_FAMILY_MEDIUM, FONT_FAMILY_REGULAR, HEADER_FONT_SIZE, MEDIUM_LOGO_FONT_SIZE, REGULAR_FONT_SIZE, TITLE_FONT_SIZE } from '../constants/styles/typography';
 import useGameStore from '../store/gameStore';
 
@@ -137,10 +137,10 @@ const styles = StyleSheet.create({
     marginTop: 80,
     width: 280,
     height: 140,
-    backgroundColor: WHITE,
+    backgroundColor: SECONDARY_COLOR,
     borderRadius: 10,
     borderWidth: 5,
-    borderColor: WHITE,
+    borderColor: SECONDARY_COLOR,
     alignSelf: 'center',
     justifyContent: 'center',
   },
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   nextButton: {
-    backgroundColor: WHITE,
+    backgroundColor: SECONDARY_COLOR,
     borderColor: GREY,
     flex: 1,
     borderWidth: 1,
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
     height: 100,
     alignSelf: 'center',
     borderRadius: 80,
-    borderColor: WHITE,
+    borderColor: SECONDARY_COLOR,
     borderWidth: 2,
     justifyContent: 'flex-start',
   },

@@ -3,7 +3,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { StyleSheet, View, Text } from 'react-native';
 
 import Button from '../components/Button';
-import { BACKGROUND_COLOR, ORANGE, WHITE } from '../constants/styles/colors';
+import { BACKGROUND_COLOR, PRIMARY_COLOR, SECONDARY_COLOR } from '../constants/styles/colors';
 import { LOGO_FONT_FAMILY_REGULAR, REGULAR_LOGO_FONT_SIZE } from '../constants/styles/typography';
 import { useAuth } from '../context/authContext';
 
@@ -25,7 +25,7 @@ export default function Settings({ navigation }: SettingsProps ) {
 
   return (
     <View style={styles.settingsView}>
-      <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
+      <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQPRIMARY_COLOR}>IQ</Text></Text>
       <View style={styles.buttonContainer}>
         <Button marginTop={20} text="Clear cache [TESTING]" onPress={() => AsyncStorage.clear()} />
         <Button marginTop={20} text="Log out" onPress={handleLogout}  />
@@ -47,14 +47,14 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     marginLeft: 30,
     fontSize: REGULAR_LOGO_FONT_SIZE,
-    color: WHITE,
+    color: SECONDARY_COLOR,
     letterSpacing: 3,
     },
   buttonContainer: {
     justifyContent: 'center',
     flex: 1,
     },
-  drinkIQOrange: {
-    color: ORANGE,
+  drinkIQPRIMARY_COLOR: {
+    color: PRIMARY_COLOR,
     },
 });

@@ -1,6 +1,6 @@
 //MAIN COLORS
-export const ORANGE = '#F76D31'
-export const WHITE = '#F2F2F2'
+export const PRIMARY_COLOR = '#F76D31'
+export const SECONDARY_COLOR = '#F2F2F2'
 export const BACKGROUND_COLOR = '#1E1E1E';
 
 // ACTIONS
@@ -8,7 +8,7 @@ export const CORRECT = '#A0E595'
 export const WRONG = '#F07070'
 
 // GRAYSCALE
-export const ALMOSTWHITE = '#FFFFFF95'
+export const ALMOSTSECONDARY_COLOR = '#FFFFFF95'
 export const TRANSPARENTGREY = '#ABABAB80'
 export const LIGHTGREY = '#FFFFFF30'
 export const MEDIUMGREY = '#CCCCCC'

@@ -1,7 +1,7 @@
 import { Modal, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
-import { BACKGROUND_COLOR, ORANGE, WHITE } from '../constants/styles/colors';
+import { BACKGROUND_COLOR, PRIMARY_COLOR, SECONDARY_COLOR } from '../constants/styles/colors';
 import { FONT_FAMILY_BOLD, FONT_FAMILY_REGULAR, HEADER_FONT_SIZE, LOGO_FONT_FAMILY_REGULAR, REGULAR_LOGO_FONT_SIZE } from '../constants/styles/typography';
 
 
@@ -14,10 +14,10 @@ export default function Tutorial({ isVisible, onClose }: TutorialProps) {
   return (
     <Modal visible={isVisible} animationType='slide' presentationStyle='pageSheet'>
       <View style={styles.tutorialView}>
-      <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
+      <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQPRIMARY_COLOR}>IQ</Text></Text>
         <View style={styles.viewContainer}>
             <Text style={styles.tutorialTextHeader}>How to play?</Text>
-            <Text style={styles.tutorialText}>Each player takes turns answering questions. When it's your turn, your icon will get an orange border.</Text>
+            <Text style={styles.tutorialText}>Each player takes turns answering questions. When it's your turn, your icon will get an PRIMARY_COLOR border.</Text>
             <Text style={styles.tutorialText}>Correct answer grants you the privilege to choose who drinks.</Text>
             <Text style={styles.tutorialText}>Incorrect answers mean you have to take a drink!</Text>
             <Text style={styles.tutorialTextFooter}>Play responsibly!</Text>
@@ -44,14 +44,14 @@ drinkIQLogo: {
     alignSelf: 'flex-start',
     marginLeft: 20,
     fontSize: REGULAR_LOGO_FONT_SIZE,
-    color: WHITE,
+    color: SECONDARY_COLOR,
     letterSpacing: 3,
     },
-drinkIQOrange: {
+drinkIQPRIMARY_COLOR: {
     fontFamily: LOGO_FONT_FAMILY_REGULAR,
     marginTop: 50,
     fontSize: REGULAR_LOGO_FONT_SIZE,
-    color: ORANGE,
+    color: PRIMARY_COLOR,
     },
 tutorialView: {
     flex: 1,
@@ -83,14 +83,14 @@ tutorialView: {
     alignSelf: 'flex-start',
     marginLeft: 20,
     marginTop: 20,
-    color: WHITE,
+    color: SECONDARY_COLOR,
     fontFamily: FONT_FAMILY_REGULAR,
   },
   tutorialTextHeader: {
     fontSize: HEADER_FONT_SIZE,
     alignSelf: 'flex-start',
     marginLeft: 20,
-    color: WHITE,
+    color: SECONDARY_COLOR,
     fontFamily: FONT_FAMILY_BOLD,
   },
   tutorialTextFooter: {
@@ -98,7 +98,7 @@ tutorialView: {
     alignSelf: 'flex-start',
     marginLeft: 20,
     marginTop: 50,
-    color: WHITE,
+    color: SECONDARY_COLOR,
     fontFamily: FONT_FAMILY_BOLD,
   },
 });

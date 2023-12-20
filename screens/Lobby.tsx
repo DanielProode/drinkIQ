@@ -8,7 +8,7 @@ import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 import Button from '../components/Button';
 import PlayerInLobby from '../components/PlayerInLobby';
 import { CARD_PACKS } from '../constants/general';
-import { BACKGROUND_COLOR, ORANGE, WHITE } from '../constants/styles/colors';
+import { BACKGROUND_COLOR, PRIMARY_COLOR, SECONDARY_COLOR } from '../constants/styles/colors';
 import { FONT_FAMILY_BOLD, FONT_FAMILY_REGULAR, HEADER_FONT_SIZE, LOGO_FONT_FAMILY_REGULAR, REGULAR_FONT_SIZE, REGULAR_LOGO_FONT_SIZE } from '../constants/styles/typography';
 import { useAuth } from '../context/authContext';
 import { FIREBASE_RTDB } from '../firebaseConfig';
@@ -138,7 +138,7 @@ export default function Lobby({ route, navigation }: LobbyProps) {
       <CardDeckSelection isVisible={isCardDeckSelectionModalVisible} onClose={toggleCardDeckSelectionModal} roomCode={roomCode} />
       <CardDeckInfo isVisible={isCardDeckInfoModalVisible} onClose={toggleCardDeckSelectionModal} pack={CARD_PACKS[playableDeckIndex]} />
 
-      <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
+      <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQPRIMARY_COLOR}>IQ</Text></Text>
       <Text style={styles.gameCode}>#{roomCode}</Text>
       <Pressable style={styles.deckImageContainer} onPress={toggleCardDeckSelectionModal}>
         <Image style={styles.deck} source={CARD_PACKS[playableDeckIndex].image} />
@@ -177,14 +177,14 @@ const styles = StyleSheet.create({
     fontFamily: LOGO_FONT_FAMILY_REGULAR,
     marginTop: 50,
     fontSize: REGULAR_LOGO_FONT_SIZE,
-    color: WHITE,
+    color: SECONDARY_COLOR,
     letterSpacing: 3,
   },
-  drinkIQOrange: {
+  drinkIQPRIMARY_COLOR: {
     fontFamily: LOGO_FONT_FAMILY_REGULAR,
     marginTop: 50,
     fontSize: REGULAR_LOGO_FONT_SIZE,
-    color: ORANGE,
+    color: PRIMARY_COLOR,
   },
   deckImageContainer: {
     width: 100,
@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
   deckName: {
     marginTop: 8,
     fontSize: REGULAR_FONT_SIZE,
-    color: WHITE,
+    color: SECONDARY_COLOR,
     fontFamily: FONT_FAMILY_BOLD,
   },
   joinedPlayers: {
@@ -217,14 +217,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   waitingText: {
-    color: WHITE,
+    color: SECONDARY_COLOR,
     fontFamily: FONT_FAMILY_BOLD,
     marginTop: 20,
     fontSize: HEADER_FONT_SIZE,
   },
   gameCode: {
     fontSize: HEADER_FONT_SIZE,
-    color: WHITE,
+    color: SECONDARY_COLOR,
     fontFamily: FONT_FAMILY_REGULAR,
   },
 });

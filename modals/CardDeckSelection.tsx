@@ -6,7 +6,7 @@ import { Modal, StyleSheet, Text, View } from 'react-native';
 import Button from '../components/Button';
 import CardDeckSquare from '../components/CardDeckSquare';
 import { CARD_PACKS } from '../constants/general';
-import { BACKGROUND_COLOR, WHITE } from '../constants/styles/colors';
+import { BACKGROUND_COLOR, SECONDARY_COLOR } from '../constants/styles/colors';
 import { FONT_FAMILY_BOLD, REGULAR_FONT_SIZE } from '../constants/styles/typography';
 import { FIREBASE_RTDB } from '../firebaseConfig';
 import useGameStore from '../store/gameStore';
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   selectedCardDeckName: {
-    color: WHITE,
+    color: SECONDARY_COLOR,
     fontFamily: FONT_FAMILY_BOLD,
     fontSize: REGULAR_FONT_SIZE,
     marginTop: 10,

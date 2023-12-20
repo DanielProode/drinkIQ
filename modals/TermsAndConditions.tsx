@@ -1,6 +1,6 @@
 import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import { BACKGROUND_COLOR, WHITE } from '../constants/styles/colors';
+import { BACKGROUND_COLOR, SECONDARY_COLOR } from '../constants/styles/colors';
 import { FONT_FAMILY_REGULAR, HEADER_FONT_SIZE, REGULAR_LOGO_FONT_SIZE } from '../constants/styles/typography';
 
 interface TermsAndConditionsProps {
@@ -48,11 +48,11 @@ const styles = StyleSheet.create({
   },
   closeButtonText: {
     fontFamily: FONT_FAMILY_REGULAR,
-    color: WHITE,
+    color: SECONDARY_COLOR,
     fontSize: REGULAR_LOGO_FONT_SIZE,
   },
   termsTitle: {
-    color: WHITE,
+    color: SECONDARY_COLOR,
     fontSize: HEADER_FONT_SIZE,
     fontFamily: FONT_FAMILY_REGULAR,
     textAlign: 'center',
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   },
   termsParagraph: {
     marginTop: 10,
-    color: WHITE,
+    color: SECONDARY_COLOR,
     textAlign: 'center',
   },
 });

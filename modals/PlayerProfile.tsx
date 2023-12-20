@@ -3,7 +3,7 @@ import { Modal, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
 import { AVATAR_ICONS, DRINK_ICONS } from '../constants/general';
-import { BACKGROUND_COLOR, GREY, WHITE } from '../constants/styles/colors';
+import { BACKGROUND_COLOR, GREY, SECONDARY_COLOR } from '../constants/styles/colors';
 import { FONT_FAMILY_REGULAR, HEADER_FONT_SIZE } from '../constants/styles/typography';
 
 interface Player {
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
     width: '48%',
     aspectRatio: 1 / 1,
-    backgroundColor: WHITE,
+    backgroundColor: SECONDARY_COLOR,
     borderRadius: 80,
   },
   profileBackground: {
@@ -124,18 +124,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   selectAvatarText: {
-    color: WHITE,
+    color: SECONDARY_COLOR,
     fontFamily: FONT_FAMILY_REGULAR,
     fontSize: HEADER_FONT_SIZE,
   },
   selectDrinkText: {
-    color: WHITE,
+    color: SECONDARY_COLOR,
     fontFamily: FONT_FAMILY_REGULAR,
     marginTop: 10,
     fontSize: HEADER_FONT_SIZE,
   },
   baseText: {
-    color: WHITE,
+    color: SECONDARY_COLOR,
     fontFamily: FONT_FAMILY_REGULAR,
     marginTop: 10,
     fontSize: HEADER_FONT_SIZE,

@@ -5,7 +5,7 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
 import { DRINKIQ_LOGO_IMAGE } from '../constants/general';
-import { BACKGROUND_COLOR, ORANGE, WHITE } from '../constants/styles/colors';
+import { BACKGROUND_COLOR, PRIMARY_COLOR, SECONDARY_COLOR } from '../constants/styles/colors';
 import { BIG_LOGO_FONT_SIZE, FONT_FAMILY_REGULAR, LOGO_FONT_FAMILY_REGULAR, REGULAR_LOGO_FONT_SIZE } from '../constants/styles/typography';
 import Tutorial from '../modals/Tutorial';
 
@@ -25,7 +25,7 @@ export default function MainMenu({ navigation }: MainMenuProps) {
     <View style={styles.mainView}>
       <Tutorial onClose={toggleTutorialModal} isVisible={isTutorialModalVisible} />
       <Image style={styles.cheersIcon} source={DRINKIQ_LOGO_IMAGE} />
-      <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
+      <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQPRIMARY_COLOR}>IQ</Text></Text>
       <View style={styles.bodyContainer}>
         <View >
           <Button onPress={() => {
@@ -77,11 +77,11 @@ const styles = StyleSheet.create({
     fontFamily: LOGO_FONT_FAMILY_REGULAR,
     marginTop: 150,
     fontSize: BIG_LOGO_FONT_SIZE,
-    color: WHITE,
+    color: SECONDARY_COLOR,
     letterSpacing: 3,
   },
-  drinkIQOrange: {
-    color: ORANGE,
+  drinkIQPRIMARY_COLOR: {
+    color: PRIMARY_COLOR,
   },
   logoContainer: {
     alignItems: 'center',
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     fontSize: REGULAR_LOGO_FONT_SIZE,
     textAlign: 'center',
     fontFamily: FONT_FAMILY_REGULAR,
-    color: WHITE,
+    color: SECONDARY_COLOR,
   },
   bodyContainer: {
     flex: 4,

@@ -8,7 +8,7 @@ import Button from '../components/Button';
 import CardStack from '../components/CardStack';
 import PlayerAroundTable from '../components/PlayerAroundTable';
 import { DEFAULT_AVATAR_IMAGE, DEFAULT_DRINK_IMAGE } from '../constants/general';
-import { BACKGROUND_COLOR, ORANGE, WHITE } from '../constants/styles/colors';
+import { BACKGROUND_COLOR, PRIMARY_COLOR, SECONDARY_COLOR } from '../constants/styles/colors';
 import { FONT_FAMILY_REGULAR, HEADER_FONT_SIZE, LOGO_FONT_FAMILY_REGULAR, REGULAR_LOGO_FONT_SIZE } from '../constants/styles/typography';
 import { useAuth } from '../context/authContext';
 import { FIREBASE_DB } from '../firebaseConfig.js';
@@ -90,7 +90,7 @@ export default function ActiveGame({ route, navigation }: ActiveGameProps) {
   return (
     <>
       <View style={styles.gameBackground}>
-        <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
+        <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQPRIMARY_COLOR}>IQ</Text></Text>
         <Text style={styles.gameCode}>#{gameCode}</Text>
         {isGameOver ? (
           <>
@@ -126,27 +126,27 @@ const styles = StyleSheet.create({
     fontFamily: LOGO_FONT_FAMILY_REGULAR,
     marginTop: 50,
     fontSize: REGULAR_LOGO_FONT_SIZE,
-    color: WHITE,
+    color: SECONDARY_COLOR,
     letterSpacing: 3,
   },
-  drinkIQOrange: {
+  drinkIQPRIMARY_COLOR: {
     fontFamily: LOGO_FONT_FAMILY_REGULAR,
     marginTop: 50,
     fontSize: REGULAR_LOGO_FONT_SIZE,
-    color: ORANGE,
+    color: PRIMARY_COLOR,
   },
   gameText: {
     fontFamily: LOGO_FONT_FAMILY_REGULAR,
     fontSize: REGULAR_LOGO_FONT_SIZE,
     marginTop: 100,
-    color: WHITE,
+    color: SECONDARY_COLOR,
   },
   lobbyButton: {
     marginTop: 80,
   },
   gameCode: {
     fontSize: HEADER_FONT_SIZE,
-    color: WHITE,
+    color: SECONDARY_COLOR,
     fontFamily: FONT_FAMILY_REGULAR,
   },
   seventhAvatar: {

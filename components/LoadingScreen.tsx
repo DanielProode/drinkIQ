@@ -1,7 +1,7 @@
 import React from 'react'
 import { ActivityIndicator, StyleSheet, View, Text } from 'react-native';
 
-import { BACKGROUND_COLOR, WHITE } from '../constants/styles/colors';
+import { BACKGROUND_COLOR, SECONDARY_COLOR } from '../constants/styles/colors';
 import { HEADER_FONT_SIZE } from '../constants/styles/typography';
 
 export default function LoadingScreen() {
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 40,
     fontSize: HEADER_FONT_SIZE,
-    color: WHITE,
+    color: SECONDARY_COLOR,
     justifyContent: 'center',
     alignContent: 'center',
     alignSelf: 'center',

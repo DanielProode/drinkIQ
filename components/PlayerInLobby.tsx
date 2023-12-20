@@ -3,7 +3,7 @@ import React from 'react'
 import { StyleSheet, View, Text, Pressable } from 'react-native';
 
 import { AVATAR_ICONS, DRINK_ICONS } from '../constants/general';
-import { LIGHTBLACK, ORANGE, WHITE } from '../constants/styles/colors';
+import { LIGHTBLACK, PRIMARY_COLOR, SECONDARY_COLOR } from '../constants/styles/colors';
 import { FONT_FAMILY_MEDIUM, REGULAR_FONT_SIZE } from '../constants/styles/typography';
 
 interface PlayerInLobbyProps {
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   avatarCircle: {
     width: '48%',
     aspectRatio: 1 / 1,
-    backgroundColor: WHITE,
+    backgroundColor: SECONDARY_COLOR,
     borderWidth: 2,
     borderColor: LIGHTBLACK,
     borderRadius: 40,
@@ -65,9 +65,9 @@ const styles = StyleSheet.create({
   currentAvatarCircle: {
     width: '48%',
     aspectRatio: 1 / 1,
-    backgroundColor: WHITE,
+    backgroundColor: SECONDARY_COLOR,
     borderWidth: 2,
-    borderColor: ORANGE,
+    borderColor: PRIMARY_COLOR,
     borderRadius: 40,
   },
   drink: {
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: REGULAR_FONT_SIZE,
     fontFamily: FONT_FAMILY_MEDIUM,
-    color: WHITE,
+    color: SECONDARY_COLOR,
   },
 });
 

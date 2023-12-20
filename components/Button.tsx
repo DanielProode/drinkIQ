@@ -1,6 +1,6 @@
 import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { WHITE, BLACK, LIGHTGREY } from '../constants/styles/colors';
+import { SECONDARY_COLOR, BLACK, LIGHTGREY } from '../constants/styles/colors';
 import { FONT_FAMILY_BOLD, REGULAR_FONT_SIZE } from '../constants/styles/typography';
 
 
@@ -10,7 +10,7 @@ let buttonWidth = 1.3;
 
 let buttonColor = BLACK;
 
-let buttonBrdrColor = WHITE;
+let buttonBrdrColor = SECONDARY_COLOR;
 
 export default function Button({ text, onPress, disabled, marginTop, buttonWidthNumber, buttonBgColor, buttonBorderColor }: any) {
 
@@ -26,7 +26,7 @@ export default function Button({ text, onPress, disabled, marginTop, buttonWidth
   if (buttonBorderColor != null) {
     buttonBrdrColor = buttonBorderColor;
   } else {
-    buttonBrdrColor = WHITE;
+    buttonBrdrColor = SECONDARY_COLOR;
   }
   
 
@@ -48,7 +48,7 @@ export default function Button({ text, onPress, disabled, marginTop, buttonWidth
 
 const styles = StyleSheet.create({
   btnContainer: {
-    borderColor: WHITE,
+    borderColor: SECONDARY_COLOR,
     paddingVertical: 8,
     borderRadius: 15,
     borderWidth: 2,
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   btnText: {
-    color: WHITE,
+    color: SECONDARY_COLOR,
     fontSize: REGULAR_FONT_SIZE,
     textTransform: 'uppercase',
     textAlign: 'center',

@@ -5,7 +5,7 @@ import { Keyboard, StyleSheet, Text, TextInput, View, TouchableWithoutFeedback }
 
 import Button from '../components/Button';
 import { GAME_CODE_MAX, GAME_CODE_MIN } from '../constants/general';
-import { BACKGROUND_COLOR, ORANGE, WHITE } from '../constants/styles/colors';
+import { BACKGROUND_COLOR, PRIMARY_COLOR, SECONDARY_COLOR } from '../constants/styles/colors';
 import { FONT_FAMILY_BOLD, LOGO_FONT_FAMILY_REGULAR, MEDIUM_LOGO_FONT_SIZE, REGULAR_FONT_SIZE, REGULAR_LOGO_FONT_SIZE, TITLE_FONT_SIZE } from '../constants/styles/typography';
 import { useAuth } from '../context/authContext';
 import { FIREBASE_RTDB } from '../firebaseConfig.js';
@@ -152,7 +152,7 @@ export default function NewGame({ navigation }: NewGameProps) {
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} >
       <View style={styles.newGameView}>
-        <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
+        <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQPRIMARY_COLOR}>IQ</Text></Text>
         <View style={styles.gameCodeContainer}>
           <Text style={styles.hashtag}>#</Text>
           <TextInput
@@ -200,11 +200,11 @@ const styles = StyleSheet.create({
     fontFamily: LOGO_FONT_FAMILY_REGULAR,
     marginTop: 50,
     fontSize: REGULAR_LOGO_FONT_SIZE,
-    color: WHITE,
+    color: SECONDARY_COLOR,
     letterSpacing: 3,
   },
-  drinkIQOrange: {
-    color: ORANGE,
+  drinkIQPRIMARY_COLOR: {
+    color: PRIMARY_COLOR,
   },
   buttonContainer: {
     marginTop: 30,
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: FONT_FAMILY_BOLD,
     fontSize: TITLE_FONT_SIZE,
-    color: WHITE,
+    color: SECONDARY_COLOR,
   },
   hostGameButton: {
     alignItems: 'center',
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
   },
   hostGameText: {
     fontFamily: FONT_FAMILY_BOLD,
-    color: WHITE,
+    color: SECONDARY_COLOR,
     fontSize: REGULAR_FONT_SIZE,
     marginTop: 130,
   },

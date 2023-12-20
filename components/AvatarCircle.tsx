@@ -1,7 +1,7 @@
 import { Image } from 'expo-image';
 import { ImageSourcePropType, Pressable, StyleSheet } from 'react-native';
 
-import { GREY, ORANGE, WHITE } from '../constants/styles/colors';
+import { GREY, PRIMARY_COLOR, SECONDARY_COLOR } from '../constants/styles/colors';
 import { FONT_FAMILY_BOLD, HEADER_FONT_SIZE } from '../constants/styles/typography';
 
 type AvatarCircleProps = {
@@ -49,7 +49,7 @@ avatarCircleSelected: {
     borderRadius: 40,
     marginRight: 10,
     borderWidth: 3,
-    borderColor: ORANGE,
+    borderColor: PRIMARY_COLOR,
     },
 avatar: {
     flex: 1,
@@ -59,7 +59,7 @@ avatar: {
     alignSelf: 'center',
     },
 selectAvatarText: {
-    color: WHITE,
+    color: SECONDARY_COLOR,
     fontFamily: FONT_FAMILY_BOLD,
     fontSize: HEADER_FONT_SIZE,
   },

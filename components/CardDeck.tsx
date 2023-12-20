@@ -2,7 +2,7 @@ import { Image } from 'expo-image';
 import { useState } from "react";
 import { Pressable, View, Text, StyleSheet, ImageProps } from "react-native";
 
-import { ALMOSTBLACK, WHITE } from '../constants/styles/colors';
+import { ALMOSTBLACK, SECONDARY_COLOR } from '../constants/styles/colors';
 import { FONT_FAMILY_REGULAR, REGULAR_LOGO_FONT_SIZE, TITLE_FONT_SIZE } from '../constants/styles/typography';
 import CardDeckInfo from "../modals/CardDeckInfo";
 import useUserStore from "../store/userStore";
@@ -40,7 +40,7 @@ export default function CardDeck({ pack }: CardDeckProps) {
 const styles = StyleSheet.create({
   deckTitle: {
     fontFamily: FONT_FAMILY_REGULAR,
-    color: WHITE,
+    color: SECONDARY_COLOR,
     fontSize: TITLE_FONT_SIZE,
     alignSelf: 'center',
   },
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
   lockedText: {
     fontFamily: FONT_FAMILY_REGULAR,
     position: 'absolute',
-    color: WHITE,
+    color: SECONDARY_COLOR,
     fontSize: REGULAR_LOGO_FONT_SIZE,
     marginTop: 50,
     zIndex: 1,

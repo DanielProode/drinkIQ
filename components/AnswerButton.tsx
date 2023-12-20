@@ -1,6 +1,6 @@
 import { Dimensions, Pressable, StyleSheet, Text } from 'react-native';
 
-import { BACKGROUND_COLOR, GREY, WHITE } from '../constants/styles/colors';
+import { BACKGROUND_COLOR, GREY, SECONDARY_COLOR } from '../constants/styles/colors';
 import { FONT_FAMILY_REGULAR, MEDIUM_FONT_SIZE } from '../constants/styles/typography';
 
 interface AnswerButtonProps {
@@ -26,7 +26,7 @@ export default function AnswerButton({ text, onPress, isAnswered, style, textSty
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: WHITE,
+    backgroundColor: SECONDARY_COLOR,
     justifyContent: 'center',
     width: width / 1.7,
     height: 50,

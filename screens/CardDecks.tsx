@@ -3,7 +3,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import CardDeck from '../components/CardDeck';
 import { CARD_PACKS } from '../constants/general';
-import { BACKGROUND_COLOR, ORANGE, WHITE } from '../constants/styles/colors';
+import { BACKGROUND_COLOR, PRIMARY_COLOR, SECONDARY_COLOR } from '../constants/styles/colors';
 import { LOGO_FONT_FAMILY_REGULAR, REGULAR_LOGO_FONT_SIZE } from '../constants/styles/typography';
 import { useAuth } from '../context/authContext';
 import useUserStore from '../store/userStore';
@@ -30,7 +30,7 @@ export default function CardDecks() {
 
   return (
     <View style={styles.cardDeckView}>
-      <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
+      <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQPRIMARY_COLOR}>IQ</Text></Text>
       <View style={styles.cardsView}>
         <ScrollView>
           {sortedPacks.map((pack) => (
@@ -54,11 +54,11 @@ const styles = StyleSheet.create({
     marginTop: 50,
     marginLeft: 20,
     fontSize: REGULAR_LOGO_FONT_SIZE,
-    color: WHITE,
+    color: SECONDARY_COLOR,
     letterSpacing: 3,
   },
-  drinkIQOrange: {
-    color: ORANGE,
+  drinkIQPRIMARY_COLOR: {
+    color: PRIMARY_COLOR,
   },
   cardsView: {
     flex: 1,

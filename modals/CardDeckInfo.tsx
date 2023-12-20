@@ -3,7 +3,7 @@ import { arrayUnion, doc, updateDoc } from "firebase/firestore";
 import { Modal, View, Text, StyleSheet, ImageSourcePropType } from "react-native";
 
 import Button from "../components/Button";
-import { BACKGROUND_COLOR, BLACK, WHITE } from '../constants/styles/colors';
+import { BACKGROUND_COLOR, BLACK, SECONDARY_COLOR } from '../constants/styles/colors';
 import { FONT_FAMILY_BOLD, FONT_FAMILY_REGULAR, HEADER_FONT_SIZE, REGULAR_FONT_SIZE } from '../constants/styles/typography';
 import { useAuth } from "../context/authContext";
 import { FIREBASE_DB } from "../firebaseConfig";
@@ -87,13 +87,13 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 20,
     fontSize: HEADER_FONT_SIZE,
-    color: WHITE,
+    color: SECONDARY_COLOR,
     fontFamily: FONT_FAMILY_REGULAR,
   },
   packName: {
     marginTop: 20,
     fontFamily: FONT_FAMILY_BOLD,
-    color: WHITE,
+    color: SECONDARY_COLOR,
     alignSelf: 'center',
   },
   modal: {
@@ -112,14 +112,14 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
     fontSize: REGULAR_FONT_SIZE,
-    color: WHITE,
+    color: SECONDARY_COLOR,
     fontFamily: FONT_FAMILY_REGULAR,
   },
   modalTextBold: {
     marginTop: 10,
     marginBottom: 10,
     fontSize: REGULAR_FONT_SIZE,
-    color: WHITE,
+    color: SECONDARY_COLOR,
     fontFamily: FONT_FAMILY_BOLD,
   },
   modalButtons: {

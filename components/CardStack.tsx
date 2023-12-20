@@ -7,7 +7,7 @@ import { Pressable, View, StyleSheet, Text } from 'react-native';
 import Card from './Card';
 import LoadingScreen from '../components/LoadingScreen';
 import { BASE_CARD_IMAGE, CARD_PACKS, DEFAULT_CARD_COUNT } from '../constants/general';
-import { WHITE } from '../constants/styles/colors';
+import { SECONDARY_COLOR } from '../constants/styles/colors';
 import { FONT_FAMILY_MEDIUM } from '../constants/styles/typography';
 import { FIREBASE_DB } from '../firebaseConfig.js';
 import useGameStore from '../store/gameStore';
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   gameDataText: {
-    color: WHITE,
+    color: SECONDARY_COLOR,
     fontFamily: FONT_FAMILY_MEDIUM,
     marginTop: 5,
   },

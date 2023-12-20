@@ -4,7 +4,7 @@ import { View, Text, TextInput, StyleSheet, Pressable, TouchableWithoutFeedback,
 
 import Button from '../components/Button';
 import { DEFAULT_PACK } from '../constants/general';
-import { ALMOSTWHITE, BACKGROUND_COLOR, LIGHTGREY, MEDIUMGREY, ORANGE, TRANSPARENTGREY, WHITE } from '../constants/styles/colors';
+import { ALMOSTSECONDARY_COLOR, BACKGROUND_COLOR, LIGHTGREY, MEDIUMGREY, PRIMARY_COLOR, TRANSPARENTGREY, SECONDARY_COLOR } from '../constants/styles/colors';
 import { FONT_FAMILY_BOLD, FONT_FAMILY_REGULAR, LOGO_FONT_FAMILY_REGULAR, MEDIUM_LOGO_FONT_SIZE, REGULAR_FONT_SIZE, REGULAR_LOGO_FONT_SIZE } from '../constants/styles/typography';
 import { useAuth } from '../context/authContext';
 import { FIREBASE_DB } from '../firebaseConfig.js';
@@ -49,7 +49,7 @@ export default function Register() {
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} >
       <View style={styles.container}>
         <TermsAndConditions isVisible={isModalVisible} onClose={toggleModal} />
-        <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
+        <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQPRIMARY_COLOR}>IQ</Text></Text>
         <View style={styles.textInputContainer}>
           <TextInput
             style={styles.input}
@@ -117,11 +117,11 @@ const styles = StyleSheet.create({
     marginTop: 100,
     fontFamily: LOGO_FONT_FAMILY_REGULAR,
     fontSize: MEDIUM_LOGO_FONT_SIZE,
-    color: WHITE,
+    color: SECONDARY_COLOR,
     letterSpacing: 3,
   },
-  drinkIQOrange: {
-    color: ORANGE,
+  drinkIQPRIMARY_COLOR: {
+    color: PRIMARY_COLOR,
   },
   textInputContainer: {
     marginTop: 100,
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: REGULAR_LOGO_FONT_SIZE,
     marginBottom: 20,
-    color: WHITE,
+    color: SECONDARY_COLOR,
     fontFamily: FONT_FAMILY_REGULAR,
   },
   input: {
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   },
   innerText: {
     fontFamily: FONT_FAMILY_BOLD,
-    color: ALMOSTWHITE,
+    color: ALMOSTSECONDARY_COLOR,
   },
   outerText: {
     position: 'absolute',
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     width: 300,
     textAlign: 'center',
     marginBottom: 20,
-    color: ALMOSTWHITE,
+    color: ALMOSTSECONDARY_COLOR,
     fontFamily: FONT_FAMILY_REGULAR,
   },
 });
