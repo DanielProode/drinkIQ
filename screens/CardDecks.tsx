@@ -3,6 +3,8 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import CardDeck from '../components/CardDeck';
 import { CARD_PACKS } from '../constants/general';
+import { BACKGROUND_COLOR, PRIMARY_COLOR, SECONDARY_COLOR } from '../constants/styles/colors';
+import { LOGO_FONT_FAMILY_REGULAR, REGULAR_LOGO_FONT_SIZE } from '../constants/styles/typography';
 import { useAuth } from '../context/authContext';
 import useUserStore from '../store/userStore';
 
@@ -43,20 +45,20 @@ export default function CardDecks() {
 const styles = StyleSheet.create({
   cardDeckView: {
     flex: 1,
-    backgroundColor: '#1E1E1E',
+    backgroundColor: BACKGROUND_COLOR,
     paddingLeft: 20,
     paddingRight: 20,
   },
   drinkIQLogo: {
-    fontFamily: 'JetbrainsMono-Bold',
+    fontFamily: LOGO_FONT_FAMILY_REGULAR,
     marginTop: 50,
     marginLeft: 20,
-    fontSize: 30,
-    color: 'white',
+    fontSize: REGULAR_LOGO_FONT_SIZE,
+    color: SECONDARY_COLOR,
     letterSpacing: 3,
   },
   drinkIQOrange: {
-    color: '#F76D31',
+    color: PRIMARY_COLOR,
   },
   cardsView: {
     flex: 1,

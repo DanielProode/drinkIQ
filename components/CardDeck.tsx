@@ -2,6 +2,8 @@ import { Image } from 'expo-image';
 import { useState } from "react";
 import { Pressable, View, Text, StyleSheet, ImageProps } from "react-native";
 
+import { ALMOSTBLACK, SECONDARY_COLOR } from '../constants/styles/colors';
+import { FONT_FAMILY_REGULAR, REGULAR_LOGO_FONT_SIZE, TITLE_FONT_SIZE } from '../constants/styles/typography';
 import CardDeckInfo from "../modals/CardDeckInfo";
 import useUserStore from "../store/userStore";
 
@@ -27,7 +29,7 @@ export default function CardDeck({ pack }: CardDeckProps) {
         {!(packs_owned && packs_owned.includes(pack.id)) && <View style={styles.overlay} />}
         {!(packs_owned && packs_owned.includes(pack.id)) && <Text style={styles.lockedText}>Unlock for 4.99€</Text>}
         <Image style={styles.cardImage} source={pack.image} />
-        <View style={styles.cardInfo}>
+        <View >
           <Text style={styles.deckTitle}>{pack.name.toUpperCase()}</Text>
         </View>
       </View>
@@ -37,9 +39,9 @@ export default function CardDeck({ pack }: CardDeckProps) {
 
 const styles = StyleSheet.create({
   deckTitle: {
-    fontFamily: 'CarterOne-Regular',
-    color: 'white',
-    fontSize: 24,
+    fontFamily: FONT_FAMILY_REGULAR,
+    color: SECONDARY_COLOR,
+    fontSize: TITLE_FONT_SIZE,
     alignSelf: 'center',
   },
   overlay: {
@@ -47,16 +49,16 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: '#00000099',
+    backgroundColor: ALMOSTBLACK,
     position: 'absolute',
     borderRadius: 20,
     zIndex: 1,
   },
   lockedText: {
-    fontFamily: 'Basic',
+    fontFamily: FONT_FAMILY_REGULAR,
     position: 'absolute',
-    color: 'white',
-    fontSize: 32,
+    color: SECONDARY_COLOR,
+    fontSize: REGULAR_LOGO_FONT_SIZE,
     marginTop: 50,
     zIndex: 1,
     alignSelf: 'center',
@@ -76,13 +78,10 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
   },
-  cardInfo: {
-  },
   cardViewTouchable: {
     width: 320,
     height: 150,
     marginBottom: 40,
-    backgroundColor: '#343333',
     borderRadius: 20,
   },
 });

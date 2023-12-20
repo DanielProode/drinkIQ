@@ -2,6 +2,8 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { StyleSheet, View, Text } from 'react-native';
 
 import Button from '../components/Button';
+import { SECONDARY_COLOR, PRIMARY_COLOR, BACKGROUND_COLOR } from '../constants/styles/colors';
+import { BIG_LOGO_FONT_SIZE, FONT_FAMILY_BOLD, FONT_FAMILY_REGULAR, HEADER_FONT_SIZE, LOGO_FONT_FAMILY_REGULAR, REGULAR_LOGO_FONT_SIZE } from '../constants/styles/typography';
 import useUserStore from "../store/userStore";
 
 
@@ -9,7 +11,7 @@ interface ProfileProps {
   navigation: NativeStackNavigationProp<any>;
 }
 
-export default function Profile({ navigation }: ProfileProps ) {
+export default function Profile({ navigation }: ProfileProps) {
 
   const { username, games_won, total_drinks, total_points, packs_owned } = useUserStore();
 
@@ -19,31 +21,31 @@ export default function Profile({ navigation }: ProfileProps ) {
       <Text style={styles.profileNameText}>Nickname: {username}</Text>
       <View style={styles.profileData}>
         <View style={styles.row}>
-          <View style={styles.gamesWon}>
+          <View style={styles.rowElement}>
             <Text style={styles.numberText}>{games_won}</Text>
             <Text style={styles.descriptionText}>Games Won</Text>
           </View>
-          <View style={styles.gamesWon}>
+          <View style={styles.rowElement}>
             <Text style={styles.numberTextOrange}>0</Text>
             <Text style={styles.descriptionText}>Games Played</Text>
           </View>
         </View>
         <View style={styles.row}>
-          <View style={styles.gamesWon}>
+          <View style={styles.rowElement}>
             <Text style={styles.numberTextOrange}>{total_drinks}</Text>
             <Text style={styles.descriptionText}>Drinks taken</Text>
           </View>
-          <View style={styles.gamesWon}>
+          <View style={styles.rowElement}>
             <Text style={styles.numberText}>{total_points}</Text>
             <Text style={styles.descriptionText}>Total points</Text>
           </View>
         </View>
         <View style={styles.row}>
-          <View style={styles.gamesWon}>
+          <View style={styles.rowElement}>
             <Text style={styles.numberText}>0</Text>
             <Text style={styles.descriptionText}>Friends</Text>
           </View>
-          <View style={styles.gamesWon}>
+          <View style={styles.rowElement}>
             <Text style={styles.numberTextOrange}>{packs_owned.length}</Text>
             <Text style={styles.descriptionText}>Packs owned</Text>
           </View>
@@ -51,7 +53,8 @@ export default function Profile({ navigation }: ProfileProps ) {
       </View>
       <View style={styles.buttonContainer}>
         <Button marginTop={20} text="Settings" onPress={() => {
-            navigation.navigate('Settings');}}  />
+          navigation.navigate('Settings');
+        }} />
       </View>
     </View>
   );
@@ -59,62 +62,61 @@ export default function Profile({ navigation }: ProfileProps ) {
 
 const styles = StyleSheet.create({
   profileView: {
+    backgroundColor: BACKGROUND_COLOR,
     flex: 1,
-    backgroundColor: '#1E1E1E',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
   },
   drinkIQLogo: {
-    fontFamily: 'JetbrainsMono-Bold',
+    color: SECONDARY_COLOR,
+    fontSize: REGULAR_LOGO_FONT_SIZE,
+    fontFamily: LOGO_FONT_FAMILY_REGULAR,
     marginTop: 55,
     alignSelf: 'flex-start',
     marginLeft: 30,
-    fontSize: 30,
-    color: '#F2F2F2',
     letterSpacing: 3,
-    },
+  },
   drinkIQOrange: {
-    color: '#F76D31',
-    },
+    color: PRIMARY_COLOR,
+  },
   profileNameText: {
-    fontFamily: 'JetbrainsMono-Bold',
-    color: 'white',
+    fontSize: HEADER_FONT_SIZE,
+    fontFamily: LOGO_FONT_FAMILY_REGULAR,
+    color: SECONDARY_COLOR,
     marginTop: 40,
-    fontSize: 28,
-    },
+    marginBottom: 20,
+  },
   profileData: {
-    width: '100%',
+    width: '90%',
     marginTop: -40,
-    },
-    row: {
-    marginTop: 60,
-    justifyContent: 'space-around',
+  },
+  row: {
+    marginTop: 40,
+    justifyContent: 'space-evenly',
     alignSelf: 'center',
     width: '90%',
     flexDirection: 'row',
-    alignContent: 'center',
-    },
-  gamesWon: {
+  },
+  rowElement: {
     flexDirection: 'column',
     width: 200,
-    height: 80,
-  },
-  numberText: {
-    fontSize: 70,
-    fontFamily: 'JosefinSans-Bold',
-    color: 'white',
-    textAlign: 'center',
   },
   numberTextOrange: {
-    fontSize: 70,
-    fontFamily: 'JosefinSans-Bold',
-    color: '#F76D31',
+    color: PRIMARY_COLOR,
+    fontSize: BIG_LOGO_FONT_SIZE,
+    fontFamily: FONT_FAMILY_BOLD,
+    textAlign: 'center',
+  },
+  numberText: {
+    color: SECONDARY_COLOR,
+    fontSize: BIG_LOGO_FONT_SIZE,
+    fontFamily: FONT_FAMILY_BOLD,
     textAlign: 'center',
   },
   descriptionText: {
-    fontSize: 20,
-    fontFamily: 'JosefinSans-Regular',
-    color: 'white',
+    color: SECONDARY_COLOR,
+    fontSize: HEADER_FONT_SIZE,
+    fontFamily: FONT_FAMILY_REGULAR,
     textAlign: 'center',
   },
   buttonContainer: {

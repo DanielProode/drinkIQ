@@ -3,6 +3,8 @@ import { Modal, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
 import { AVATAR_ICONS, DRINK_ICONS } from '../constants/general';
+import { BACKGROUND_COLOR, GREY, SECONDARY_COLOR } from '../constants/styles/colors';
+import { FONT_FAMILY_REGULAR, HEADER_FONT_SIZE } from '../constants/styles/typography';
 
 interface Player {
     username: string;
@@ -44,7 +46,7 @@ const styles = StyleSheet.create({
   profileView: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: '#1E1E1E',
+    backgroundColor: BACKGROUND_COLOR,
   },
   drinkContainer: {
     width: 50,
@@ -106,13 +108,13 @@ const styles = StyleSheet.create({
     marginTop: 30,
     width: '48%',
     aspectRatio: 1 / 1,
-    backgroundColor: 'white',
+    backgroundColor: SECONDARY_COLOR,
     borderRadius: 80,
   },
   profileBackground: {
     width: '20.0%',
     aspectRatio: 1 / 1,
-    backgroundColor: '#d8d8d8',
+    backgroundColor: GREY,
     borderRadius: 20,
   },
   viewContainer: {
@@ -122,20 +124,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   selectAvatarText: {
-    color: 'white',
-    fontFamily: 'Basic',
-    fontSize: 20,
+    color: SECONDARY_COLOR,
+    fontFamily: FONT_FAMILY_REGULAR,
+    fontSize: HEADER_FONT_SIZE,
   },
   selectDrinkText: {
-    color: 'white',
-    fontFamily: 'Basic',
+    color: SECONDARY_COLOR,
+    fontFamily: FONT_FAMILY_REGULAR,
     marginTop: 10,
-    fontSize: 20,
+    fontSize: HEADER_FONT_SIZE,
   },
   baseText: {
-    color: 'white',
-    fontFamily: 'Basic',
+    color: SECONDARY_COLOR,
+    fontFamily: FONT_FAMILY_REGULAR,
     marginTop: 10,
-    fontSize: 20,
+    fontSize: HEADER_FONT_SIZE,
   },
 });

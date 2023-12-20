@@ -8,6 +8,8 @@ import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 import Button from '../components/Button';
 import PlayerInLobby from '../components/PlayerInLobby';
 import { CARD_PACKS } from '../constants/general';
+import { BACKGROUND_COLOR, PRIMARY_COLOR, SECONDARY_COLOR } from '../constants/styles/colors';
+import { FONT_FAMILY_BOLD, FONT_FAMILY_REGULAR, HEADER_FONT_SIZE, LOGO_FONT_FAMILY_REGULAR, REGULAR_FONT_SIZE, REGULAR_LOGO_FONT_SIZE } from '../constants/styles/typography';
 import { useAuth } from '../context/authContext';
 import { FIREBASE_RTDB } from '../firebaseConfig';
 import AvatarSelection from '../modals/AvatarSelection';
@@ -169,20 +171,20 @@ const styles = StyleSheet.create({
   gameView: {
     alignItems: 'center',
     flex: 1,
-    backgroundColor: '#1E1E1E',
+    backgroundColor: BACKGROUND_COLOR,
   },
   drinkIQLogo: {
-    fontFamily: 'JetbrainsMono-Bold',
+    fontFamily: LOGO_FONT_FAMILY_REGULAR,
     marginTop: 50,
-    fontSize: 30,
-    color: '#F2F2F2',
+    fontSize: REGULAR_LOGO_FONT_SIZE,
+    color: SECONDARY_COLOR,
     letterSpacing: 3,
   },
   drinkIQOrange: {
-    fontFamily: 'JetbrainsMono-Bold',
+    fontFamily: LOGO_FONT_FAMILY_REGULAR,
     marginTop: 50,
-    fontSize: 30,
-    color: '#F76D31',
+    fontSize: REGULAR_LOGO_FONT_SIZE,
+    color: PRIMARY_COLOR,
   },
   deckImageContainer: {
     width: 100,
@@ -193,9 +195,9 @@ const styles = StyleSheet.create({
   },
   deckName: {
     marginTop: 8,
-    fontSize: 18,
-    color: 'white',
-    fontFamily: 'JosefinSans-Bold',
+    fontSize: REGULAR_FONT_SIZE,
+    color: SECONDARY_COLOR,
+    fontFamily: FONT_FAMILY_BOLD,
   },
   joinedPlayers: {
     flex: 1,
@@ -215,14 +217,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   waitingText: {
-    color: 'white',
-    fontFamily: 'JosefinSans-Bold',
+    color: SECONDARY_COLOR,
+    fontFamily: FONT_FAMILY_BOLD,
     marginTop: 20,
-    fontSize: 20,
+    fontSize: HEADER_FONT_SIZE,
   },
   gameCode: {
-    fontSize: 20,
-    color: 'white',
-    fontFamily: 'JosefinSans-Regular',
+    fontSize: HEADER_FONT_SIZE,
+    color: SECONDARY_COLOR,
+    fontFamily: FONT_FAMILY_REGULAR,
   },
 });

@@ -5,6 +5,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 
 import LoadingScreen from '../components/LoadingScreen';
+import { LIGHTGREY } from '../constants/styles/colors';
 import { useAuth } from '../context/authContext';
 import ActiveGame from '../screens/ActiveGame';
 import CardDecks from '../screens/CardDecks';
@@ -68,7 +69,7 @@ export default function Router() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerTitle: '', headerTransparent: true, headerTintColor: '#A5AFB9', headerBackTitleVisible: false }}>
+      <Stack.Navigator screenOptions={{ headerTitle: '', headerTransparent: true, headerTintColor: LIGHTGREY, headerBackTitleVisible: false }}>
         {authUser === null ? (
           <>
             <Stack.Screen name="Login" component={Login} />
