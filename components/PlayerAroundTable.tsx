@@ -2,10 +2,9 @@ import { Image } from 'expo-image';
 import React from 'react'
 import { StyleSheet, View, Text, Pressable, ViewStyle } from 'react-native';
 
+import { AVATAR_ICONS, DRINK_ICONS } from '../constants/general';
 import { SECONDARY_COLOR } from '../constants/styles/colors';
 import { FONT_FAMILY_MEDIUM, REGULAR_FONT_SIZE } from '../constants/styles/typography';
-
-import { AVATAR_ICONS, DRINK_ICONS } from '../constants/general';
 import { Player } from '../screens/Lobby';
 
 interface PlayerAroundTableProps {

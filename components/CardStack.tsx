@@ -37,7 +37,7 @@ interface AnswersArray {
 
 export default function CardStack({ onGameOver, setPoints, setDrinks, points, drinks, updateTurn, isTurn }: CardStackProps) {
   const [cardCount, setCardCount] = useState(DEFAULT_CARD_COUNT);
-  const [cardImage, setCardImage] = useState(BASE_CARD_IMAGE);
+  const [cardImage] = useState(BASE_CARD_IMAGE);
   const [isCardVisible, setIsCardVisible] = useState(false);
   const [questionsArray, setQuestionsArray] = useState<QuestionsArray[]>([]);
   const [fetchedQuestions, setFetchedQuestions] = useState<QuestionsArray[]>([]);
@@ -62,7 +62,7 @@ export default function CardStack({ onGameOver, setPoints, setDrinks, points, dr
     const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
 
     try {
-      await update(roomRef, { cardCount: cardCount - 1});
+      await update(roomRef, { cardCount: cardCount - 1 });
       console.log(`Card count updated in database`);
     } catch (error) {
       console.error('Error updating card count in database:', error);
@@ -74,7 +74,7 @@ export default function CardStack({ onGameOver, setPoints, setDrinks, points, dr
     const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
 
     try {
-      await update(roomRef, { isCardVisible: !isCardVisible});
+      await update(roomRef, { isCardVisible: !isCardVisible });
       console.log(`Card count updated in database`);
     } catch (error) {
       console.error('Error updating card count in database:', error);
@@ -224,7 +224,7 @@ export default function CardStack({ onGameOver, setPoints, setDrinks, points, dr
 
   return (
     <>
-      {isCardVisible && <Card handlePoints={handlePoints} onClose={() => {toggleCardVisibility(); updateTurn()}} questionElement={fetchedQuestions[cardCount]} cardsLeft={cardCount} />}
+      {isCardVisible && <Card handlePoints={handlePoints} toggleVisibility={toggleCardVisibility} updateTurn={updateTurn} questionElement={fetchedQuestions[cardCount]} cardsLeft={cardCount} isTurn={isTurn} />}
       <View style={styles.gameView}>
         <View style={styles.cardViewContainer}>
           <Pressable
