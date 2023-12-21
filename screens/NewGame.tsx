@@ -37,6 +37,11 @@ export default function NewGame({ navigation }: NewGameProps) {
         setError(`Room ${roomCode} is already full`);
         return;
       }
+      const isSessionActive = await checkIsSessionActive(roomCode);
+      if (isSessionActive) {
+        setError(`Game has already started`);
+        return;
+      }
       await addPlayerToRoom(roomCode);
       console.log(`Player ${username} has joined the room.`);
       const isPlayerHost = await checkIsGameHost(roomCode);
@@ -125,6 +130,18 @@ export default function NewGame({ navigation }: NewGameProps) {
       const gameHost = snapshot.val().gameHost;
       const isUserHost = userId === gameHost;
       return isUserHost;
+    } catch (error) {
+      console.error('Error checking room code:', error);
+      return false;
+    }
+  };
+
+  const checkIsSessionActive = async (roomCode: string) => {
+    const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/`);
+    try {
+      const snapshot = await get(roomRef);
+      const sessionStarted = snapshot.val().isSessionStarted;
+      if (sessionStarted) return true;
     } catch (error) {
       console.error('Error checking room code:', error);
       return false;

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { Image } from 'expo-image';
 import { onValue, ref, update } from 'firebase/database';
 import { useEffect, useState } from 'react';
@@ -41,6 +42,9 @@ const randomize = (array: AnswersArray[]) => {
 }
 
 export default function Card({ questionElement, cardsLeft, isTurn, toggleVisibility, updateTurn, handlePoints }: CardProps) {
+    if (!questionElement) {
+    return
+  }
   const [isAnswered, setIsAnswered] = useState(false);
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number | null>(null);
   const [isAnswerCorrect, setIsAnswerCorrect] = useState(false);
@@ -80,7 +84,7 @@ export default function Card({ questionElement, cardsLeft, isTurn, toggleVisibil
   };
 
   useEffect(() => {
-    if (randomizedAnswerArray.length > 0) updateAnswerSelectionInDatabase({ randomizedAnswerArray });
+    if (randomizedAnswerArray.length > 0 && isTurn) updateAnswerSelectionInDatabase({ randomizedAnswerArray });
   }, [randomizedAnswerArray]);
 
 
@@ -132,7 +136,7 @@ export default function Card({ questionElement, cardsLeft, isTurn, toggleVisibil
             </View>
             <View style={styles.questionTextContainer}>
               <Text style={styles.questionText} adjustsFontSizeToFit numberOfLines={5}>
-                {isAnswered && (isAnswerCorrect && isTurn ? "Choose who has to drink!" : "Wrong, take a sip!")}
+                {isAnswered && (isAnswerCorrect ? "Choose who has to drink!" : "Wrong, take a sip!")}
                 {!isAnswered && questionElement.question}
               </Text>
             </View>
