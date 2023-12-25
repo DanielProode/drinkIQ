@@ -99,6 +99,16 @@ export default function ActiveGame() {
     }
   };
 
+  const setAnsweredText = (isAnswerCorrect: boolean) => {
+    const currentPlayer = fetchedPlayers[currentTurnIndex].username;
+
+    if (isCurrentPlayersTurn()) {
+      return isAnswerCorrect ? "Correct, choose who has to drink!" : "Wrong, take a sip!";
+    } else {
+      return isAnswerCorrect ? `Correct, ${currentPlayer} chooses who has to drink!` : `Wrong, ${currentPlayer} takes a sip!`;
+    }
+  };
+
   const handleGameOver = () => {
     checkGameWinner();
     updateUserData();
@@ -154,7 +164,7 @@ export default function ActiveGame() {
               <PlayerAroundTable stylesArray={stylesArray[index]} key={player.username} player={player} />
             )}
 
-            <CardStack onGameOver={handleGameOver} points={correctAnswerCount} drinks={wrongAnswerCount} setPoints={setCorrectAnswerCount} setDrinks={setWrongAnswerCount} updateTurn={updateCurrentTurnInDatabase} isTurn={isCurrentPlayersTurn()} />
+            <CardStack onGameOver={handleGameOver} points={correctAnswerCount} drinks={wrongAnswerCount} setPoints={setCorrectAnswerCount} setDrinks={setWrongAnswerCount} updateTurn={updateCurrentTurnInDatabase} isTurn={isCurrentPlayersTurn()} answeredText={setAnsweredText} />
           </>
         )}
       </View>

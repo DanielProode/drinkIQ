@@ -13,15 +13,15 @@ import { FONT_FAMILY_MEDIUM } from '../constants/styles/typography';
 import { FIREBASE_DB, FIREBASE_RTDB } from '../firebaseConfig.js';
 import useGameStore from '../store/gameStore';
 
-
 interface CardStackProps {
-  onGameOver: () => void;
   points: number;
   drinks: number;
+  isTurn: boolean;
+  onGameOver: () => void;
   setPoints: Dispatch<SetStateAction<number>>;
   setDrinks: Dispatch<SetStateAction<number>>;
   updateTurn: () => void;
-  isTurn: boolean;
+  answeredText: (isAnswerCorrect: boolean) => string;
 };
 
 export interface QuestionsArray {
@@ -34,8 +34,7 @@ interface AnswersArray {
   isCorrect: boolean;
 };
 
-
-export default function CardStack({ onGameOver, setPoints, setDrinks, points, drinks, updateTurn, isTurn }: CardStackProps) {
+export default function CardStack({ drinks, points, isTurn, onGameOver, setPoints, setDrinks, updateTurn, answeredText }: CardStackProps) {
   const [cardCount, setCardCount] = useState(DEFAULT_CARD_COUNT);
   const [cardImage] = useState(BASE_CARD_IMAGE);
   const [isCardVisible, setIsCardVisible] = useState(false);
@@ -224,7 +223,7 @@ export default function CardStack({ onGameOver, setPoints, setDrinks, points, dr
 
   return (
     <>
-      {isCardVisible && <Card handlePoints={handlePoints} toggleVisibility={toggleCardVisibility} updateTurn={updateTurn} questionElement={fetchedQuestions[cardCount]} cardsLeft={cardCount} isTurn={isTurn} />}
+      {isCardVisible && <Card handlePoints={handlePoints} toggleVisibility={toggleCardVisibility} updateTurn={updateTurn} questionElement={fetchedQuestions[cardCount]} cardsLeft={cardCount} isTurn={isTurn} answeredText={answeredText} />}
       <View style={styles.gameView}>
         <View style={styles.cardViewContainer}>
           <Pressable

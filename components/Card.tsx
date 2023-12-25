@@ -18,6 +18,7 @@ interface CardProps {
   toggleVisibility: () => void;
   updateTurn: () => void;
   handlePoints: (answerState: boolean) => void;
+  answeredText: (isAnswerCorrect: boolean) => string;
 };
 
 interface QuestionsArray {
@@ -41,7 +42,7 @@ const randomize = (array: AnswersArray[]) => {
   return [...array].sort(() => Math.random() - 0.5);
 }
 
-export default function Card({ questionElement, cardsLeft, isTurn, toggleVisibility, updateTurn, handlePoints }: CardProps) {
+export default function Card({ questionElement, cardsLeft, isTurn, toggleVisibility, updateTurn, handlePoints, answeredText }: CardProps) {
     if (!questionElement) {
     return
   }
@@ -136,7 +137,7 @@ export default function Card({ questionElement, cardsLeft, isTurn, toggleVisibil
             </View>
             <View style={styles.questionTextContainer}>
               <Text style={styles.questionText} adjustsFontSizeToFit numberOfLines={5}>
-                {isAnswered && (isAnswerCorrect ? "Choose who has to drink!" : "Wrong, take a sip!")}
+                {isAnswered && answeredText(isAnswerCorrect)}
                 {!isAnswered && questionElement.question}
               </Text>
             </View>
