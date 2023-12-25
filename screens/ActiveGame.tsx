@@ -13,7 +13,6 @@ import { FONT_FAMILY_REGULAR, HEADER_FONT_SIZE, LOGO_FONT_FAMILY_REGULAR, REGULA
 import { useAuth } from '../context/authContext';
 import { FIREBASE_DB, FIREBASE_RTDB } from '../firebaseConfig.js';
 import useGameStore from '../store/gameStore';
-import useUserStore from '../store/userStore';
 
 export default function ActiveGame() {
   const [isGameOver, setIsGameOver] = useState(false);
@@ -24,7 +23,7 @@ export default function ActiveGame() {
   const [currentTurnIndex, setCurrentTurnIndex] = useState<number>(0);
   const { authUser } = useAuth();
   const { roomCode, updateIsSessionStarted } = useGameStore();
-  const { username } = useUserStore();
+  const userId = authUser ? authUser.uid : '';
   let gameWon = 0;
 
   const stylesArray = [
@@ -38,9 +37,8 @@ export default function ActiveGame() {
     styles.eighthAvatar,
   ];
 
-  // TODO: Instead of username check UID or something in the future
-  const isCurrentPlayersTurn = () => fetchedPlayers[currentTurnIndex].username === username;
-
+  const isCurrentPlayersTurn = () => fetchedPlayers[currentTurnIndex].userId === userId;
+  
   const checkGameWinner = () =>  { gameWon = wrongAnswerCount < correctAnswerCount ? 1 : 0; }
   
   // If the current index is the last in the array return the first player
@@ -149,7 +147,6 @@ export default function ActiveGame() {
       <View style={styles.gameBackground}>
         <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
         <Text style={styles.gameCode}>#{roomCode}</Text>
-        <Text style={styles.gameCode}>Current turn: {fetchedPlayers[currentTurnIndex].username}</Text>
         {isGameOver ? (
           <>
             <Text style={styles.gameText}>GAME OVER!</Text>
@@ -160,8 +157,9 @@ export default function ActiveGame() {
           </>
         ) : (
           <>
+            <Text style={styles.gameCode}>Current turn: {fetchedPlayers[currentTurnIndex].username}</Text>
             {fetchedPlayers.map((player, index) =>
-              <PlayerAroundTable stylesArray={stylesArray[index]} key={player.username} player={player} />
+              <PlayerAroundTable stylesArray={stylesArray[index]} key={player.userId} player={player} />
             )}
 
             <CardStack onGameOver={handleGameOver} points={correctAnswerCount} drinks={wrongAnswerCount} setPoints={setCorrectAnswerCount} setDrinks={setWrongAnswerCount} updateTurn={updateCurrentTurnInDatabase} isTurn={isCurrentPlayersTurn()} answeredText={setAnsweredText} />

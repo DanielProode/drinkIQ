@@ -15,24 +15,23 @@ import CardDeckInfo from '../modals/CardDeckInfo';
 import CardDeckSelection from '../modals/CardDeckSelection';
 import PlayerProfile from '../modals/PlayerProfile';
 import useGameStore from '../store/gameStore';
-import useUserStore from '../store/userStore';
 
 export interface Player {
+  userId: string;
   username: string;
   avatar: number;
   drink: number;
 }
 
 export default function Lobby() {
-  const { username } = useUserStore();
   const { isGameHost, roomCode, playableDeckIndex, updatePlayableDeckIndex, updateIsLobbyStarted, updateIsSessionStarted } = useGameStore();
+  const { authUser } = useAuth();
   const [isAvatarSelectionModalVisible, setIsAvatarSelectionModalVisible] = useState(false);
   const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
   const [isCardDeckSelectionModalVisible, setIsCardDeckSelectionModalVisible] = useState(false);
   const [isCardDeckInfoModalVisible, setIsCardDeckInfoModalVisible] = useState(false);
   const [fetchedPlayers, setFetchedPlayers] = useState<Player[]>([]);
   const [selectedProfile, setSelectedProfile] = useState({ username: "Placeholder", avatar: 0, drink: 0 });
-  const { authUser } = useAuth();
   const userId = authUser ? authUser.uid : '';
 
   const toggleAvatarSelectionModal = () => {
@@ -53,7 +52,7 @@ export default function Lobby() {
   };
 
   const avatarPressed = (player: Player) => {
-    if (player.username === username) {
+    if (player.userId === userId) {
       toggleAvatarSelectionModal();
     } else {
       toggleProfileModal();
@@ -78,7 +77,6 @@ export default function Lobby() {
 
     remove(removePlayerRef)
       .then(() => {
-        console.log(`${userId} removed from room`);
         updateIsLobbyStarted(false);
       })
       .catch((error) => {
@@ -123,8 +121,8 @@ export default function Lobby() {
       </Pressable>
       <Text style={styles.deckName}>{CARD_PACKS[playableDeckIndex].name}</Text>
       <View style={styles.joinedPlayers}>
-        {fetchedPlayers.map((player, index) =>
-          <PlayerInLobby handlePress={() => avatarPressed(player)} player={player} currentUser={username} key={index} />
+        {fetchedPlayers.map((player) =>
+          <PlayerInLobby handlePress={() => avatarPressed(player)} player={player} currentUser={userId} key={player.userId} />
         )}
       </View>
 

@@ -72,7 +72,7 @@ export default function NewGame() {
   const addPlayerToRoom = async (roomCode: string) => {
     try {
       const playersRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/players`);
-      await update(playersRef, { [userId]: { username, avatar, drink }});
+      await update(playersRef, { [userId]: { userId, username, avatar, drink }});
     } catch (error) {
       console.error('Error joining room:', error);
     }
@@ -82,7 +82,7 @@ export default function NewGame() {
     try {
       const roomCodeRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
       // Set initial room data here
-      await set(roomCodeRef, { gameHost: userId, cardDeck: 0, players: { [userId]: { username, avatar, drink } }});
+      await set(roomCodeRef, { gameHost: userId, cardDeck: 0, players: { [userId]: { userId, username, avatar, drink } }});
       console.log(`Room code ${roomCode} added to the database.`);
     } catch (error) {
       console.error('Error adding room to the database:', error);
