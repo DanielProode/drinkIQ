@@ -1,4 +1,3 @@
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { onValue, ref, update } from 'firebase/database';
 import { doc, updateDoc, increment } from "firebase/firestore";
 import { useEffect, useState } from 'react';
@@ -16,11 +15,7 @@ import { FIREBASE_DB, FIREBASE_RTDB } from '../firebaseConfig.js';
 import useGameStore from '../store/gameStore';
 import useUserStore from '../store/userStore';
 
-interface ActiveGameProps {
-  navigation: NativeStackNavigationProp<any>;
-};
-
-export default function ActiveGame({ navigation }: ActiveGameProps) {
+export default function ActiveGame() {
   const [isGameOver, setIsGameOver] = useState(false);
   const [gameHost, setGameHost] = useState('');
   const [correctAnswerCount, setCorrectAnswerCount] = useState<number>(0);
@@ -28,7 +23,7 @@ export default function ActiveGame({ navigation }: ActiveGameProps) {
   const [fetchedPlayers, setFetchedPlayers] = useState<Player[]>([]);
   const [currentTurnIndex, setCurrentTurnIndex] = useState<number>(0);
   const { authUser } = useAuth();
-  const { roomCode } = useGameStore();
+  const { roomCode, updateIsSessionStarted } = useGameStore();
   const { username } = useUserStore();
   let gameWon = 0;
 
@@ -115,7 +110,7 @@ export default function ActiveGame({ navigation }: ActiveGameProps) {
     const unsubscribe = onValue(roomRef, (snapshot) => {
       const roomData = snapshot.val();
       if (roomData.isSessionStarted === false) {
-        navigation.goBack();
+        updateIsSessionStarted(false);
         return;
       }
       if (roomData) {
@@ -151,7 +146,7 @@ export default function ActiveGame({ navigation }: ActiveGameProps) {
             <Text style={styles.gameText}>Score: {correctAnswerCount - wrongAnswerCount} </Text>
             <Text style={styles.gameText}>Drinks: {wrongAnswerCount} </Text>
 
-            {authUser?.uid === gameHost && <Button onPress={() => { navigation.goBack(); endSessionInDatabase(); }} style={styles.lobbyButton} text="BACK TO LOBBY" />}
+            {authUser?.uid === gameHost && <Button onPress={() => { updateIsSessionStarted(false); endSessionInDatabase(); }} style={styles.lobbyButton} text="BACK TO LOBBY" />}
           </>
         ) : (
           <>

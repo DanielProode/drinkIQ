@@ -1,4 +1,3 @@
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { get, ref, set, update } from 'firebase/database';
 import { useState } from 'react';
 import { Keyboard, StyleSheet, Text, TextInput, View, TouchableWithoutFeedback } from 'react-native';
@@ -12,15 +11,11 @@ import { FIREBASE_RTDB } from '../firebaseConfig.js';
 import useGameStore from '../store/gameStore';
 import useUserStore from '../store/userStore';
 
-interface NewGameProps {
-  navigation: NativeStackNavigationProp<any>;
-}
-
-export default function NewGame({ navigation }: NewGameProps) {
+export default function NewGame() {
   const [disabled, setDisabled] = useState(true);
   const [error, setError] = useState('');
   const { username } = useUserStore();
-  const { avatar, drink, roomCode, updateRoomCode } = useGameStore();
+  const { avatar, drink, roomCode, updateRoomCode, updateIsLobbyStarted, updateIsGameHost } = useGameStore();
   const { authUser } = useAuth();
   const userId = authUser ? authUser.uid : '';
 
@@ -46,10 +41,11 @@ export default function NewGame({ navigation }: NewGameProps) {
       console.log(`Player ${username} has joined the room.`);
       const isPlayerHost = await checkIsGameHost(roomCode);
       if (isPlayerHost) { 
-        navigation.navigate('Lobby', { gameHost: true }); 
+        updateIsLobbyStarted(true);
+        updateIsGameHost(true);
       }
       else { 
-        navigation.navigate('Lobby', { gameHost: false }); 
+        updateIsLobbyStarted(true);
       }
     } catch (error) {
       console.error('Error joining the game: ', error);
@@ -66,7 +62,8 @@ export default function NewGame({ navigation }: NewGameProps) {
       await createRoom(generatedRoomCode);
       updateRoomCode(generatedRoomCode)
       console.log(`Player ${username} has joined the room.`);
-      navigation.navigate('Lobby', { gameHost: true });
+      updateIsLobbyStarted(true);
+      updateIsGameHost(true);
     } catch (error) {
       console.error('Error starting the game:', error);
     }
