@@ -14,6 +14,12 @@ import { useAuth } from '../context/authContext';
 import { FIREBASE_DB, FIREBASE_RTDB } from '../firebaseConfig.js';
 import useGameStore from '../store/gameStore';
 
+interface UpdateGameInfoInDatabaseParams {
+  isGameOver?: boolean;
+  isSessionStarted?: boolean;
+  currentTurn?: number;
+}
+
 export default function ActiveGame() {
   const [isGameOver, setIsGameOver] = useState(false);
   const [gameHost, setGameHost] = useState('');
@@ -38,9 +44,9 @@ export default function ActiveGame() {
   ];
 
   const isCurrentPlayersTurn = () => fetchedPlayers[currentTurnIndex].userId === userId;
-  
-  const checkGameWinner = () =>  { gameWon = wrongAnswerCount < correctAnswerCount ? 1 : 0; }
-  
+
+  const checkGameWinner = () => { gameWon = wrongAnswerCount < correctAnswerCount ? 1 : 0; }
+
   // If the current index is the last in the array return the first player
   // Otherwise, return the next index in the array
   const getNextPlayerIndex = (currentIndex: number): number => (currentIndex === fetchedPlayers.length - 1 ? 0 : currentIndex + 1);
@@ -63,39 +69,16 @@ export default function ActiveGame() {
     }
   }
 
-  const updateCurrentTurnInDatabase = async () => {
+  const updateGameInfoInDatabase = async (gameParams: UpdateGameInfoInDatabaseParams) => {
     const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
 
     try {
-      await update(roomRef, { currentTurn: getNextPlayerIndex(currentTurnIndex) });
-      console.log(`Current turn player with index: ` + currentTurnIndex);
+      await update(roomRef, gameParams);
+      console.log(`${JSON.stringify(gameParams)} updated in database`);
     } catch (error) {
-      console.error('Error updating current turn in database:', error);
+      console.error(`Error updating ${JSON.stringify(gameParams)} in database:`, error);
     }
   }
-
-  const updateGameOverInDatabase = async () => {
-    setIsGameOver(true);
-    const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
-
-    try {
-      await update(roomRef, { isGameOver: true });
-      console.log(`Game over`);
-    } catch (error) {
-      console.error('Error ending game:', error);
-    }
-  };
-
-  const endSessionInDatabase = async () => {
-    const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
-
-    try {
-      await update(roomRef, { isSessionStarted: false, isGameOver: false });
-      console.log(`Session ended`);
-    } catch (error) {
-      console.error('Error ending session:', error);
-    }
-  };
 
   const setAnsweredText = (isAnswerCorrect: boolean) => {
     const currentPlayer = fetchedPlayers[currentTurnIndex].username;
@@ -110,7 +93,7 @@ export default function ActiveGame() {
   const handleGameOver = () => {
     checkGameWinner();
     updateUserData();
-    updateGameOverInDatabase();
+    updateGameInfoInDatabase({ isGameOver: true })
   }
 
   useEffect(() => {
@@ -153,7 +136,7 @@ export default function ActiveGame() {
             <Text style={styles.gameText}>Score: {correctAnswerCount - wrongAnswerCount} </Text>
             <Text style={styles.gameText}>Drinks: {wrongAnswerCount} </Text>
 
-            {authUser?.uid === gameHost && <Button onPress={() => { updateIsSessionStarted(false); endSessionInDatabase(); }} style={styles.lobbyButton} text="BACK TO LOBBY" />}
+            {authUser?.uid === gameHost && <Button onPress={() => { updateIsSessionStarted(false); updateGameInfoInDatabase({ isSessionStarted: false, isGameOver: false }); }} style={styles.lobbyButton} text="BACK TO LOBBY" />}
           </>
         ) : (
           <>
@@ -161,8 +144,7 @@ export default function ActiveGame() {
             {fetchedPlayers.map((player, index) =>
               <PlayerAroundTable stylesArray={stylesArray[index]} key={player.userId} player={player} />
             )}
-
-            <CardStack onGameOver={handleGameOver} points={correctAnswerCount} drinks={wrongAnswerCount} setPoints={setCorrectAnswerCount} setDrinks={setWrongAnswerCount} updateTurn={updateCurrentTurnInDatabase} isTurn={isCurrentPlayersTurn()} answeredText={setAnsweredText} />
+            <CardStack onGameOver={handleGameOver} points={correctAnswerCount} drinks={wrongAnswerCount} setPoints={setCorrectAnswerCount} setDrinks={setWrongAnswerCount} updateTurn={() => updateGameInfoInDatabase({ currentTurn: getNextPlayerIndex(currentTurnIndex) })} isTurn={isCurrentPlayersTurn()} answeredText={setAnsweredText} />
           </>
         )}
       </View>
