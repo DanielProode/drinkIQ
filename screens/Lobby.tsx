@@ -24,7 +24,7 @@ export interface Player {
 }
 
 export default function Lobby() {
-  const { isGameHost, roomCode, playableDeckIndex, updatePlayableDeckIndex, updateIsLobbyStarted, updateIsSessionStarted } = useGameStore();
+  const { isGameHost, roomCode, playableDeckIndex, updatePlayableDeckIndex, updateIsLobbyStarted, updateIsSessionStarted, updateIsGameHost } = useGameStore();
   const { authUser } = useAuth();
   const [isAvatarSelectionModalVisible, setIsAvatarSelectionModalVisible] = useState(false);
   const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
@@ -78,6 +78,7 @@ export default function Lobby() {
     remove(removePlayerRef)
       .then(() => {
         updateIsLobbyStarted(false);
+        updateIsGameHost(false);
       })
       .catch((error) => {
         console.error('Error removing player:', error);
