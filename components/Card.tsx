@@ -57,9 +57,9 @@ export default function Card({ questionElement, cardsLeft, isTurn, toggleVisibil
 
     try {
       await update(answersRef, answerParams);
-      console.log(`Answer selection variables updated in database`);
+      console.log(`${JSON.stringify(answerParams)} updated in database`);
     } catch (error) {
-      console.error('Error updating answer selection variables in database:', error);
+      console.error(`Error updating ${JSON.stringify(answerParams)} in database:`, error);
     }
   }
 
@@ -86,7 +86,7 @@ export default function Card({ questionElement, cardsLeft, isTurn, toggleVisibil
 
   useEffect(() => {
     if (randomizedAnswerArray.length > 0 && isTurn) updateAnswerSelectionInDatabase({ randomizedAnswerArray });
-  }, [randomizedAnswerArray]);
+  }, []);
 
 
   useEffect(() => {

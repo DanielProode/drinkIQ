@@ -34,6 +34,12 @@ interface AnswersArray {
   isCorrect: boolean;
 };
 
+interface UpdateCardsInfoInDatabaseParams {
+  questionsArray?: QuestionsArray[];
+  cardCount?: number;
+  isCardVisible?: boolean;
+}
+
 export default function CardStack({ drinks, points, isTurn, onGameOver, setPoints, setDrinks, updateTurn, answeredText }: CardStackProps) {
   const [cardCount, setCardCount] = useState(DEFAULT_CARD_COUNT);
   const [cardImage] = useState(BASE_CARD_IMAGE);
@@ -45,38 +51,14 @@ export default function CardStack({ drinks, points, isTurn, onGameOver, setPoint
   const questionsCollection = collection(FIREBASE_DB, "packs", CARD_PACKS[playableDeckIndex].id, "questions");
   const { roomCode } = useGameStore();
 
-  const updateCurrentQuestionInDatabase = async (questions: QuestionsArray[]) => {
+  const updateCardParamsInDatabase = async (cardParams: UpdateCardsInfoInDatabaseParams) => {
     const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
 
     try {
-      await update(roomRef, { questions, cardCount: DEFAULT_CARD_COUNT, isCardVisible: false, });
-      console.log(`Question updated in database`);
+      await update(roomRef, cardParams);
+      console.log(`${JSON.stringify(cardParams)} updated in database`);
     } catch (error) {
-      console.error('Error updating current question in database:', error);
-    }
-  }
-
-  const updateCardCountInDatabase = async () => {
-    setCardCount(cardCount - 1);
-    const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
-
-    try {
-      await update(roomRef, { cardCount: cardCount - 1 });
-      console.log(`Card count updated in database`);
-    } catch (error) {
-      console.error('Error updating card count in database:', error);
-    }
-  }
-
-  const updateCardVisibilityInDatabase = async () => {
-    setIsCardVisible(!isCardVisible);
-    const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
-
-    try {
-      await update(roomRef, { isCardVisible: !isCardVisible });
-      console.log(`Card count updated in database`);
-    } catch (error) {
-      console.error('Error updating card count in database:', error);
+      console.error(`Error updating ${JSON.stringify(cardParams)} in database:`, error);
     }
   }
 
@@ -151,7 +133,7 @@ export default function CardStack({ drinks, points, isTurn, onGameOver, setPoint
   }
 
   const toggleCardVisibility = () => {
-    updateCardVisibilityInDatabase();
+    updateCardParamsInDatabase({ isCardVisible: !isCardVisible })
 
     if (cardCount === 0) onGameOver()
   }
@@ -165,9 +147,9 @@ export default function CardStack({ drinks, points, isTurn, onGameOver, setPoint
   }
 
   const handleCardPick = () => {
-    if (isTurn) {
+    if (isTurn && cardCount > 0) {
       toggleCardVisibility();
-      if (cardCount > 0) updateCardCountInDatabase();
+      updateCardParamsInDatabase({ cardCount: cardCount - 1 });
     }
   }
 
@@ -194,8 +176,8 @@ export default function CardStack({ drinks, points, isTurn, onGameOver, setPoint
   }, []);
 
   useEffect(() => {
-    if (questionsArray.length > 0) {
-      updateCurrentQuestionInDatabase(questionsArray);
+    if (questionsArray.length > 0 && isTurn) {
+      updateCardParamsInDatabase({ questionsArray, cardCount: DEFAULT_CARD_COUNT, isCardVisible: false })
     }
   }, [questionsArray]);
 
@@ -204,7 +186,7 @@ export default function CardStack({ drinks, points, isTurn, onGameOver, setPoint
     const unsubscribe = onValue(roomRef, (snapshot) => {
       const roomData = snapshot.val();
       if (roomData) {
-        const questionData: QuestionsArray[] = roomData.questions;
+        const questionData: QuestionsArray[] = roomData.questionsArray;
         const cardCount: number = roomData.cardCount;
         const isCardVisible: boolean = roomData.isCardVisible;
 
