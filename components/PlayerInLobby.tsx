@@ -5,35 +5,24 @@ import { StyleSheet, View, Text, Pressable } from 'react-native';
 import { AVATAR_ICONS, DRINK_ICONS } from '../constants/general';
 import { LIGHTBLACK, PRIMARY_COLOR, SECONDARY_COLOR } from '../constants/styles/colors';
 import { FONT_FAMILY_MEDIUM, REGULAR_FONT_SIZE } from '../constants/styles/typography';
+import { Player } from '../screens/Lobby';
 
 interface PlayerInLobbyProps {
   player: Player;
-  index: number;
   currentUser: string;
-  onPress: () => void;
+  handlePress: () => void;
 }
 
-interface Player {
-  username: string;
-  avatar: number;
-  drink: number;
-}
-
-export default function PlayerInLobby({ player, index, currentUser, onPress }: PlayerInLobbyProps) {
+export default function PlayerInLobby({ player, currentUser, handlePress }: PlayerInLobbyProps) {
   return (
     <>
-      <Pressable
-        style={styles.playerContainer}
-        key={index}
-        onPress={() => onPress()}
-      >
-        <View style={[styles.avatarCircle, player.username === currentUser && styles.currentAvatarCircle]}>
+      <Pressable style={styles.playerContainer} onPress={handlePress}>
+        <View style={[styles.avatarCircle, player.userId === currentUser && styles.currentAvatarCircle]}>
           <Image style={styles.avatar} source={AVATAR_ICONS[player.avatar]} />
           <Image style={styles.drink} source={DRINK_ICONS[player.drink]} />
         </View>
         <Text style={styles.name} adjustsFontSizeToFit numberOfLines={1}>{player.username}</Text>
       </Pressable>
-
     </>
   );
 };

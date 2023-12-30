@@ -1,39 +1,31 @@
 import { Image } from 'expo-image';
 import React from 'react'
-import { StyleSheet, View, Text, Pressable, ImageSourcePropType, ViewStyle } from 'react-native';
+import { StyleSheet, View, Text, Pressable, ViewStyle } from 'react-native';
 
+import { AVATAR_ICONS, DRINK_ICONS } from '../constants/general';
 import { SECONDARY_COLOR } from '../constants/styles/colors';
 import { FONT_FAMILY_MEDIUM, REGULAR_FONT_SIZE } from '../constants/styles/typography';
+import { Player } from '../screens/Lobby';
 
 interface PlayerAroundTableProps {
-    player: Player;
-    index: number;
-    stylesArray: ViewStyle;
+  player: Player;
+  stylesArray: ViewStyle;
 }
 
-interface Player {
-    username: string;
-    avatar: ImageSourcePropType;
-    drink: ImageSourcePropType;
-}
-
-
-export default function PlayerAroundTable({ stylesArray, player, index }: PlayerAroundTableProps) {
-    return (
-        <>
-            <View style={stylesArray} key={index}>
-                <Pressable
-                    style={styles.playerContainer}
-                >
-                    <View style={styles.avatarCircle}>
-                        <Image style={styles.avatar} source={player.avatar} />
-                        <Image style={styles.drink} source={player.drink} />
-                    </View>
-                    <Text style={styles.name} adjustsFontSizeToFit numberOfLines={1}>{player.username}</Text>
-                </Pressable>
-            </View>
-        </>
-    );
+export default function PlayerAroundTable({ stylesArray, player }: PlayerAroundTableProps) {
+  return (
+    <>
+      <View style={stylesArray}>
+        <Pressable style={styles.playerContainer}>
+          <View style={styles.avatarCircle}>
+            <Image style={styles.avatar} source={AVATAR_ICONS[player.avatar]} />
+            <Image style={styles.drink} source={DRINK_ICONS[player.drink]} />
+          </View>
+          <Text style={styles.name} adjustsFontSizeToFit numberOfLines={1}>{player.username}</Text>
+        </Pressable>
+      </View>
+    </>
+  );
 };
 
 const styles = StyleSheet.create({

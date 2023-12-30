@@ -12,14 +12,13 @@ import { FIREBASE_RTDB } from '../firebaseConfig';
 import useGameStore from '../store/gameStore';
 
 interface CardDeckSelectionProps {
-  roomCode: string;
   isVisible: boolean;
   onClose: () => void;
 };
 
-export default function CardDeckSelection({ roomCode, isVisible, onClose, }: CardDeckSelectionProps) {
+export default function CardDeckSelection({ isVisible, onClose, }: CardDeckSelectionProps) {
   const [selectedCardIndex, setSelectedCardIndex] = useState(0);
-  const { playableDeckIndex, updatePlayableDeckIndex } = useGameStore();
+  const { roomCode, playableDeckIndex, updatePlayableDeckIndex } = useGameStore();
 
   const updatePlayableDeckInDatabase = async () => {
     const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);

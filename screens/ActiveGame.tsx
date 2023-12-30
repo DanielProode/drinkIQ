@@ -1,44 +1,35 @@
-import { RouteProp } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { onValue, ref, update } from 'firebase/database';
 import { doc, updateDoc, increment } from "firebase/firestore";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
+import { Player } from './Lobby';
 import Button from '../components/Button';
 import CardStack from '../components/CardStack';
+import LoadingScreen from '../components/LoadingScreen';
 import PlayerAroundTable from '../components/PlayerAroundTable';
-import { DEFAULT_AVATAR_IMAGE, DEFAULT_DRINK_IMAGE } from '../constants/general';
 import { BACKGROUND_COLOR, PRIMARY_COLOR, SECONDARY_COLOR } from '../constants/styles/colors';
 import { FONT_FAMILY_REGULAR, HEADER_FONT_SIZE, LOGO_FONT_FAMILY_REGULAR, REGULAR_LOGO_FONT_SIZE } from '../constants/styles/typography';
 import { useAuth } from '../context/authContext';
-import { FIREBASE_DB } from '../firebaseConfig.js';
+import { FIREBASE_DB, FIREBASE_RTDB } from '../firebaseConfig.js';
+import useGameStore from '../store/gameStore';
 
-interface ActiveGameProps {
-  route: RouteProp<{
-    ActiveGame: {
-      gameCode: string;
-    }
-  }>;
-  navigation: NativeStackNavigationProp<any>;
-};
+interface UpdateGameInfoInDatabaseParams {
+  isGameOver?: boolean;
+  isSessionStarted?: boolean;
+  currentTurn?: number;
+}
 
-// FETCH all players from session, including the current player, and later on check which player in list is current player, and go from there
-const fetchedPlayers = [{ username: "Bot Alfred", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
-{ username: "Bot Allu", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
-{ username: "Bot Pete", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
-{ username: "Bot Viktor", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
-{ username: "Bot Albert", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
-{ username: "Bot Sasha", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
-{ username: "Bot Anubis", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
-{ username: "Bot Anubis2", avatar: DEFAULT_AVATAR_IMAGE, drink: DEFAULT_DRINK_IMAGE },
-]
-
-export default function ActiveGame({ route, navigation }: ActiveGameProps) {
-  const { gameCode } = route.params;
+export default function ActiveGame() {
   const [isGameOver, setIsGameOver] = useState(false);
+  const [gameHost, setGameHost] = useState('');
   const [correctAnswerCount, setCorrectAnswerCount] = useState<number>(0);
   const [wrongAnswerCount, setWrongAnswerCount] = useState<number>(0);
+  const [fetchedPlayers, setFetchedPlayers] = useState<Player[]>([]);
+  const [currentTurnIndex, setCurrentTurnIndex] = useState<number>(0);
   const { authUser } = useAuth();
+  const { roomCode, updateIsSessionStarted } = useGameStore();
+  const userId = authUser ? authUser.uid : '';
   let gameWon = 0;
 
   const stylesArray = [
@@ -52,14 +43,13 @@ export default function ActiveGame({ route, navigation }: ActiveGameProps) {
     styles.eighthAvatar,
   ];
 
-  const checkGameWinner = () => {
-    if (wrongAnswerCount < correctAnswerCount) {
-      gameWon = 1;
-    }
-    else {
-      gameWon = 0;
-    }
-  }
+  const isCurrentPlayersTurn = () => fetchedPlayers[currentTurnIndex].userId === userId;
+
+  const checkGameWinner = () => { gameWon = wrongAnswerCount < correctAnswerCount ? 1 : 0; }
+
+  // If the current index is the last in the array return the first player
+  // Otherwise, return the next index in the array
+  const getNextPlayerIndex = (currentIndex: number): number => (currentIndex === fetchedPlayers.length - 1 ? 0 : currentIndex + 1);
 
   const updateUserData = async () => {
     try {
@@ -79,36 +69,82 @@ export default function ActiveGame({ route, navigation }: ActiveGameProps) {
     }
   }
 
-  const handleGameOver = () => {
-    console.log("Game over!");
-    checkGameWinner();
-    setIsGameOver(true);
-    updateUserData();
+  const updateGameInfoInDatabase = async (gameParams: UpdateGameInfoInDatabaseParams) => {
+    const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
+
+    try {
+      await update(roomRef, gameParams);
+      console.log(`${JSON.stringify(gameParams)} updated in database`);
+    } catch (error) {
+      console.error(`Error updating ${JSON.stringify(gameParams)} in database:`, error);
+    }
   }
 
+  const setAnsweredText = (isAnswerCorrect: boolean) => {
+    const currentPlayer = fetchedPlayers[currentTurnIndex].username;
+
+    if (isCurrentPlayersTurn()) {
+      return isAnswerCorrect ? "Correct, choose who has to drink!" : "Wrong, take a sip!";
+    } else {
+      return isAnswerCorrect ? `Correct, ${currentPlayer} chooses who has to drink!` : `Wrong, ${currentPlayer} takes a sip!`;
+    }
+  };
+
+  const handleGameOver = () => {
+    checkGameWinner();
+    updateUserData();
+    updateGameInfoInDatabase({ isGameOver: true })
+  }
+
+  useEffect(() => {
+    const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
+    const unsubscribe = onValue(roomRef, (snapshot) => {
+      const roomData = snapshot.val();
+      if (roomData.isSessionStarted === false) {
+        updateIsSessionStarted(false);
+        return;
+      }
+      if (roomData) {
+        const turnData: number = roomData.currentTurn;
+        const gameOver: boolean = roomData.isGameOver;
+        const hostData: string = roomData.gameHost;
+        const playersData: Player = roomData.players;
+        const playersArray = Object.values(playersData);
+
+        setCurrentTurnIndex(turnData);
+        setGameHost(hostData);
+        setFetchedPlayers(playersArray);
+        setIsGameOver(gameOver);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  if (fetchedPlayers.length === 0) {
+    return <LoadingScreen />
+  }
 
   return (
     <>
       <View style={styles.gameBackground}>
         <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
-        <Text style={styles.gameCode}>#{gameCode}</Text>
+        <Text style={styles.gameCode}>#{roomCode}</Text>
         {isGameOver ? (
           <>
             <Text style={styles.gameText}>GAME OVER!</Text>
             <Text style={styles.gameText}>Score: {correctAnswerCount - wrongAnswerCount} </Text>
             <Text style={styles.gameText}>Drinks: {wrongAnswerCount} </Text>
-            <Button
-              onPress={() => navigation.goBack()}
-              style={styles.lobbyButton}
-              text="BACK TO LOBBY" />
+
+            {authUser?.uid === gameHost && <Button onPress={() => { updateIsSessionStarted(false); updateGameInfoInDatabase({ isSessionStarted: false, isGameOver: false }); }} style={styles.lobbyButton} text="BACK TO LOBBY" />}
           </>
         ) : (
           <>
+            <Text style={styles.gameCode}>Current turn: {fetchedPlayers[currentTurnIndex].username}</Text>
             {fetchedPlayers.map((player, index) =>
-              <PlayerAroundTable stylesArray={stylesArray[index]} key={player.username} player={player} index={index} />
+              <PlayerAroundTable stylesArray={stylesArray[index]} key={player.userId} player={player} />
             )}
-
-            <CardStack onGameOver={handleGameOver} points={correctAnswerCount} drinks={wrongAnswerCount} setPoints={setCorrectAnswerCount} setDrinks={setWrongAnswerCount} />
+            <CardStack onGameOver={handleGameOver} points={correctAnswerCount} drinks={wrongAnswerCount} setPoints={setCorrectAnswerCount} setDrinks={setWrongAnswerCount} updateTurn={() => updateGameInfoInDatabase({ currentTurn: getNextPlayerIndex(currentTurnIndex) })} isTurn={isCurrentPlayersTurn()} answeredText={setAnsweredText} />
           </>
         )}
       </View>

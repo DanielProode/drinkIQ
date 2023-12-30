@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Image } from 'expo-image';
+import { onValue, ref, update } from 'firebase/database';
 import { collection, getDocs } from 'firebase/firestore';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { Pressable, View, StyleSheet, Text } from 'react-native';
@@ -9,16 +10,18 @@ import LoadingScreen from '../components/LoadingScreen';
 import { BASE_CARD_IMAGE, CARD_PACKS, DEFAULT_CARD_COUNT } from '../constants/general';
 import { SECONDARY_COLOR } from '../constants/styles/colors';
 import { FONT_FAMILY_MEDIUM } from '../constants/styles/typography';
-import { FIREBASE_DB } from '../firebaseConfig.js';
+import { FIREBASE_DB, FIREBASE_RTDB } from '../firebaseConfig.js';
 import useGameStore from '../store/gameStore';
 
-
 interface CardStackProps {
-  onGameOver: () => void;
   points: number;
   drinks: number;
+  isTurn: boolean;
+  onGameOver: () => void;
   setPoints: Dispatch<SetStateAction<number>>;
   setDrinks: Dispatch<SetStateAction<number>>;
+  updateTurn: () => void;
+  answeredText: (isAnswerCorrect: boolean) => string;
 };
 
 export interface QuestionsArray {
@@ -31,15 +34,33 @@ interface AnswersArray {
   isCorrect: boolean;
 };
 
+interface UpdateCardsInfoInDatabaseParams {
+  questionsArray?: QuestionsArray[];
+  cardCount?: number;
+  isCardVisible?: boolean;
+}
 
-export default function CardStack({ onGameOver, setPoints, setDrinks, points, drinks }: CardStackProps) {
+export default function CardStack({ drinks, points, isTurn, onGameOver, setPoints, setDrinks, updateTurn, answeredText }: CardStackProps) {
   const [cardCount, setCardCount] = useState(DEFAULT_CARD_COUNT);
-  const [cardImage, setCardImage] = useState(BASE_CARD_IMAGE);
+  const [cardImage] = useState(BASE_CARD_IMAGE);
   const [isCardVisible, setIsCardVisible] = useState(false);
   const [questionsArray, setQuestionsArray] = useState<QuestionsArray[]>([]);
+  const [fetchedQuestions, setFetchedQuestions] = useState<QuestionsArray[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { playableDeckIndex } = useGameStore();
   const questionsCollection = collection(FIREBASE_DB, "packs", CARD_PACKS[playableDeckIndex].id, "questions");
+  const { roomCode } = useGameStore();
+
+  const updateCardParamsInDatabase = async (cardParams: UpdateCardsInfoInDatabaseParams) => {
+    const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
+
+    try {
+      await update(roomRef, cardParams);
+      console.log(`${JSON.stringify(cardParams)} updated in database`);
+    } catch (error) {
+      console.error(`Error updating ${JSON.stringify(cardParams)} in database:`, error);
+    }
+  }
 
   //Check if local array exists, get it if it does, fetch it with loadQuestions() if it doesn't
   //TODO: In the future, if we want to push an update (version change), then compare if version boolean in AsyncStorage is equal to version name from DB 
@@ -55,7 +76,7 @@ export default function CardStack({ onGameOver, setPoints, setDrinks, points, dr
   };
 
   //Load questions from DB and write questions to new array
-  async function loadQuestions() {
+  const loadQuestions = async () => {
     try {
       const querySnapshot = await getDocs(questionsCollection);
       const tempQuestionsArray: QuestionsArray[] = [];
@@ -80,21 +101,6 @@ export default function CardStack({ onGameOver, setPoints, setDrinks, points, dr
       throw error;
     }
   }
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const array = await getArray();
-        setQuestionsArray(selectPlayableQuestions(array));
-        setIsLoading(false);
-      } catch (error) {
-        setIsLoading(false);
-        console.error('Error fetching and storing data: ', error);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   const generateRandomNumberArray = (arraySize: number): number[] => {
     const array: number[] = [];
@@ -126,23 +132,11 @@ export default function CardStack({ onGameOver, setPoints, setDrinks, points, dr
     return tempGameQuestionArray;
   }
 
-
-  //Currently not in use, card stack
-  useEffect(() => {
-    if (cardCount < 5 && cardCount > 0) {
-      setCardImage(BASE_CARD_IMAGE);
-    }
-  }, [cardCount]);
-
   const toggleCardVisibility = () => {
-    setIsCardVisible(!isCardVisible);
+    updateCardParamsInDatabase({ isCardVisible: !isCardVisible })
 
     if (cardCount === 0) onGameOver()
   }
-
-  const onDecrement = () => {
-    if (cardCount > 0) setCardCount(cardCount - 1)
-  };
 
   function handlePoints(answerState: boolean) {
     if (answerState) {
@@ -152,22 +146,72 @@ export default function CardStack({ onGameOver, setPoints, setDrinks, points, dr
     }
   }
 
+  const handleCardPick = () => {
+    if (isTurn && cardCount > 0) {
+      toggleCardVisibility();
+      updateCardParamsInDatabase({ cardCount: cardCount - 1 });
+    }
+  }
+
+  //Currently not in use, card stack
+  // useEffect(() => {
+  //   if (cardCount < 5 && cardCount > 0) {
+  //     setCardImage(BASE_CARD_IMAGE);
+  //   }
+  // }, [cardCount]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const array = await getArray();
+        setQuestionsArray(selectPlayableQuestions(array));
+        setIsLoading(false);
+      } catch (error) {
+        setIsLoading(false);
+        console.error('Error fetching and storing data: ', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (questionsArray.length > 0 && isTurn) {
+      updateCardParamsInDatabase({ questionsArray, cardCount: DEFAULT_CARD_COUNT, isCardVisible: false })
+    }
+  }, [questionsArray]);
+
+  useEffect(() => {
+    const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
+    const unsubscribe = onValue(roomRef, (snapshot) => {
+      const roomData = snapshot.val();
+      if (roomData) {
+        const questionData: QuestionsArray[] = roomData.questionsArray;
+        const cardCount: number = roomData.cardCount;
+        const isCardVisible: boolean = roomData.isCardVisible;
+
+        setFetchedQuestions(questionData);
+        setCardCount(cardCount);
+        setIsCardVisible(isCardVisible);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   if (isLoading) {
     return <LoadingScreen />
   }
 
   return (
     <>
-      {isCardVisible && <Card handlePoints={handlePoints} onClose={toggleCardVisibility} questionElement={questionsArray[cardCount]} cardsLeft={cardCount} />}
+      {isCardVisible && <Card handlePoints={handlePoints} toggleVisibility={toggleCardVisibility} updateTurn={updateTurn} questionElement={fetchedQuestions[cardCount]} cardsLeft={cardCount} isTurn={isTurn} answeredText={answeredText} />}
       <View style={styles.gameView}>
         <View style={styles.cardViewContainer}>
           <Pressable
             style={styles.cardViewTouchable}
             disabled={isCardVisible}
-            onPress={() => {
-              toggleCardVisibility()
-              onDecrement()
-            }}
+            onPress={handleCardPick}
           >
             <Image style={styles.cardView} source={cardImage} />
           </Pressable>
@@ -177,7 +221,6 @@ export default function CardStack({ onGameOver, setPoints, setDrinks, points, dr
           <Text style={styles.gameDataText}>Points: {points - drinks}</Text>
           <Text style={styles.gameDataText}>Drinks: {drinks}</Text>
         </View>
-
       </View>
     </>
   )

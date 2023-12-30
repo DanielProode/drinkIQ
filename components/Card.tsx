@@ -1,72 +1,115 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { Image } from 'expo-image';
-import { useState } from 'react';
+import { onValue, ref, update } from 'firebase/database';
+import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import Answer from './Answer';
+import AnswerButton from './AnswerButton';
 import { BASE_CARD_IMAGE, CARD_PACKS, DEFAULT_CARD_COUNT } from '../constants/general';
 import { ALMOSTBLACK, GREY, LIGHTBLACK, CORRECT, WRONG, SECONDARY_COLOR } from '../constants/styles/colors';
 import { FONT_FAMILY_MEDIUM, FONT_FAMILY_REGULAR, HEADER_FONT_SIZE, MEDIUM_LOGO_FONT_SIZE, REGULAR_FONT_SIZE, TITLE_FONT_SIZE } from '../constants/styles/typography';
+import { FIREBASE_RTDB } from '../firebaseConfig';
 import useGameStore from '../store/gameStore';
 
 interface CardProps {
-  onClose: () => void;
-  handlePoints: (answerState: boolean) => void;
-  questionElement?: QuestionsArray;
+  questionElement: QuestionsArray;
   cardsLeft: number;
+  isTurn: boolean;
+  toggleVisibility: () => void;
+  updateTurn: () => void;
+  handlePoints: (answerState: boolean) => void;
+  answeredText: (isAnswerCorrect: boolean) => string;
 };
 
-export interface QuestionsArray {
+interface QuestionsArray {
   question: string;
   answers: AnswersArray[]
 };
 
-interface AnswersArray {
+export interface AnswersArray {
   text: string;
   isCorrect: boolean;
 };
 
-export default function Card({ onClose, handlePoints, questionElement, cardsLeft }: CardProps) {
-  if (!questionElement) {
+interface UpdateAnswerSelectionInDatabaseParams {
+  isAnswered?: boolean;
+  selectedAnswerIndex?: number | null;
+  isAnswerCorrect?: boolean;
+  randomizedAnswerArray?: AnswersArray[];
+}
+
+const randomize = (array: AnswersArray[]) => {
+  return [...array].sort(() => Math.random() - 0.5);
+}
+
+export default function Card({ questionElement, cardsLeft, isTurn, toggleVisibility, updateTurn, handlePoints, answeredText }: CardProps) {
+    if (!questionElement) {
     return
   }
-  const { playableDeckIndex } = useGameStore();
   const [isAnswered, setIsAnswered] = useState(false);
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number | null>(null);
   const [isAnswerCorrect, setIsAnswerCorrect] = useState(false);
+  const [randomizedAnswerArray, setRandomizedAnswerArray] = useState(() => randomize(questionElement.answers));
+  const { playableDeckIndex, roomCode } = useGameStore();
 
+  const updateAnswerSelectionInDatabase = async (answerParams: UpdateAnswerSelectionInDatabaseParams) => {
+    const answersRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/answerSelection`);
+
+    try {
+      await update(answersRef, answerParams);
+      console.log(`${JSON.stringify(answerParams)} updated in database`);
+    } catch (error) {
+      console.error(`Error updating ${JSON.stringify(answerParams)} in database:`, error);
+    }
+  }
 
   const handleAnswerSelection = (answerIndex: number) => {
     if (!isAnswered) {
       setSelectedAnswerIndex(answerIndex);
+      updateAnswerSelectionInDatabase({ selectedAnswerIndex: answerIndex });
     };
 
-    const selectedAnswer = questionElement.answers[answerIndex];
+    const selectedAnswer = randomizedAnswerArray[answerIndex];
+    const isCorrect = selectedAnswer.isCorrect;
 
-    if (!selectedAnswer.isCorrect) {
-      setIsAnswerCorrect(false);
-      handlePoints(false);
-    } else {
-      setIsAnswerCorrect(true);
-      handlePoints(true);
-    };
+    setIsAnswerCorrect(isCorrect);
+    handlePoints(isCorrect);
     setIsAnswered(true);
+    updateAnswerSelectionInDatabase({ isAnswerCorrect: isCorrect, isAnswered: true });
   };
 
-  const randomize = (array: AnswersArray[]) => {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-  }
+  const handleCloseCard = () => {
+    toggleVisibility();
+    updateTurn();
+    updateAnswerSelectionInDatabase({ selectedAnswerIndex: null, isAnswered: false });
+  };
 
-  const [randomizedAnswerArray] = useState(() => randomize(questionElement.answers));
+  useEffect(() => {
+    if (randomizedAnswerArray.length > 0 && isTurn) updateAnswerSelectionInDatabase({ randomizedAnswerArray });
+  }, []);
+
+
+  useEffect(() => {
+    const answersRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/answerSelection`);
+    const unsubscribe = onValue(answersRef, (snapshot) => {
+      const answersData = snapshot.val();
+      if (answersData) {
+        const isAnsweredData: boolean = answersData.isAnswered;
+        const selectedAnswerIndexData: number = answersData.selectedAnswerIndex;
+        const isAnswerCorrect: boolean = answersData.isAnswerCorrect;
+        const answersArray: AnswersArray[] = answersData.randomizedAnswerArray;
+
+        setRandomizedAnswerArray(answersArray);
+        setIsAnswered(isAnsweredData);
+        setSelectedAnswerIndex(selectedAnswerIndexData);
+        setIsAnswerCorrect(isAnswerCorrect);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const renderAnswers = () => {
-
-    console.log("Calling renderAnswers function...")
-
     return randomizedAnswerArray.map((answer, answerIndex) => {
       const correctAnswerIndex = randomizedAnswerArray.findIndex((answer) => answer.isCorrect);
       const isSelected = answerIndex === selectedAnswerIndex;
@@ -79,14 +122,14 @@ export default function Card({ onClose, handlePoints, questionElement, cardsLeft
         !isCorrect && isAnswered && { color: LIGHTBLACK }
       ];
       return (
-        <Answer key={answerIndex} answerIndex={answerIndex} isAnswered={isAnswered} answer={answer} answerStyle={answerStyle} textStyle={textStyle} handleAnswerSelection={handleAnswerSelection} setIsAnswered={setIsAnswered} />
+        <AnswerButton key={answerIndex} answer={answer} answerIndex={answerIndex} isAnswered={isAnswered} answerStyle={answerStyle} textStyle={textStyle} handleAnswerSelection={handleAnswerSelection} />
       );
     })
   };
 
   return (
     <View style={styles.backgroundBlur}>
-      <View style={styles.cardView}>
+      <View style={{ ...styles.cardView, pointerEvents: isTurn ? 'auto' : 'none' }}>
         <Image source={BASE_CARD_IMAGE} style={styles.image}>
           <View style={styles.questionBox}>
             <View style={styles.questionNumberContainer}>
@@ -94,7 +137,7 @@ export default function Card({ onClose, handlePoints, questionElement, cardsLeft
             </View>
             <View style={styles.questionTextContainer}>
               <Text style={styles.questionText} adjustsFontSizeToFit numberOfLines={5}>
-                {isAnswered && (isAnswerCorrect ? "Choose who has to drink!" : "Wrong, take a sip!")}
+                {isAnswered && answeredText(isAnswerCorrect)}
                 {!isAnswered && questionElement.question}
               </Text>
             </View>
@@ -110,7 +153,7 @@ export default function Card({ onClose, handlePoints, questionElement, cardsLeft
                   { opacity: pressed ? 0.5 : 1.0 },
                   styles.nextButton,
                 ]}
-                onPress={onClose}
+                onPress={handleCloseCard}
               >
                 <Text style={styles.nextButtonText}>→</Text>
               </Pressable>}

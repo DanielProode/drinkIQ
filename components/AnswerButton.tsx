@@ -1,25 +1,28 @@
 import { Dimensions, Pressable, StyleSheet, Text } from 'react-native';
 
+import { AnswersArray } from './Card';
+import { ANSWER_PREFIXES } from '../constants/general';
 import { BACKGROUND_COLOR, GREY, SECONDARY_COLOR } from '../constants/styles/colors';
 import { FONT_FAMILY_REGULAR, MEDIUM_FONT_SIZE } from '../constants/styles/typography';
 
 interface AnswerButtonProps {
-  text: string;
-  onPress: () => void;
+  answer: AnswersArray;
+  answerIndex: number;
   isAnswered: boolean;
-  style: any;
+  answerStyle: any;
   textStyle: any;
+  handleAnswerSelection: (answerIndex: number) => void;
 };
 
 const width = Dimensions.get('window').width;
 
-export default function AnswerButton({ text, onPress, isAnswered, style, textStyle }: AnswerButtonProps) {
+export default function AnswerButton({ answer, answerIndex, isAnswered, answerStyle, textStyle, handleAnswerSelection }: AnswerButtonProps) {
   return (
     <Pressable
-      style={({ pressed }) => [pressed && { opacity: 0.8 }, styles.button, style]}
-      onPress={onPress}
+      style={({ pressed }) => [pressed && { opacity: 0.8 }, styles.button, answerStyle]}
+      onPress={() => handleAnswerSelection(answerIndex)}
       disabled={isAnswered}>
-      <Text style={[styles.text, textStyle]} adjustsFontSizeToFit numberOfLines={1}>{text}</Text>
+      <Text style={[styles.text, textStyle]} adjustsFontSizeToFit numberOfLines={1}>{ANSWER_PREFIXES[answerIndex] + answer.text}</Text>
     </Pressable>
   );
 };

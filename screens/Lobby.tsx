@@ -1,9 +1,7 @@
-import { RouteProp } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Image } from 'expo-image';
-import { onValue, ref, remove } from 'firebase/database';
+import { onValue, ref, remove, update } from 'firebase/database';
 import { useEffect, useState } from 'react';
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import Button from '../components/Button';
 import PlayerInLobby from '../components/PlayerInLobby';
@@ -17,38 +15,24 @@ import CardDeckInfo from '../modals/CardDeckInfo';
 import CardDeckSelection from '../modals/CardDeckSelection';
 import PlayerProfile from '../modals/PlayerProfile';
 import useGameStore from '../store/gameStore';
-import useUserStore from '../store/userStore';
 
-interface LobbyProps {
-  route: RouteProp<{
-    Lobby: {
-      roomCode: string;
-      gameHost: boolean;
-    }
-  }>;
-  navigation: NativeStackNavigationProp<any>;
-};
-
-interface Player {
+export interface Player {
+  userId: string;
   username: string;
   avatar: number;
   drink: number;
-  isHost?: boolean;
 }
 
-export default function Lobby({ route, navigation }: LobbyProps) {
-  const { roomCode, gameHost } = route.params;
-  const { username } = useUserStore();
-  const { playableDeckIndex, updatePlayableDeckIndex } = useGameStore();
+export default function Lobby() {
+  const { isGameHost, roomCode, playableDeckIndex, updatePlayableDeckIndex, updateIsLobbyStarted, updateIsSessionStarted, updateIsGameHost } = useGameStore();
+  const { authUser } = useAuth();
   const [isAvatarSelectionModalVisible, setIsAvatarSelectionModalVisible] = useState(false);
   const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
   const [isCardDeckSelectionModalVisible, setIsCardDeckSelectionModalVisible] = useState(false);
   const [isCardDeckInfoModalVisible, setIsCardDeckInfoModalVisible] = useState(false);
   const [fetchedPlayers, setFetchedPlayers] = useState<Player[]>([]);
   const [selectedProfile, setSelectedProfile] = useState({ username: "Placeholder", avatar: 0, drink: 0 });
-  const { authUser } = useAuth();
   const userId = authUser ? authUser.uid : '';
-  let isLobbyDestroyed = false;
 
   const toggleAvatarSelectionModal = () => {
     setIsAvatarSelectionModalVisible(!isAvatarSelectionModalVisible);
@@ -63,12 +47,12 @@ export default function Lobby({ route, navigation }: LobbyProps) {
   }
 
   const toggleCardDeckSelectionModal = () => {
-    if (gameHost) setIsCardDeckSelectionModalVisible(!isCardDeckSelectionModalVisible)
+    if (isGameHost) setIsCardDeckSelectionModalVisible(!isCardDeckSelectionModalVisible)
     else setIsCardDeckInfoModalVisible(!isCardDeckInfoModalVisible)
   };
 
   const avatarPressed = (player: Player) => {
-    if (player.username === username) {
+    if (player.userId === userId) {
       toggleAvatarSelectionModal();
     } else {
       toggleProfileModal();
@@ -76,14 +60,25 @@ export default function Lobby({ route, navigation }: LobbyProps) {
     }
   }
 
+  const startGame = async () => {
+    try {
+      const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
+      await update(roomRef, { isSessionStarted: true, isGameOver: false, currentTurn: 0 });
+      console.log(`Game started`);
+    } catch (error) {
+      console.error('Error starting game:', error);
+    }
+  };
+
   const removePlayerFromLobby = () => {
     const playerRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/players/${userId}`);
     const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
-    const removePlayerRef = gameHost ? roomRef : playerRef;
+    const removePlayerRef = isGameHost ? roomRef : playerRef;
 
     remove(removePlayerRef)
       .then(() => {
-        console.log(`${userId} removed from room`);
+        updateIsLobbyStarted(false);
+        updateIsGameHost(false);
       })
       .catch((error) => {
         console.error('Error removing player:', error);
@@ -94,48 +89,30 @@ export default function Lobby({ route, navigation }: LobbyProps) {
     const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
     const unsubscribe = onValue(roomRef, (snapshot) => {
       const roomData = snapshot.val();
-      if (roomData) {
-        const cardDeckRef: number = roomData.cardDeck;
-        const playersData: Player = roomData.players;
-        const playersArray = Object.values(playersData);
-
-        setFetchedPlayers(playersArray);
-        updatePlayableDeckIndex(cardDeckRef);
-      } else {
-        isLobbyDestroyed = true;
-        navigation.navigate('NewGame');
+      if (!roomData) {
+        updateIsLobbyStarted(false);
+        return;
       }
+      if (roomData.isSessionStarted) {
+        updateIsSessionStarted(true);
+        return;
+      }
+      const cardDeckRef: number = roomData.cardDeck;
+      const playersData: Player = roomData.players;
+      const playersArray = Object.values(playersData);
+
+      setFetchedPlayers(playersArray);
+      updatePlayableDeckIndex(cardDeckRef);
     });
 
     return () => unsubscribe();
   }, []);
 
-  // Back button event
-  useEffect(
-    () =>
-      navigation.addListener('beforeRemove', (e) => {
-        if (isLobbyDestroyed) { return };
-        e.preventDefault();
-        Alert.alert(
-          'Leave the lobby?',
-          'Are you sure you want to leave the lobby?',
-          [
-            { text: "Don't leave", style: 'cancel', onPress: () => { } },
-            {
-              text: 'Leave',
-              style: 'destructive',
-              onPress: () => { navigation.dispatch(e.data.action); removePlayerFromLobby(); }
-            },
-          ]
-        );
-      }),
-    [navigation, isLobbyDestroyed]);
-
   return (
     <View style={styles.gameView}>
-      <AvatarSelection isVisible={isAvatarSelectionModalVisible} onClose={toggleAvatarSelectionModal} roomCode={roomCode} />
+      <AvatarSelection isVisible={isAvatarSelectionModalVisible} onClose={toggleAvatarSelectionModal} />
       <PlayerProfile isVisible={isProfileModalVisible} onClose={toggleProfileModal} profile={selectedProfile} />
-      <CardDeckSelection isVisible={isCardDeckSelectionModalVisible} onClose={toggleCardDeckSelectionModal} roomCode={roomCode} />
+      <CardDeckSelection isVisible={isCardDeckSelectionModalVisible} onClose={toggleCardDeckSelectionModal} />
       <CardDeckInfo isVisible={isCardDeckInfoModalVisible} onClose={toggleCardDeckSelectionModal} pack={CARD_PACKS[playableDeckIndex]} />
 
       <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
@@ -145,23 +122,28 @@ export default function Lobby({ route, navigation }: LobbyProps) {
       </Pressable>
       <Text style={styles.deckName}>{CARD_PACKS[playableDeckIndex].name}</Text>
       <View style={styles.joinedPlayers}>
-        {fetchedPlayers.map((player, index) =>
-          <PlayerInLobby onPress={() => avatarPressed(player)} player={player} index={index} currentUser={username} key={index} />
+        {fetchedPlayers.map((player) =>
+          <PlayerInLobby handlePress={() => avatarPressed(player)} player={player} currentUser={userId} key={player.userId} />
         )}
       </View>
 
       <View style={styles.buttonContainer}>
-        {gameHost ? (
+        {isGameHost ? (
           <Button
             marginTop={10}
-            onPress={() =>
-              navigation.navigate('ActiveGame', { roomCode })}
+            onPress={startGame}
             text="START GAME"
             buttonBgColor="#F76D31"
             buttonBorderColor="#F76D31" />
         ) : (
           <Text style={styles.waitingText}>Waiting for host to start the game...</Text>
         )}
+        <Button
+          marginTop={10}
+          onPress={removePlayerFromLobby}
+          text="LEAVE LOBBY"
+          buttonBgColor="#F76D31"
+          buttonBorderColor="#F76D31" />
       </View>
     </View>
   );
@@ -207,7 +189,6 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   buttonContainer: {
-    flex: 0.3,
   },
   deck: {
     flex: 1,

@@ -1,4 +1,3 @@
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { get, ref, set, update } from 'firebase/database';
 import { useState } from 'react';
 import { Keyboard, StyleSheet, Text, TextInput, View, TouchableWithoutFeedback } from 'react-native';
@@ -12,16 +11,11 @@ import { FIREBASE_RTDB } from '../firebaseConfig.js';
 import useGameStore from '../store/gameStore';
 import useUserStore from '../store/userStore';
 
-interface NewGameProps {
-  navigation: NativeStackNavigationProp<any>;
-}
-
-export default function NewGame({ navigation }: NewGameProps) {
+export default function NewGame() {
   const [disabled, setDisabled] = useState(true);
-  const [roomCode, setRoomCode] = useState('');
   const [error, setError] = useState('');
   const { username } = useUserStore();
-  const { avatar, drink } = useGameStore();
+  const { avatar, drink, roomCode, updateRoomCode, updateIsLobbyStarted, updateIsGameHost } = useGameStore();
   const { authUser } = useAuth();
   const userId = authUser ? authUser.uid : '';
 
@@ -38,14 +32,20 @@ export default function NewGame({ navigation }: NewGameProps) {
         setError(`Room ${roomCode} is already full`);
         return;
       }
+      const isSessionActive = await checkIsSessionActive(roomCode);
+      if (isSessionActive) {
+        setError(`Game has already started`);
+        return;
+      }
       await addPlayerToRoom(roomCode);
       console.log(`Player ${username} has joined the room.`);
       const isPlayerHost = await checkIsGameHost(roomCode);
       if (isPlayerHost) { 
-        navigation.navigate('Lobby', { roomCode, gameHost: true }); 
+        updateIsLobbyStarted(true);
+        updateIsGameHost(true);
       }
       else { 
-        navigation.navigate('Lobby', { roomCode }); 
+        updateIsLobbyStarted(true);
       }
     } catch (error) {
       console.error('Error joining the game: ', error);
@@ -54,14 +54,16 @@ export default function NewGame({ navigation }: NewGameProps) {
 
   const handleHostGame = async () => {
     try {
-      let roomCode = generateGameCode();
-      while (await checkRoomCode(roomCode)) {
-        roomCode = generateGameCode();
+      let generatedRoomCode = generateGameCode();
+      while (await checkRoomCode(generatedRoomCode)) {
+        generatedRoomCode = generateGameCode();
       }
 
-      await createRoom(roomCode);
+      await createRoom(generatedRoomCode);
+      updateRoomCode(generatedRoomCode)
       console.log(`Player ${username} has joined the room.`);
-      navigation.navigate('Lobby', { roomCode, gameHost: true });
+      updateIsLobbyStarted(true);
+      updateIsGameHost(true);
     } catch (error) {
       console.error('Error starting the game:', error);
     }
@@ -70,7 +72,7 @@ export default function NewGame({ navigation }: NewGameProps) {
   const addPlayerToRoom = async (roomCode: string) => {
     try {
       const playersRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/players`);
-      await update(playersRef, { [userId]: { username, avatar, drink }});
+      await update(playersRef, { [userId]: { userId, username, avatar, drink }});
     } catch (error) {
       console.error('Error joining room:', error);
     }
@@ -80,7 +82,7 @@ export default function NewGame({ navigation }: NewGameProps) {
     try {
       const roomCodeRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
       // Set initial room data here
-      await set(roomCodeRef, { gameHost: userId, cardDeck: 0, players: { [userId]: { username, avatar, drink } }});
+      await set(roomCodeRef, { gameHost: userId, cardDeck: 0, players: { [userId]: { userId, username, avatar, drink } }});
       console.log(`Room code ${roomCode} added to the database.`);
     } catch (error) {
       console.error('Error adding room to the database:', error);
@@ -131,6 +133,18 @@ export default function NewGame({ navigation }: NewGameProps) {
     }
   };
 
+  const checkIsSessionActive = async (roomCode: string) => {
+    const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/`);
+    try {
+      const snapshot = await get(roomRef);
+      const sessionStarted = snapshot.val().isSessionStarted;
+      if (sessionStarted) return true;
+    } catch (error) {
+      console.error('Error checking room code:', error);
+      return false;
+    }
+  };
+
   const onChanged = (text: string) => {
     const numbers = '0123456789';
     let newText = '';
@@ -140,7 +154,7 @@ export default function NewGame({ navigation }: NewGameProps) {
         newText = newText + text[i];
       }
     }
-    setRoomCode(newText);
+    updateRoomCode(newText);
 
     if (text.length === 6) {
       setDisabled(false);
@@ -159,7 +173,7 @@ export default function NewGame({ navigation }: NewGameProps) {
             style={styles.gameCodeInput}
             onChangeText={(text) => onChanged(text)}
             value={roomCode}
-            onSubmitEditing={(value) => setRoomCode(value.nativeEvent.text)}
+            onSubmitEditing={(value) => updateRoomCode(value.nativeEvent.text)}
             placeholder="XXXXXX"
             keyboardType="numeric"
             maxLength={6}

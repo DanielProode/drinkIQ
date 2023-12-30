@@ -1,5 +1,5 @@
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
@@ -16,10 +16,11 @@ import NewGame from '../screens/NewGame';
 import Profile from '../screens/Profile';
 import Register from '../screens/Register'
 import Settings from '../screens/Settings'
+import useGameStore from '../store/gameStore';
 
 type RootStackParamList = {
-  ActiveGame: { gameCode: string };
-  Lobby: { roomCode: string, gameHost: boolean };
+  ActiveGame: undefined;
+  Lobby: { gameHost: boolean };
   Login: undefined;
   Register: undefined;
   MainMenu: undefined;
@@ -29,12 +30,13 @@ type RootStackParamList = {
   Profile: undefined;
 };
 
-const Stack = createStackNavigator<RootStackParamList>();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 SplashScreen.preventAutoHideAsync();
 
 export default function Router() {
   const { authUser, isUserLoaded, isUserLoading } = useAuth()
+  const { isLobbyStarted, isSessionStarted } = useGameStore();
   const [fontsLoaded] = useFonts({
     'Basic': require('../assets/fonts/Basic.ttf'),
     'Cabin-Bold': require('../assets/fonts/Cabin-Bold.ttf'),
@@ -77,13 +79,19 @@ export default function Router() {
           </>
         ) : (
           <>
-            <Stack.Screen name="MainMenu" component={MainMenu} />
-            <Stack.Screen name="CardDecks" component={CardDecks} />
-            <Stack.Screen name="Profile" component={Profile} />
-            <Stack.Screen name="Settings" component={Settings} />
-            <Stack.Screen name="NewGame" component={NewGame} />
-            <Stack.Screen name="Lobby" component={Lobby} />
-            <Stack.Screen name="ActiveGame" component={ActiveGame} />
+            {isLobbyStarted ? (
+              <>
+                {isSessionStarted ? <Stack.Screen name="ActiveGame" component={ActiveGame} /> : <Stack.Screen name="Lobby" component={Lobby} />}
+              </>
+            ) : (
+              <>
+                <Stack.Screen name="MainMenu" component={MainMenu} />
+                <Stack.Screen name="CardDecks" component={CardDecks} />
+                <Stack.Screen name="Profile" component={Profile} />
+                <Stack.Screen name="Settings" component={Settings} />
+                <Stack.Screen name="NewGame" component={NewGame} />
+              </>
+            )}
           </>
         )}
       </Stack.Navigator>
