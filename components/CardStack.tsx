@@ -211,7 +211,7 @@ export default function CardStack({ drinks, points, isTurn, onGameOver, setPoint
   useEffect(() => {
     if (viewRef.current) {
       viewRef.current.measure((x, y, width, height, pageX, pageY) => {
-        console.log('Absolute coordinates:',"x: " , x, "y: " , y, width, height, pageX, pageY );
+        console.log('Absolute coordinates: ',"x: " , x, "y: " , y, width, height, pageX, pageY );
       });
     }
   }, []);
