@@ -64,17 +64,17 @@ export default function Login({ navigation }: LoginProps) {
           <Button text='LOGIN' onPress={handleLogin} buttonBgColor="#F76D31" buttonBorderColor="#F76D31"/>
           <Pressable
             onPress={() => navigation.navigate('Register')}>
-            <Text style={styles.signUpText}>Don't have an account?
-              <Text style={styles.innerText}> Sign Up</Text>
+            <Text style={styles.outerSignupText}>Don't have an account?
+              <Text style={styles.innerSignupText}> Sign Up</Text>
             </Text>
           </Pressable>
         </View>
         <Pressable
           style={styles.touchableTerms}
           onPress={toggleModal}>
-          <Text style={styles.outerText}>By signing up you agree with the
+          <Text style={styles.outerEulaText}>By signing up you agree with the
             <Text
-              style={styles.innerText}> drinkIQ Terms and Conditions.</Text>
+              style={styles.innerEulaText}> drinkIQ Terms and Conditions.</Text>
           </Text>
         </Pressable>
       </View>
@@ -85,12 +85,13 @@ export default function Login({ navigation }: LoginProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: BACKGROUND_COLOR,
   },
   drinkIQLogo: {
     fontFamily: LOGO_FONT_FAMILY_REGULAR,
-    marginTop: 150,
+    marginTop: '30%',
     fontSize: BIG_LOGO_FONT_SIZE,
     color: SECONDARY_COLOR,
     letterSpacing: 3,
@@ -104,11 +105,11 @@ const styles = StyleSheet.create({
     width: 250,
     height: 250,
     right: 20,
-    top: 20,
+    top: '5%',
     opacity: 0.3,
   },
   textInputContainer: {
-    marginTop: 100,
+    marginTop: '20%',
     width: '100%',
     alignItems: 'center',
   },
@@ -128,26 +129,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     rowGap: 30,
   },
-  touchableTerms: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  outerText: {
-    position: 'absolute',
-    bottom: 20,
-    width: 300,
+  outerSignupText: {
+    padding: 5,
     textAlign: 'center',
-    marginBottom: 20,
     color: ALMOSTWHITE,
     fontFamily: FONT_FAMILY_REGULAR,
+    fontSize: REGULAR_FONT_SIZE,
   },
-  signUpText: {
-    color: ALMOSTWHITE,
-    fontFamily: FONT_FAMILY_REGULAR,
-  },
-  innerText: {
-    fontFamily: FONT_FAMILY_BOLD,
+  innerSignupText: {
     color: SECONDARY_COLOR,
+    fontFamily: FONT_FAMILY_BOLD,
+    fontSize: REGULAR_FONT_SIZE,
+  },
+  touchableTerms: {
+    alignItems: 'center',
+    marginBottom: 30,
+  },
+  outerEulaText: {
+    padding: 5,
+    textAlign: 'center',
+    color: ALMOSTWHITE,
+    fontFamily: FONT_FAMILY_REGULAR,
+  },
+  innerEulaText: {
+    color: SECONDARY_COLOR,
+    fontFamily: FONT_FAMILY_BOLD,
   },
   error: {
     color: 'red',

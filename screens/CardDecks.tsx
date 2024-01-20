@@ -36,6 +36,7 @@ export default function CardDecks() {
           {sortedPacks.map((pack) => (
             <CardDeck pack={pack} key={pack.id} />
           ))}
+          <View style={styles.bottomMargin}/>
         </ScrollView>
       </View>
     </View>
@@ -65,5 +66,9 @@ const styles = StyleSheet.create({
     marginTop: 70,
     width: '100%',
     alignItems: 'center',
+    marginBottom: 30,
+  },
+  bottomMargin: {
+    marginBottom: 50,
   },
 });

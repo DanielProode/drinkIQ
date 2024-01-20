@@ -1,10 +1,10 @@
 import { Image } from 'expo-image';
 import { arrayUnion, doc, updateDoc } from "firebase/firestore";
-import { Modal, View, Text, StyleSheet, ImageSourcePropType } from "react-native";
+import { Modal, View, Text, StyleSheet, ImageSourcePropType, ScrollView } from "react-native";
 
 import Button from "../components/Button";
 import { BACKGROUND_COLOR, BLACK, SECONDARY_COLOR } from '../constants/styles/colors';
-import { FONT_FAMILY_BOLD, FONT_FAMILY_REGULAR, HEADER_FONT_SIZE, REGULAR_FONT_SIZE } from '../constants/styles/typography';
+import { FONT_FAMILY_BOLD, FONT_FAMILY_REGULAR, HEADER_FONT_SIZE, REGULAR_FONT_SIZE, TITLE_FONT_SIZE } from '../constants/styles/typography';
 import { useAuth } from "../context/authContext";
 import { FIREBASE_DB } from "../firebaseConfig";
 import useUserStore from "../store/userStore";
@@ -51,22 +51,19 @@ export default function CardDeckInfo({ isVisible, onClose, pack }: CardDeckInfoP
       </View>
       
       <View style={styles.modal}>
-        <View>
+        <ScrollView style={styles.scrollView}>
           <Text style={styles.modalTextBold}>This is a small intro to the {pack.name} card pack.</Text>
           <Text style={styles.modalText}>{pack.text}</Text>
-        </View>
+        </ScrollView>
         {(packs_owned && packs_owned.includes(pack.id)) ? (
           <View style={styles.modalButtons}>
             <Button text="Back" onPress={() => { onClose(); }} />
           </View>
         ) : (
-          <View>
-            <Text style={styles.buyText}>Buy {pack.name} for just 4.99€!</Text>
-            <View style={styles.modalButtons}>
-              <Button text="Buy pack" buttonBgColor="#707070" onPress={() => { handlePayment(pack.id); }} />
-              <Button text="Back" onPress={() => { onClose() }} />
-            </View>
-          </View>
+          <View style={styles.modalButtons}>
+          <Button text="Buy pack for 4.99€" buttonBgColor="#707070" onPress={() => { handlePayment(pack.id); }} />
+          <Button text="Back" onPress={() => { onClose() }} />
+        </View>
         )}
       </View>
     </Modal>
@@ -76,11 +73,14 @@ export default function CardDeckInfo({ isVisible, onClose, pack }: CardDeckInfoP
 const styles = StyleSheet.create({
   deckImageAndText: {
     backgroundColor: BACKGROUND_COLOR,
+    borderBottomColor: SECONDARY_COLOR,
+    borderBottomWidth: 2,
   },
   imageView: {
     alignItems: 'center',
-    height: 200,
-    marginTop: 100,
+    height: 100,
+    width: '100%',
+    marginTop: 50,
     backgroundColor: BACKGROUND_COLOR,
   },
   buyText: {
@@ -94,18 +94,22 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontFamily: FONT_FAMILY_BOLD,
     color: SECONDARY_COLOR,
+    fontSize: TITLE_FONT_SIZE,
     alignSelf: 'center',
   },
   modal: {
     flex: 1,
     backgroundColor: BACKGROUND_COLOR,
-    padding: 35,
+    padding: '5%',
     alignItems: 'center',
     shadowColor: BLACK,
     justifyContent: 'space-between',
   },
+  scrollView: {
+    marginBottom: 20,
+  },
   modalImage: {
-    width: '60%',
+    width: '90%',
     height: '100%',
   },
   modalText: {
@@ -125,7 +129,7 @@ const styles = StyleSheet.create({
   modalButtons: {
     justifyContent: 'flex-end',
     gap: 15,
-    marginBottom: 30,
+    marginBottom: '5%',
   },
   buttonContainer: {
     flexDirection: 'row',

@@ -17,7 +17,7 @@ export default function Tutorial({ isVisible, onClose }: TutorialProps) {
       <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
         <View style={styles.viewContainer}>
             <Text style={styles.tutorialTextHeader}>How to play?</Text>
-            <Text style={styles.tutorialText}>Each player takes turns answering questions. When it's your turn, your icon will get an PRIMARY_COLOR border.</Text>
+            <Text style={styles.tutorialText}>Each player takes turns answering questions. When it's your turn, your icon will get an orange border.</Text>
             <Text style={styles.tutorialText}>Correct answer grants you the privilege to choose who drinks.</Text>
             <Text style={styles.tutorialText}>Incorrect answers mean you have to take a drink!</Text>
             <Text style={styles.tutorialTextFooter}>Play responsibly!</Text>

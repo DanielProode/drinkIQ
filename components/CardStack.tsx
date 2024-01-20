@@ -2,8 +2,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Image } from 'expo-image';
 import { onValue, ref, update } from 'firebase/database';
 import { collection, getDocs } from 'firebase/firestore';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { Pressable, View, StyleSheet, Text } from 'react-native';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
+import { Pressable, View, StyleSheet, Text, Dimensions, useWindowDimensions } from 'react-native';
 
 import Card from './Card';
 import LoadingScreen from '../components/LoadingScreen';
@@ -22,6 +22,26 @@ interface CardStackProps {
   setDrinks: Dispatch<SetStateAction<number>>;
   updateTurn: () => void;
   answeredText: (isAnswerCorrect: boolean) => string;
+  setCardLocation: (measure: Measurements) => void;
+};
+
+
+type Measurements = {
+  height: number;
+  width: number;
+  x: number;
+  y: number;
+  pageX: number;
+  pageY: number;
+};
+
+const defaultMeasurements = {
+  height: 0,
+  width: 0,
+  x: 0,
+  y: 0,
+  pageX: 0,
+  pageY: 0,
 };
 
 export interface QuestionsArray {
@@ -40,7 +60,7 @@ interface UpdateCardsInfoInDatabaseParams {
   isCardVisible?: boolean;
 }
 
-export default function CardStack({ drinks, points, isTurn, onGameOver, setPoints, setDrinks, updateTurn, answeredText }: CardStackProps) {
+export default function CardStack({ drinks, points, isTurn, onGameOver, setPoints, setDrinks, updateTurn, answeredText, setCardLocation }: CardStackProps) {
   const [cardCount, setCardCount] = useState(DEFAULT_CARD_COUNT);
   const [cardImage] = useState(BASE_CARD_IMAGE);
   const [isCardVisible, setIsCardVisible] = useState(false);
@@ -50,13 +70,19 @@ export default function CardStack({ drinks, points, isTurn, onGameOver, setPoint
   const { playableDeckIndex } = useGameStore();
   const questionsCollection = collection(FIREBASE_DB, "packs", CARD_PACKS[playableDeckIndex].id, "questions");
   const { roomCode } = useGameStore();
+  const [measure, setMeasure] = useState<Measurements>(defaultMeasurements);
+  const viewRef = useRef<View>(null);
+  const {height, width} = useWindowDimensions();
+  console.log("Scale: ", height, width);
+
+  const centerPoint = {x: width / 2, y: height / 2}
 
   const updateCardParamsInDatabase = async (cardParams: UpdateCardsInfoInDatabaseParams) => {
     const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
 
     try {
       await update(roomRef, cardParams);
-      console.log(`${JSON.stringify(cardParams)} updated in database`);
+      //console.log(`${JSON.stringify(cardParams)} updated in database`);
     } catch (error) {
       console.error(`Error updating ${JSON.stringify(cardParams)} in database:`, error);
     }
@@ -174,12 +200,23 @@ export default function CardStack({ drinks, points, isTurn, onGameOver, setPoint
 
     fetchData();
   }, []);
-
+  console.log("Screen: ", centerPoint)
   useEffect(() => {
+    
     if (questionsArray.length > 0 && isTurn) {
       updateCardParamsInDatabase({ questionsArray, cardCount: DEFAULT_CARD_COUNT, isCardVisible: false })
     }
   }, [questionsArray]);
+
+  useEffect(() => {
+    if (viewRef.current) {
+      viewRef.current.measure((x, y, width, height, pageX, pageY) => {
+        console.log('Absolute coordinates:',"x: " , x, "y: " , y, width, height, pageX, pageY );
+      });
+    }
+  }, []);
+
+
 
   useEffect(() => {
     const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
@@ -203,6 +240,7 @@ export default function CardStack({ drinks, points, isTurn, onGameOver, setPoint
     return <LoadingScreen />
   }
 
+
   return (
     <>
       {isCardVisible && <Card handlePoints={handlePoints} toggleVisibility={toggleCardVisibility} updateTurn={updateTurn} questionElement={fetchedQuestions[cardCount]} cardsLeft={cardCount} isTurn={isTurn} answeredText={answeredText} />}
@@ -212,8 +250,11 @@ export default function CardStack({ drinks, points, isTurn, onGameOver, setPoint
             style={styles.cardViewTouchable}
             disabled={isCardVisible}
             onPress={handleCardPick}
+            ref={viewRef}
+            
           >
-            <Image style={styles.cardView} source={cardImage} />
+            <Image style={styles.cardView} source={cardImage}
+        />
           </Pressable>
         </View>
         <View style={styles.gameDataView}>
@@ -227,13 +268,19 @@ export default function CardStack({ drinks, points, isTurn, onGameOver, setPoint
 }
 
 const styles = StyleSheet.create({
+  text: {
+    fontSize: 50,
+    color: 'white',
+    position: 'absolute',
+    backgroundColor: 'pink',
+  },
   gameView: {
     flex: 1,
     width: '100%',
     alignItems: 'center',
   },
   cardViewContainer: {
-    marginTop: 60,
+    marginTop: 40,
     width: '90%',
     height: '70%',
     justifyContent: 'center',
@@ -241,15 +288,21 @@ const styles = StyleSheet.create({
   cardViewTouchable: {
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: -1,
+    backgroundColor: 'pink',
+    zIndex: 1,
   },
   cardView: {
-    height: '80%',
-    width: '80%',
+    position: 'absolute',
+    zIndex: 4,
+    alignContent: 'center',
+    alignSelf: 'center',
+    justifyContent: 'center',
+    width: '60%',
+    aspectRatio: 1/1.9,
     contentFit: 'contain',
   },
   gameDataView: {
-    marginTop: 50,
+    bottom: 10,
     justifyContent: 'flex-start',
     flexDirection: 'column',
   },

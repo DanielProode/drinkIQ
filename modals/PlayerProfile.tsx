@@ -32,11 +32,13 @@ export default function PlayerProfile({ profile, isVisible, onClose }: PlayerPro
             </View>
 
         </View>
+        <View style={styles.buttonContainer}>
         <Button
             style={styles.closeButton}
             marginTop={50}
             onPress={onClose}
             text="CLOSE" />
+        </View>
       </View>
     </Modal>
   );
@@ -53,6 +55,10 @@ const styles = StyleSheet.create({
     height: 50,
     bottom: 40,
     right: '-15%',
+  },
+  buttonContainer: {
+    marginBottom: 30,
+    alignItems: 'center',
   },
   closeButton: {
     marginBottom: 20,

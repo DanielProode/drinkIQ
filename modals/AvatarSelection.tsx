@@ -72,7 +72,7 @@ export default function AvatarSelection({ isVisible, onClose }: AvatarSelectionP
         </View>
         <View style={styles.buttonContainer}>
           <Button
-            marginTop={50}
+            marginTop={20}
             onPress={() => { onClose(); updateAvatarAndDrinkInDatabase(); }}
             text="DONE"
             buttonBgColor="#F76D31"
@@ -87,6 +87,7 @@ export default function AvatarSelection({ isVisible, onClose }: AvatarSelectionP
 const styles = StyleSheet.create({
   joinGameView: {
     flex: 1,
+    justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: BACKGROUND_COLOR,
   },
@@ -150,13 +151,12 @@ const styles = StyleSheet.create({
   },
   bigCircle: {
     marginTop: 20,
-    width: '35.0%',
+    width: '30.0%',
     aspectRatio: 1 / 1,
     backgroundColor: GREY,
     borderRadius: 200,
   },
   viewContainer: {
-    flex: 1,
     marginTop: 10,
     width: '90%',
     alignItems: 'center',

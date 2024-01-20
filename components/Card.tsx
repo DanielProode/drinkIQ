@@ -2,11 +2,11 @@
 import { Image } from 'expo-image';
 import { onValue, ref, update } from 'firebase/database';
 import { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, Text, View, ImageBackground } from 'react-native';
 
 import AnswerButton from './AnswerButton';
 import { BASE_CARD_IMAGE, CARD_PACKS, DEFAULT_CARD_COUNT } from '../constants/general';
-import { ALMOSTBLACK, GREY, LIGHTBLACK, CORRECT, WRONG, SECONDARY_COLOR } from '../constants/styles/colors';
+import { GREY, LIGHTBLACK, CORRECT, WRONG, SECONDARY_COLOR } from '../constants/styles/colors';
 import { FONT_FAMILY_MEDIUM, FONT_FAMILY_REGULAR, HEADER_FONT_SIZE, MEDIUM_LOGO_FONT_SIZE, REGULAR_FONT_SIZE, TITLE_FONT_SIZE } from '../constants/styles/typography';
 import { FIREBASE_RTDB } from '../firebaseConfig';
 import useGameStore from '../store/gameStore';
@@ -43,7 +43,7 @@ const randomize = (array: AnswersArray[]) => {
 }
 
 export default function Card({ questionElement, cardsLeft, isTurn, toggleVisibility, updateTurn, handlePoints, answeredText }: CardProps) {
-    if (!questionElement) {
+  if (!questionElement) {
     return
   }
   const [isAnswered, setIsAnswered] = useState(false);
@@ -57,7 +57,7 @@ export default function Card({ questionElement, cardsLeft, isTurn, toggleVisibil
 
     try {
       await update(answersRef, answerParams);
-      console.log(`${JSON.stringify(answerParams)} updated in database`);
+      //console.log(`${JSON.stringify(answerParams)} updated in database`);
     } catch (error) {
       console.error(`Error updating ${JSON.stringify(answerParams)} in database:`, error);
     }
@@ -122,106 +122,150 @@ export default function Card({ questionElement, cardsLeft, isTurn, toggleVisibil
         !isCorrect && isAnswered && { color: LIGHTBLACK }
       ];
       return (
-        <AnswerButton key={answerIndex} answer={answer} answerIndex={answerIndex} isAnswered={isAnswered} answerStyle={answerStyle} textStyle={textStyle} handleAnswerSelection={handleAnswerSelection} />
+        <AnswerButton parentWidth={measure.width} key={answerIndex} answer={answer} answerIndex={answerIndex} isAnswered={isAnswered} answerStyle={answerStyle} textStyle={textStyle} handleAnswerSelection={handleAnswerSelection} />
       );
     })
   };
 
-  return (
-    <View style={styles.backgroundBlur}>
-      <View style={{ ...styles.cardView, pointerEvents: isTurn ? 'auto' : 'none' }}>
-        <Image source={BASE_CARD_IMAGE} style={styles.image}>
-          <View style={styles.questionBox}>
-            <View style={styles.questionNumberContainer}>
-              <Text style={styles.questionNumberText}>Question {DEFAULT_CARD_COUNT - cardsLeft} / {DEFAULT_CARD_COUNT} </Text>
-            </View>
-            <View style={styles.questionTextContainer}>
-              <Text style={styles.questionText} adjustsFontSizeToFit numberOfLines={5}>
-                {isAnswered && answeredText(isAnswerCorrect)}
-                {!isAnswered && questionElement.question}
-              </Text>
-            </View>
+  type Measurements = {
+    height: number;
+    width: number;
+    x: number;
+    y: number;
+  };
 
-          </View>
-          <View style={styles.answerButtonView}>
-            {renderAnswers()}
-          </View>
-          <View style={styles.nextButtonContainer}>
-            {isAnswered &&
-              <Pressable
-                style={({ pressed }) => [
-                  { opacity: pressed ? 0.5 : 1.0 },
-                  styles.nextButton,
-                ]}
-                onPress={handleCloseCard}
-              >
-                <Text style={styles.nextButtonText}>→</Text>
-              </Pressable>}
-          </View>
-        </Image>
-      </View>
-      <View style={styles.deckCircle}>
-        <Image style={styles.deckLogo} source={CARD_PACKS[playableDeckIndex].image} />
+  const defaultMeasurements = {
+    height: 0,
+    width: 0,
+    x: 0,
+    y: 0,
+  };
+
+  const [measure, setMeasure] = useState<Measurements>(defaultMeasurements);
+
+  return (
+    <View style={styles.backgroundElement}>
+      <View style={styles.backgroundBlur}>
+        <View style={styles.deckCircle}>
+          <Image style={styles.deckLogo} source={CARD_PACKS[playableDeckIndex].image} />
+        </View>
+
+
+        <View style={{ ...styles.cardView, pointerEvents: isTurn ? 'auto' : 'none' }}>
+          <Image source={BASE_CARD_IMAGE} style={styles.backgroundImage} 
+          onLayout={({ nativeEvent }) =>
+            {
+            setMeasure(nativeEvent.layout);
+          }
+        }/>
+          
+            <View style={{ ...styles.questionBox, width: measure.width - 30, height: measure.width * 0.6 }}>
+              <View style={styles.questionNumberContainer}>
+                <Text style={styles.questionNumberText}>Question {DEFAULT_CARD_COUNT - cardsLeft} / {DEFAULT_CARD_COUNT} </Text>
+              </View>
+              <View style={styles.questionTextContainer}>
+                <Text style={styles.questionText} adjustsFontSizeToFit numberOfLines={5}>
+                  {isAnswered && answeredText(isAnswerCorrect)}
+                  {!isAnswered && questionElement.question}
+                </Text>
+              </View>
+
+            </View>
+            <View style={{ ...styles.answerButtonView }}>
+              {renderAnswers()}
+            </View>
+            <View style={styles.nextButtonContainer}>
+              {isAnswered &&
+                <Pressable
+                  style={({ pressed }) => [
+                    { opacity: pressed ? 0.5 : 1.0 },
+                    styles.nextButton,
+                  ]}
+                  onPress={()=>{ handleCloseCard(); console.log("Card element measurements: " , measure); }}
+                >
+                  <Text style={styles.nextButtonText}>→</Text>
+                </Pressable>}
+            </View>
+        </View>
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  backgroundElement: {
+    flex: 1,
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    zIndex: 1,
+  },
+  backgroundBlur: {
+    flex: 1,
+    zIndex: 1,
+    justifyContent: 'center',
+    alignContent: 'center',
+  },
+  deckCircle: {
+    marginTop: 70,
+    zIndex: 3,
+    width: 100,
+    aspectRatio: 1,
+    alignSelf: 'center',
+    borderRadius: 80,
+    borderColor: SECONDARY_COLOR,
+    borderWidth: 2,
+  },
+  deckLogo: {
+    contentFit: 'cover',
+    width: '100%',
+    height: '100%',
+    borderRadius: 80,
+  },
   cardView: {
+    flex: 1,
+    marginTop: -80,
+    alignSelf: 'center',
+    justifyContent: 'center',
+    zIndex: 2,
+    width: '100%',
+    marginBottom: 40,
+  },
+  backgroundImage: {
     position: 'absolute',
     alignSelf: 'center',
-    top: 110, bottom: 110,
-    marginTop: 20,
-    width: '95%',
-    zIndex: 1,
+    zIndex: 0,
+    flex: 1,
+    width: '80%',
+    aspectRatio: 1/1.9,
   },
   questionBox: {
     marginTop: 80,
-    width: 280,
-    height: 140,
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: SECONDARY_COLOR,
     borderRadius: 10,
     borderWidth: 5,
     borderColor: SECONDARY_COLOR,
     alignSelf: 'center',
-    justifyContent: 'center',
   },
   questionNumberContainer: {
-    height: 40,
-  },
-  backgroundBlur: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-    zIndex: 1,
-    backgroundColor: ALMOSTBLACK,
-  },
-  image: {
-    contentFit: 'contain',
-    height: '100%',
-  },
-  background: {
-    position: 'absolute',
-    alignItems: 'center',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    borderRadius: 20,
+    flex: 1,
   },
   questionNumberText: {
-    fontSize: REGULAR_FONT_SIZE,
+    alignSelf: 'center',
+    fontSize: HEADER_FONT_SIZE,
     marginTop: 20,
     fontFamily: FONT_FAMILY_MEDIUM,
     textAlign: 'center',
+    flex: 1,
   },
   questionTextContainer: {
-    flex: 1,
+    flex: 2,
     justifyContent: 'center',
   },
   questionText: {
-    fontSize: TITLE_FONT_SIZE,
+    fontSize: Platform.OS === 'android' ? 18 : TITLE_FONT_SIZE,
     fontFamily: FONT_FAMILY_REGULAR,
     textAlign: 'center',
   },
@@ -232,7 +276,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     justifyContent: 'center',
-    zIndex: 2,
+    zIndex: 3,
   },
   nextButton: {
     backgroundColor: SECONDARY_COLOR,
@@ -247,40 +291,6 @@ const styles = StyleSheet.create({
   },
   answerButtonView: {
     marginTop: 20,
-    alignSelf: 'center',
-  },
-  answerResult: {
-    alignSelf: 'center',
-    fontFamily: FONT_FAMILY_MEDIUM,
-    marginTop: 200,
-    fontSize: HEADER_FONT_SIZE,
-    color: 'red',
-    zIndex: 3,
-  },
-  deckCircle: {
-    flex: 1,
-    position: 'absolute',
-    marginTop: 130,
-    zIndex: 3,
-    width: 100,
-    height: 100,
-    alignSelf: 'center',
-    borderRadius: 80,
-    borderColor: SECONDARY_COLOR,
-    borderWidth: 2,
-    justifyContent: 'flex-start',
-  },
-  deckLogo: {
-    contentFit: '',
-    width: '100%',
-    height: '100%',
-    borderRadius: 80,
-  },
-  wrongImage: {
-    flex: 1,
-    contentFit: 'contain',
-    width: '80%',
-    height: '80%',
     alignSelf: 'center',
   },
 });

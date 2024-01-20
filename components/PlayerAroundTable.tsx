@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import React from 'react'
-import { StyleSheet, View, Text, Pressable, ViewStyle } from 'react-native';
+import { StyleSheet, View, Text, Pressable } from 'react-native';
 
 import { AVATAR_ICONS, DRINK_ICONS } from '../constants/general';
 import { SECONDARY_COLOR } from '../constants/styles/colors';
@@ -9,13 +9,13 @@ import { Player } from '../screens/Lobby';
 
 interface PlayerAroundTableProps {
   player: Player;
-  stylesArray: ViewStyle;
+  stylesArray: {x: number, y: number};
 }
 
 export default function PlayerAroundTable({ stylesArray, player }: PlayerAroundTableProps) {
   return (
     <>
-      <View style={stylesArray}>
+      <View style={{left: stylesArray.x, top: stylesArray.y, position: 'absolute', zIndex: 3}}>
         <Pressable style={styles.playerContainer}>
           <View style={styles.avatarCircle}>
             <Image style={styles.avatar} source={AVATAR_ICONS[player.avatar]} />

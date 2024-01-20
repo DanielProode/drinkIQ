@@ -20,6 +20,71 @@ interface UpdateGameInfoInDatabaseParams {
   currentTurn?: number;
 }
 
+type Measurements = {
+  height: number;
+  width: number;
+  x: number;
+  y: number;
+};
+
+const defaultMeasurements = {
+  height: 0,
+  width: 0,
+  x: 0,
+  y: 0,
+};
+
+const stylesArray = [
+  // AVATAR 1
+  {
+    x: 0,
+    y: 0,
+  },
+  // AVATAR 2
+  {
+    x: 0,
+    y: 0,
+  },
+  // AVATAR 3
+  {
+    x: 0,
+    y: 0,
+  },
+  // AVATAR 4
+  {
+    x: 0,
+    y: 0,
+  },
+  // AVATAR 5
+  {
+    x: 0,
+    y: 0,
+  },
+  // AVATAR 6
+  {
+    x: 0,
+    y: 0,
+  },
+  // AVATAR 7
+  {
+    x: 0,
+    y: 0,
+  },
+  // AVATAR 8
+  {
+    x: 0,
+    y: 0,
+  },
+
+]
+
+let gameWon = 0;
+
+const cardWidth = 300;
+const cardHeight = 600;
+const cardRadius = Math.min(cardWidth, cardHeight) / 2;
+const symbolSize = 50;
+
 export default function ActiveGame() {
   const [isGameOver, setIsGameOver] = useState(false);
   const [gameHost, setGameHost] = useState('');
@@ -29,19 +94,10 @@ export default function ActiveGame() {
   const [currentTurnIndex, setCurrentTurnIndex] = useState<number>(0);
   const { authUser } = useAuth();
   const { roomCode, updateIsSessionStarted } = useGameStore();
+  const [measure, setMeasure] = useState<Measurements>(defaultMeasurements);
+  const [measurementArray, setMeasurementArray] = useState(stylesArray);
   const userId = authUser ? authUser.uid : '';
-  let gameWon = 0;
 
-  const stylesArray = [
-    styles.firstAvatar,
-    styles.secondAvatar,
-    styles.thirdAvatar,
-    styles.fourthAvatar,
-    styles.fifthAvatar,
-    styles.sixthAvatar,
-    styles.seventhAvatar,
-    styles.eighthAvatar,
-  ];
 
   const isCurrentPlayersTurn = () => fetchedPlayers[currentTurnIndex].userId === userId;
 
@@ -74,7 +130,7 @@ export default function ActiveGame() {
 
     try {
       await update(roomRef, gameParams);
-      console.log(`${JSON.stringify(gameParams)} updated in database`);
+      //console.log(`${JSON.stringify(gameParams)} updated in database`);
     } catch (error) {
       console.error(`Error updating ${JSON.stringify(gameParams)} in database:`, error);
     }
@@ -94,6 +150,31 @@ export default function ActiveGame() {
     checkGameWinner();
     updateUserData();
     updateGameInfoInDatabase({ isGameOver: true })
+  }
+
+  const setCardLocation = (measurements: Measurements) => {
+    setMeasure(measurements)
+  }
+
+  
+  const degToRad = (deg: number) => {
+    return deg * Math.PI / 180;
+  }
+
+  const calculateAvatarPositions = () => {
+
+    for ( let i = 0; i < fetchedPlayers.length; i++ ) {
+      const angleDeg = (360 / fetchedPlayers.length) * i;
+      const angleRad = degToRad(angleDeg);
+      const x = cardRadius * Math.cos(angleRad) + cardWidth / 2 - symbolSize / 2;
+      const y = cardRadius * Math.sin(angleRad) + cardHeight / 2 - symbolSize / 2;
+      stylesArray[i].x = x;
+      stylesArray[i].y = y;
+      console.log("Calculated avatar ", i, "X: ", stylesArray[i].x, "Y: ", stylesArray[i].y)
+      console.log("Measure: ", measure)
+    }
+    
+      setMeasurementArray(stylesArray);
   }
 
   useEffect(() => {
@@ -121,6 +202,14 @@ export default function ActiveGame() {
     return () => unsubscribe();
   }, []);
 
+  useEffect(() => {
+    //CHANGE this to run only once when game started
+    if (fetchedPlayers) {
+      console.log("Fetched players: ", fetchedPlayers.length)
+      calculateAvatarPositions();
+    }
+  })
+
   if (fetchedPlayers.length === 0) {
     return <LoadingScreen />
   }
@@ -142,9 +231,9 @@ export default function ActiveGame() {
           <>
             <Text style={styles.gameCode}>Current turn: {fetchedPlayers[currentTurnIndex].username}</Text>
             {fetchedPlayers.map((player, index) =>
-              <PlayerAroundTable stylesArray={stylesArray[index]} key={player.userId} player={player} />
+              <PlayerAroundTable stylesArray={measurementArray[index]} key={player.userId} player={player} />
             )}
-            <CardStack onGameOver={handleGameOver} points={correctAnswerCount} drinks={wrongAnswerCount} setPoints={setCorrectAnswerCount} setDrinks={setWrongAnswerCount} updateTurn={() => updateGameInfoInDatabase({ currentTurn: getNextPlayerIndex(currentTurnIndex) })} isTurn={isCurrentPlayersTurn()} answeredText={setAnsweredText} />
+            <CardStack onGameOver={handleGameOver} points={correctAnswerCount} drinks={wrongAnswerCount} setPoints={setCorrectAnswerCount} setDrinks={setWrongAnswerCount} updateTurn={() => updateGameInfoInDatabase({ currentTurn: getNextPlayerIndex(currentTurnIndex) })} isTurn={isCurrentPlayersTurn()} answeredText={setAnsweredText} setCardLocation={setCardLocation}/>
           </>
         )}
       </View>
@@ -184,45 +273,5 @@ const styles = StyleSheet.create({
     fontSize: HEADER_FONT_SIZE,
     color: SECONDARY_COLOR,
     fontFamily: FONT_FAMILY_REGULAR,
-  },
-  seventhAvatar: {
-    position: 'absolute',
-    top: '22%',
-    left: '5%',
-  },
-  firstAvatar: {
-    position: 'absolute',
-    top: '18%',
-    left: '41%',
-  },
-  fifthAvatar: {
-    position: 'absolute',
-    top: '22%',
-    left: '78%',
-  },
-  thirdAvatar: {
-    position: 'absolute',
-    top: '45%',
-    left: '80%',
-  },
-  eighthAvatar: {
-    position: 'absolute',
-    top: '68%',
-    left: '78%',
-  },
-  secondAvatar: {
-    position: 'absolute',
-    top: '72%',
-    left: '41%',
-  },
-  sixthAvatar: {
-    position: 'absolute',
-    top: '68%',
-    left: '5%',
-  },
-  fourthAvatar: {
-    position: 'absolute',
-    top: '45%',
-    left: '3%',
   },
 });

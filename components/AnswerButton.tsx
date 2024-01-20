@@ -11,15 +11,16 @@ interface AnswerButtonProps {
   isAnswered: boolean;
   answerStyle: any;
   textStyle: any;
+  parentWidth: number;
   handleAnswerSelection: (answerIndex: number) => void;
 };
 
 const width = Dimensions.get('window').width;
 
-export default function AnswerButton({ answer, answerIndex, isAnswered, answerStyle, textStyle, handleAnswerSelection }: AnswerButtonProps) {
+export default function AnswerButton({ answer, answerIndex, isAnswered, answerStyle, textStyle, parentWidth, handleAnswerSelection }: AnswerButtonProps) {
   return (
     <Pressable
-      style={({ pressed }) => [pressed && { opacity: 0.8 }, styles.button, answerStyle]}
+      style={ ({ pressed }) => [pressed && { opacity: 0.8 }, styles.button, answerStyle, [{ width: parentWidth * 0.8 }] ]}
       onPress={() => handleAnswerSelection(answerIndex)}
       disabled={isAnswered}>
       <Text style={[styles.text, textStyle]} adjustsFontSizeToFit numberOfLines={1}>{ANSWER_PREFIXES[answerIndex] + answer.text}</Text>
@@ -31,7 +32,6 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: SECONDARY_COLOR,
     justifyContent: 'center',
-    width: width / 1.7,
     height: 50,
     borderRadius: 5,
     borderColor: GREY,
