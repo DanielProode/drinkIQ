@@ -21,17 +21,8 @@ interface UpdateGameInfoInDatabaseParams {
 }
 
 type Measurements = {
-  height: number;
-  width: number;
   x: number;
   y: number;
-};
-
-const defaultMeasurements = {
-  height: 0,
-  width: 0,
-  x: 0,
-  y: 0,
 };
 
 const stylesArray = [
@@ -80,8 +71,8 @@ const stylesArray = [
 
 let gameWon = 0;
 
-const cardWidth = 300;
-const cardHeight = 600;
+const cardWidth = 500;
+const cardHeight = 500;
 const cardRadius = Math.min(cardWidth, cardHeight) / 2;
 const symbolSize = 50;
 
@@ -94,7 +85,7 @@ export default function ActiveGame() {
   const [currentTurnIndex, setCurrentTurnIndex] = useState<number>(0);
   const { authUser } = useAuth();
   const { roomCode, updateIsSessionStarted } = useGameStore();
-  const [measure, setMeasure] = useState<Measurements>(defaultMeasurements);
+  const [measure, setMeasure] = useState<Measurements>({x: 0, y: 0});
   const [measurementArray, setMeasurementArray] = useState(stylesArray);
   const userId = authUser ? authUser.uid : '';
 
@@ -152,8 +143,9 @@ export default function ActiveGame() {
     updateGameInfoInDatabase({ isGameOver: true })
   }
 
-  const setCardLocation = (measurements: Measurements) => {
-    setMeasure(measurements)
+  const setCardLocation = (measurements: Measurements): Measurements => {
+    setMeasure(measurements);
+    return measurements;
   }
 
   
@@ -166,12 +158,18 @@ export default function ActiveGame() {
     for ( let i = 0; i < fetchedPlayers.length; i++ ) {
       const angleDeg = (360 / fetchedPlayers.length) * i;
       const angleRad = degToRad(angleDeg);
-      const x = cardRadius * Math.cos(angleRad) + cardWidth / 2 - symbolSize / 2;
-      const y = cardRadius * Math.sin(angleRad) + cardHeight / 2 - symbolSize / 2;
-      stylesArray[i].x = x;
-      stylesArray[i].y = y;
+
+      const x = cardRadius / 3 * Math.cos(angleRad);
+      const y = cardRadius * Math.sin(angleRad);
+
+      const translatedX = x + cardWidth / 2 - symbolSize / 2;
+      const translatedY = y + cardHeight / 2 - symbolSize / 2 + measure.x;
+
+      stylesArray[i].x = translatedX;
+      stylesArray[i].y = translatedY;
+
       console.log("Calculated avatar ", i, "X: ", stylesArray[i].x, "Y: ", stylesArray[i].y)
-      console.log("Measure: ", measure)
+      console.log("Measurements: ", measure)
     }
     
       setMeasurementArray(stylesArray);
@@ -217,8 +215,12 @@ export default function ActiveGame() {
   return (
     <>
       <View style={styles.gameBackground}>
-        <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
-        <Text style={styles.gameCode}>#{roomCode}</Text>
+      <Text style={{ left: measure.x, top: measure.y + 140, position: 'absolute', color: 'blue', zIndex: 5 }}>Center</Text>
+        <View style={styles.header}>
+          <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
+          <Text style={styles.gameCode}>#{roomCode}</Text>
+          {isGameOver ? <></> : <Text style={styles.gameCode}>Current turn: {fetchedPlayers[currentTurnIndex].username}</Text>}
+        </View>
         {isGameOver ? (
           <>
             <Text style={styles.gameText}>GAME OVER!</Text>
@@ -229,11 +231,10 @@ export default function ActiveGame() {
           </>
         ) : (
           <>
-            <Text style={styles.gameCode}>Current turn: {fetchedPlayers[currentTurnIndex].username}</Text>
             {fetchedPlayers.map((player, index) =>
               <PlayerAroundTable stylesArray={measurementArray[index]} key={player.userId} player={player} />
             )}
-            <CardStack onGameOver={handleGameOver} points={correctAnswerCount} drinks={wrongAnswerCount} setPoints={setCorrectAnswerCount} setDrinks={setWrongAnswerCount} updateTurn={() => updateGameInfoInDatabase({ currentTurn: getNextPlayerIndex(currentTurnIndex) })} isTurn={isCurrentPlayersTurn()} answeredText={setAnsweredText} setCardLocation={setCardLocation}/>
+            <CardStack onGameOver={handleGameOver} points={correctAnswerCount} drinks={wrongAnswerCount} setPoints={setCorrectAnswerCount} setDrinks={setWrongAnswerCount} updateTurn={() => updateGameInfoInDatabase({ currentTurn: getNextPlayerIndex(currentTurnIndex) })} isTurn={isCurrentPlayersTurn()} answeredText={setAnsweredText} cardLocation={setCardLocation}/>
           </>
         )}
       </View>
@@ -246,6 +247,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     backgroundColor: BACKGROUND_COLOR,
+  },
+  header: {
+    flex: 0.25,
+    alignItems: 'center',
   },
   drinkIQLogo: {
     fontFamily: LOGO_FONT_FAMILY_REGULAR,

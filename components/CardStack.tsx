@@ -22,26 +22,13 @@ interface CardStackProps {
   setDrinks: Dispatch<SetStateAction<number>>;
   updateTurn: () => void;
   answeredText: (isAnswerCorrect: boolean) => string;
-  setCardLocation: (measure: Measurements) => void;
+  cardLocation: (measure: Measurements) => Measurements;
 };
 
 
 type Measurements = {
-  height: number;
-  width: number;
   x: number;
   y: number;
-  pageX: number;
-  pageY: number;
-};
-
-const defaultMeasurements = {
-  height: 0,
-  width: 0,
-  x: 0,
-  y: 0,
-  pageX: 0,
-  pageY: 0,
 };
 
 export interface QuestionsArray {
@@ -60,7 +47,7 @@ interface UpdateCardsInfoInDatabaseParams {
   isCardVisible?: boolean;
 }
 
-export default function CardStack({ drinks, points, isTurn, onGameOver, setPoints, setDrinks, updateTurn, answeredText, setCardLocation }: CardStackProps) {
+export default function CardStack({ drinks, points, isTurn, onGameOver, setPoints, setDrinks, updateTurn, answeredText, cardLocation }: CardStackProps) {
   const [cardCount, setCardCount] = useState(DEFAULT_CARD_COUNT);
   const [cardImage] = useState(BASE_CARD_IMAGE);
   const [isCardVisible, setIsCardVisible] = useState(false);
@@ -70,12 +57,8 @@ export default function CardStack({ drinks, points, isTurn, onGameOver, setPoint
   const { playableDeckIndex } = useGameStore();
   const questionsCollection = collection(FIREBASE_DB, "packs", CARD_PACKS[playableDeckIndex].id, "questions");
   const { roomCode } = useGameStore();
-  const [measure, setMeasure] = useState<Measurements>(defaultMeasurements);
   const viewRef = useRef<View>(null);
-  const {height, width} = useWindowDimensions();
-  console.log("Scale: ", height, width);
-
-  const centerPoint = {x: width / 2, y: height / 2}
+  const [centerTextPosition, setCenterTextPosition] = useState({ left: 0, top: 0 });
 
   const updateCardParamsInDatabase = async (cardParams: UpdateCardsInfoInDatabaseParams) => {
     const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
@@ -145,6 +128,7 @@ export default function CardStack({ drinks, points, isTurn, onGameOver, setPoint
   }
 
   const selectPlayableQuestions = (array: QuestionsArray[]) => {
+
     const tempGameQuestionArray: QuestionsArray[] = [];
     const randomNumberArray = generateRandomNumberArray(array.length);
     randomNumberArray.map((x) => {
@@ -200,21 +184,12 @@ export default function CardStack({ drinks, points, isTurn, onGameOver, setPoint
 
     fetchData();
   }, []);
-  console.log("Screen: ", centerPoint)
   useEffect(() => {
-    
+
     if (questionsArray.length > 0 && isTurn) {
       updateCardParamsInDatabase({ questionsArray, cardCount: DEFAULT_CARD_COUNT, isCardVisible: false })
     }
   }, [questionsArray]);
-
-  useEffect(() => {
-    if (viewRef.current) {
-      viewRef.current.measure((x, y, width, height, pageX, pageY) => {
-        console.log('Absolute coordinates: ',"x: " , x, "y: " , y, width, height, pageX, pageY );
-      });
-    }
-  }, []);
 
 
 
@@ -240,90 +215,85 @@ export default function CardStack({ drinks, points, isTurn, onGameOver, setPoint
     return <LoadingScreen />
   }
 
+  const handleOnLayout = () => {
+    if (viewRef.current) {
+      viewRef.current.measure((x, y, width, height, pageX, pageY) => {
+        setCenterTextPosition({
+          left: width / 2,
+          top: height / 2,
+        });
+        cardLocation({x: width / 2, y: height / 2});
+      });
+    }
+  };
+
 
   return (
     <>
       {isCardVisible && <Card handlePoints={handlePoints} toggleVisibility={toggleCardVisibility} updateTurn={updateTurn} questionElement={fetchedQuestions[cardCount]} cardsLeft={cardCount} isTurn={isTurn} answeredText={answeredText} />}
       <View style={styles.gameView}>
-        <View style={styles.cardViewContainer}>
+        <View style={styles.cardViewContainer} ref={viewRef} onLayout={handleOnLayout}>
           <Pressable
             style={styles.cardViewTouchable}
             disabled={isCardVisible}
-            onPress={handleCardPick}
-            ref={viewRef}
-            
-          >
+            onPress={handleCardPick}>
             <Image style={styles.cardView} source={cardImage}
-        />
+            />
           </Pressable>
         </View>
-        <View style={styles.gameDataView}>
-          <Text style={styles.gameDataText}>Cards Left: {cardCount}</Text>
-          <Text style={styles.gameDataText}>Points: {points - drinks}</Text>
-          <Text style={styles.gameDataText}>Drinks: {drinks}</Text>
+        <View style={styles.gameViewFooter}>
+          <View style={styles.gameDataView}>
+            <Text style={styles.gameDataText}>Cards Left: {cardCount}</Text>
+            <Text style={styles.gameDataText}> / Your Points: {points - drinks}</Text>
+            <Text style={styles.gameDataText}> / Your Drinks: {drinks}</Text>
+          </View>
         </View>
+
       </View>
     </>
   )
 }
 
 const styles = StyleSheet.create({
-  text: {
-    fontSize: 50,
-    color: 'white',
-    position: 'absolute',
-    backgroundColor: 'pink',
-  },
   gameView: {
     flex: 1,
     width: '100%',
-    alignItems: 'center',
+    backgroundColor: 'pink',
   },
   cardViewContainer: {
-    marginTop: 40,
-    width: '90%',
-    height: '70%',
-    justifyContent: 'center',
+    flex: 6,
+    alignItems: 'center',
   },
   cardViewTouchable: {
+    flex: 1,
+    width: '50%',
+    marginTop: 30,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'pink',
     zIndex: 1,
   },
   cardView: {
-    position: 'absolute',
     zIndex: 4,
     alignContent: 'center',
     alignSelf: 'center',
     justifyContent: 'center',
-    width: '60%',
-    aspectRatio: 1/1.9,
+    aspectRatio: 2 / 3,
+    width: '100%',
     contentFit: 'contain',
   },
-  gameDataView: {
-    bottom: 10,
-    justifyContent: 'flex-start',
+  gameViewFooter: {
+    flex: 1,
     flexDirection: 'column',
+    justifyContent: 'center',
+  },
+  gameDataView: {
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
   gameDataText: {
+    alignSelf: 'center',
     color: SECONDARY_COLOR,
     fontFamily: FONT_FAMILY_MEDIUM,
     marginTop: 5,
-  },
-  avatar: {
-    flex: 1,
-    contentFit: 'contain',
-    width: '90%',
-    height: '90%',
-    alignSelf: 'center',
-  },
-  drink: {
-    position: 'absolute',
-    contentFit: 'contain',
-    width: '50%',
-    height: '50%',
-    alignSelf: 'flex-end',
-    bottom: 0,
   },
 });
