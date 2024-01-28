@@ -22,7 +22,8 @@ interface CardStackProps {
   setDrinks: Dispatch<SetStateAction<number>>;
   updateTurn: () => void;
   answeredText: (isAnswerCorrect: boolean) => string;
-  cardLocation: (measure: Measurements) => Measurements;
+  viewSize: (viewMeasurements: Measurements) => Measurements;
+  cardSize: (cardMeasurements: Measurements) => Measurements;
 };
 
 
@@ -47,7 +48,7 @@ interface UpdateCardsInfoInDatabaseParams {
   isCardVisible?: boolean;
 }
 
-export default function CardStack({ drinks, points, isTurn, onGameOver, setPoints, setDrinks, updateTurn, answeredText, cardLocation }: CardStackProps) {
+export default function CardStack({ drinks, points, isTurn, onGameOver, setPoints, setDrinks, updateTurn, answeredText, viewSize, cardSize }: CardStackProps) {
   const [cardCount, setCardCount] = useState(DEFAULT_CARD_COUNT);
   const [cardImage] = useState(BASE_CARD_IMAGE);
   const [isCardVisible, setIsCardVisible] = useState(false);
@@ -57,8 +58,6 @@ export default function CardStack({ drinks, points, isTurn, onGameOver, setPoint
   const { playableDeckIndex } = useGameStore();
   const questionsCollection = collection(FIREBASE_DB, "packs", CARD_PACKS[playableDeckIndex].id, "questions");
   const { roomCode } = useGameStore();
-  const viewRef = useRef<View>(null);
-  const [centerTextPosition, setCenterTextPosition] = useState({ left: 0, top: 0 });
 
   const updateCardParamsInDatabase = async (cardParams: UpdateCardsInfoInDatabaseParams) => {
     const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
@@ -215,28 +214,25 @@ export default function CardStack({ drinks, points, isTurn, onGameOver, setPoint
     return <LoadingScreen />
   }
 
-  const handleOnLayout = () => {
-    if (viewRef.current) {
-      viewRef.current.measure((x, y, width, height, pageX, pageY) => {
-        setCenterTextPosition({
-          left: width / 2,
-          top: height / 2,
-        });
-        cardLocation({x: width / 2, y: height / 2});
-      });
-    }
-  };
-
-
   return (
     <>
       {isCardVisible && <Card handlePoints={handlePoints} toggleVisibility={toggleCardVisibility} updateTurn={updateTurn} questionElement={fetchedQuestions[cardCount]} cardsLeft={cardCount} isTurn={isTurn} answeredText={answeredText} />}
       <View style={styles.gameView}>
-        <View style={styles.cardViewContainer} ref={viewRef} onLayout={handleOnLayout}>
+        <View style={styles.cardViewContainer} 
+              onLayout={({ nativeEvent }) => {
+              const { x, y, width, height } = nativeEvent.layout
+              viewSize({x: width, y: height})
+              console.log("Setting View measurements... ", width, height)
+      }}>
           <Pressable
             style={styles.cardViewTouchable}
             disabled={isCardVisible}
-            onPress={handleCardPick}>
+            onPress={handleCardPick}
+            onLayout={({ nativeEvent }) => {
+         const { x, y, width, height } = nativeEvent.layout
+            cardSize({x: width, y: height})
+            console.log("Setting Card measurements... ", width, height)
+      }}>
             <Image style={styles.cardView} source={cardImage}
             />
           </Pressable>
@@ -258,22 +254,20 @@ const styles = StyleSheet.create({
   gameView: {
     flex: 1,
     width: '100%',
-    backgroundColor: 'pink',
   },
   cardViewContainer: {
     flex: 6,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   cardViewTouchable: {
-    flex: 1,
+    flex: 0,
     width: '50%',
-    marginTop: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 1,
+    zIndex: 5,
+    backgroundColor: 'black',
   },
   cardView: {
-    zIndex: 4,
+    zIndex: 7,
     alignContent: 'center',
     alignSelf: 'center',
     justifyContent: 'center',

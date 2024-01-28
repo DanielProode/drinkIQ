@@ -10,12 +10,14 @@ import { Player } from '../screens/Lobby';
 interface PlayerAroundTableProps {
   player: Player;
   stylesArray: {x: number, y: number};
+  headerHeight: number;
 }
 
-export default function PlayerAroundTable({ stylesArray, player }: PlayerAroundTableProps) {
+export default function PlayerAroundTable({ stylesArray, player, headerHeight }: PlayerAroundTableProps) {
+  console.log("Rendering player around table...");
   return (
     <>
-      <View style={{left: stylesArray.x, top: stylesArray.y, position: 'absolute', zIndex: 3}}>
+      <View style={{left: stylesArray.x, top: stylesArray.y + headerHeight, position: 'absolute', zIndex: 3}}>
         <Pressable style={styles.playerContainer}>
           <View style={styles.avatarCircle}>
             <Image style={styles.avatar} source={AVATAR_ICONS[player.avatar]} />

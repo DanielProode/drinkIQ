@@ -146,20 +146,20 @@ export default function Card({ questionElement, cardsLeft, isTurn, toggleVisibil
   return (
     <View style={styles.backgroundElement}>
       <View style={styles.backgroundBlur}>
-        <View style={styles.deckCircle}>
+        <View style={{...styles.deckCircle, top: measure.y - 70}}>
           <Image style={styles.deckLogo} source={CARD_PACKS[playableDeckIndex].image} />
         </View>
 
 
         <View style={{ ...styles.cardView, pointerEvents: isTurn ? 'auto' : 'none' }}>
-          <Image source={BASE_CARD_IMAGE} style={styles.backgroundImage} 
-          onLayout={({ nativeEvent }) =>
-            {
-            setMeasure(nativeEvent.layout);
-          }
+          <Image  source={BASE_CARD_IMAGE} style={styles.backgroundImage} 
+                  onLayout={({ nativeEvent }) =>
+                    {
+                      setMeasure(nativeEvent.layout);
+                    }
         }/>
           
-            <View style={{ ...styles.questionBox, width: measure.width - 30, height: measure.width * 0.6 }}>
+            <View style={{ ...styles.questionBox, width: measure.width - 30, height: measure.width * 0.50 }}>
               <View style={styles.questionNumberContainer}>
                 <Text style={styles.questionNumberText}>Question {DEFAULT_CARD_COUNT - cardsLeft} / {DEFAULT_CARD_COUNT} </Text>
               </View>
@@ -198,16 +198,17 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '100%',
     height: '100%',
-    zIndex: 1,
+    zIndex: 4,
   },
   backgroundBlur: {
     flex: 1,
     zIndex: 1,
     justifyContent: 'center',
     alignContent: 'center',
+    backgroundColor: '#00000099'
   },
   deckCircle: {
-    marginTop: 70,
+    position: 'absolute',
     zIndex: 3,
     width: 100,
     aspectRatio: 1,
@@ -224,20 +225,19 @@ const styles = StyleSheet.create({
   },
   cardView: {
     flex: 1,
-    marginTop: -80,
     alignSelf: 'center',
     justifyContent: 'center',
     zIndex: 2,
     width: '100%',
-    marginBottom: 40,
   },
   backgroundImage: {
     position: 'absolute',
     alignSelf: 'center',
+    resizeMode: 'contain',
     zIndex: 0,
     flex: 1,
-    width: '80%',
-    aspectRatio: 1/1.9,
+    width: '85%',
+    aspectRatio: 1/1.5,
   },
   questionBox: {
     marginTop: 80,
