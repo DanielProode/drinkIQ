@@ -61,6 +61,7 @@ export default function MainMenu({ navigation }: MainMenuProps) {
 const styles = StyleSheet.create({
   mainView: {
     flex: 1,
+    justifyContent: 'space-around',
     alignItems: 'center',
     backgroundColor: BACKGROUND_COLOR,
   },
@@ -70,15 +71,15 @@ const styles = StyleSheet.create({
     width: 250,
     height: 250,
     right: 20,
-    top: 20,
+    top: '5%',
     opacity: 0.3,
   },
   drinkIQLogo: {
     fontFamily: LOGO_FONT_FAMILY_REGULAR,
-    marginTop: 150,
+    marginTop: '20%',
     fontSize: BIG_LOGO_FONT_SIZE,
     color: SECONDARY_COLOR,
-    letterSpacing: 3,
+    letterSpacing: 2,
   },
   drinkIQOrange: {
     color: PRIMARY_COLOR,
@@ -95,8 +96,7 @@ const styles = StyleSheet.create({
     color: SECONDARY_COLOR,
   },
   bodyContainer: {
-    flex: 4,
-    marginTop: 120,
+    marginBottom: 50,
   },
   cardButtonContainer: {
     marginTop: 20,

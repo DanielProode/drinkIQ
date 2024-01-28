@@ -2,8 +2,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Image } from 'expo-image';
 import { onValue, ref, update } from 'firebase/database';
 import { collection, getDocs } from 'firebase/firestore';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { Pressable, View, StyleSheet, Text } from 'react-native';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
+import { Pressable, View, StyleSheet, Text, Dimensions, useWindowDimensions } from 'react-native';
 
 import Card from './Card';
 import LoadingScreen from '../components/LoadingScreen';
@@ -22,6 +22,14 @@ interface CardStackProps {
   setDrinks: Dispatch<SetStateAction<number>>;
   updateTurn: () => void;
   answeredText: (isAnswerCorrect: boolean) => string;
+  viewSize: (viewMeasurements: Measurements) => Measurements;
+  cardSize: (cardMeasurements: Measurements) => Measurements;
+};
+
+
+type Measurements = {
+  x: number;
+  y: number;
 };
 
 export interface QuestionsArray {
@@ -40,7 +48,7 @@ interface UpdateCardsInfoInDatabaseParams {
   isCardVisible?: boolean;
 }
 
-export default function CardStack({ drinks, points, isTurn, onGameOver, setPoints, setDrinks, updateTurn, answeredText }: CardStackProps) {
+export default function CardStack({ drinks, points, isTurn, onGameOver, setPoints, setDrinks, updateTurn, answeredText, viewSize, cardSize }: CardStackProps) {
   const [cardCount, setCardCount] = useState(DEFAULT_CARD_COUNT);
   const [cardImage] = useState(BASE_CARD_IMAGE);
   const [isCardVisible, setIsCardVisible] = useState(false);
@@ -56,7 +64,7 @@ export default function CardStack({ drinks, points, isTurn, onGameOver, setPoint
 
     try {
       await update(roomRef, cardParams);
-      console.log(`${JSON.stringify(cardParams)} updated in database`);
+      //console.log(`${JSON.stringify(cardParams)} updated in database`);
     } catch (error) {
       console.error(`Error updating ${JSON.stringify(cardParams)} in database:`, error);
     }
@@ -119,6 +127,7 @@ export default function CardStack({ drinks, points, isTurn, onGameOver, setPoint
   }
 
   const selectPlayableQuestions = (array: QuestionsArray[]) => {
+
     const tempGameQuestionArray: QuestionsArray[] = [];
     const randomNumberArray = generateRandomNumberArray(array.length);
     randomNumberArray.map((x) => {
@@ -174,12 +183,14 @@ export default function CardStack({ drinks, points, isTurn, onGameOver, setPoint
 
     fetchData();
   }, []);
-
   useEffect(() => {
+
     if (questionsArray.length > 0 && isTurn) {
       updateCardParamsInDatabase({ questionsArray, cardCount: DEFAULT_CARD_COUNT, isCardVisible: false })
     }
   }, [questionsArray]);
+
+
 
   useEffect(() => {
     const roomRef = ref(FIREBASE_RTDB, `rooms/${roomCode}`);
@@ -207,20 +218,33 @@ export default function CardStack({ drinks, points, isTurn, onGameOver, setPoint
     <>
       {isCardVisible && <Card handlePoints={handlePoints} toggleVisibility={toggleCardVisibility} updateTurn={updateTurn} questionElement={fetchedQuestions[cardCount]} cardsLeft={cardCount} isTurn={isTurn} answeredText={answeredText} />}
       <View style={styles.gameView}>
-        <View style={styles.cardViewContainer}>
+        <View style={styles.cardViewContainer} 
+              onLayout={({ nativeEvent }) => {
+              const { x, y, width, height } = nativeEvent.layout
+              viewSize({x: width, y: height})
+              console.log("Setting View measurements... ", width, height)
+      }}>
           <Pressable
             style={styles.cardViewTouchable}
             disabled={isCardVisible}
             onPress={handleCardPick}
-          >
-            <Image style={styles.cardView} source={cardImage} />
+            onLayout={({ nativeEvent }) => {
+         const { x, y, width, height } = nativeEvent.layout
+            cardSize({x: width, y: height})
+            console.log("Setting Card measurements... ", width, height)
+      }}>
+            <Image style={styles.cardView} source={cardImage}
+            />
           </Pressable>
         </View>
-        <View style={styles.gameDataView}>
-          <Text style={styles.gameDataText}>Cards Left: {cardCount}</Text>
-          <Text style={styles.gameDataText}>Points: {points - drinks}</Text>
-          <Text style={styles.gameDataText}>Drinks: {drinks}</Text>
+        <View style={styles.gameViewFooter}>
+          <View style={styles.gameDataView}>
+            <Text style={styles.gameDataText}>Cards Left: {cardCount}</Text>
+            <Text style={styles.gameDataText}> / Your Points: {points - drinks}</Text>
+            <Text style={styles.gameDataText}> / Your Drinks: {drinks}</Text>
+          </View>
         </View>
+
       </View>
     </>
   )
@@ -230,47 +254,40 @@ const styles = StyleSheet.create({
   gameView: {
     flex: 1,
     width: '100%',
-    alignItems: 'center',
   },
   cardViewContainer: {
-    marginTop: 60,
-    width: '90%',
-    height: '70%',
+    flex: 6,
+    alignItems: 'center',
     justifyContent: 'center',
   },
   cardViewTouchable: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: -1,
+    flex: 0,
+    width: '50%',
+    zIndex: 5,
+    backgroundColor: 'black',
   },
   cardView: {
-    height: '80%',
-    width: '80%',
+    zIndex: 7,
+    alignContent: 'center',
+    alignSelf: 'center',
+    justifyContent: 'center',
+    aspectRatio: 2 / 3,
+    width: '100%',
     contentFit: 'contain',
   },
-  gameDataView: {
-    marginTop: 50,
-    justifyContent: 'flex-start',
+  gameViewFooter: {
+    flex: 1,
     flexDirection: 'column',
+    justifyContent: 'center',
+  },
+  gameDataView: {
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
   gameDataText: {
+    alignSelf: 'center',
     color: SECONDARY_COLOR,
     fontFamily: FONT_FAMILY_MEDIUM,
     marginTop: 5,
-  },
-  avatar: {
-    flex: 1,
-    contentFit: 'contain',
-    width: '90%',
-    height: '90%',
-    alignSelf: 'center',
-  },
-  drink: {
-    position: 'absolute',
-    contentFit: 'contain',
-    width: '50%',
-    height: '50%',
-    alignSelf: 'flex-end',
-    bottom: 0,
   },
 });

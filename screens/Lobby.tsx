@@ -153,6 +153,7 @@ const styles = StyleSheet.create({
   gameView: {
     alignItems: 'center',
     flex: 1,
+    flexDirection: 'column',
     backgroundColor: BACKGROUND_COLOR,
   },
   drinkIQLogo: {
@@ -189,6 +190,8 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   buttonContainer: {
+    marginBottom: 30,
+    alignItems: 'center',
   },
   deck: {
     flex: 1,
@@ -200,8 +203,8 @@ const styles = StyleSheet.create({
   waitingText: {
     color: SECONDARY_COLOR,
     fontFamily: FONT_FAMILY_BOLD,
-    marginTop: 20,
     fontSize: HEADER_FONT_SIZE,
+    textAlign: 'center',
   },
   gameCode: {
     fontSize: HEADER_FONT_SIZE,

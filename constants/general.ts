@@ -15,7 +15,7 @@ export const CARD_PACKS = [{
   name: 'Birds card pack',
   image: require('../assets/images/bird_deck.png'),
   previewImage: require('../assets/images/birds_deck_preview.png'),
-  text: "Embark on a Feathered Adventure! This card pack invites you to soar through the world of birds. Uncover avian wonders in history, species, habitats, behaviors, and miscellaneous facts. Challenge your bird knowledge across diverse categories and discover the fascinating tales that flutter within this captivating card pack. Happy birding!",
+  text: "Embark on a Feathered Adventure (hehe)! This card pack invites you to soar through the world of birds. Uncover avian wonders in history, species, habitats, behaviors, and miscellaneous facts. Challenge your bird knowledge across diverse categories and discover the fascinating tales that flutter within this captivating card pack. Happy birding!",
 }];
 
 export const DEFAULT_PACK = 'estonia';
