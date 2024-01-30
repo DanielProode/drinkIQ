@@ -181,7 +181,7 @@ export default function Card({ questionElement, cardsLeft, isTurn, toggleVisibil
                     { opacity: pressed ? 0.5 : 1.0 },
                     styles.nextButton,
                   ]}
-                  onPress={()=>{ handleCloseCard(); console.log("Card element measurements: " , measure); }}
+                  onPress={()=>{ handleCloseCard(); }}
                 >
                   <Text style={styles.nextButtonText}>→</Text>
                 </Pressable>}
@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   questionText: {
-    fontSize: Platform.OS === 'android' ? 18 : TITLE_FONT_SIZE,
+    fontSize: Platform.OS === 'android' ? TITLE_FONT_SIZE - 2 : TITLE_FONT_SIZE,
     fontFamily: FONT_FAMILY_REGULAR,
     textAlign: 'center',
   },

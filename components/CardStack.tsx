@@ -22,8 +22,7 @@ interface CardStackProps {
   setDrinks: Dispatch<SetStateAction<number>>;
   updateTurn: () => void;
   answeredText: (isAnswerCorrect: boolean) => string;
-  viewSize: (viewMeasurements: Measurements) => Measurements;
-  cardSize: (cardMeasurements: Measurements) => Measurements;
+  setPlayersLayout: (viewMeasurements: Measurements, type: 'container' | 'card') => void;
 };
 
 
@@ -48,7 +47,7 @@ interface UpdateCardsInfoInDatabaseParams {
   isCardVisible?: boolean;
 }
 
-export default function CardStack({ drinks, points, isTurn, onGameOver, setPoints, setDrinks, updateTurn, answeredText, viewSize, cardSize }: CardStackProps) {
+export default function CardStack({ drinks, points, isTurn, onGameOver, setPoints, setDrinks, updateTurn, answeredText, setPlayersLayout }: CardStackProps) {
   const [cardCount, setCardCount] = useState(DEFAULT_CARD_COUNT);
   const [cardImage] = useState(BASE_CARD_IMAGE);
   const [isCardVisible, setIsCardVisible] = useState(false);
@@ -221,8 +220,7 @@ export default function CardStack({ drinks, points, isTurn, onGameOver, setPoint
         <View style={styles.cardViewContainer} 
               onLayout={({ nativeEvent }) => {
               const { x, y, width, height } = nativeEvent.layout
-              viewSize({x: width, y: height})
-              console.log("Setting View measurements... ", width, height)
+              setPlayersLayout({x: width, y: height}, "container")
       }}>
           <Pressable
             style={styles.cardViewTouchable}
@@ -230,8 +228,7 @@ export default function CardStack({ drinks, points, isTurn, onGameOver, setPoint
             onPress={handleCardPick}
             onLayout={({ nativeEvent }) => {
          const { x, y, width, height } = nativeEvent.layout
-            cardSize({x: width, y: height})
-            console.log("Setting Card measurements... ", width, height)
+            setPlayersLayout({x: width, y: height}, "card")
       }}>
             <Image style={styles.cardView} source={cardImage}
             />
@@ -264,7 +261,6 @@ const styles = StyleSheet.create({
     flex: 0,
     width: '50%',
     zIndex: 5,
-    backgroundColor: 'black',
   },
   cardView: {
     zIndex: 7,

@@ -1,6 +1,6 @@
 import { onValue, ref, update } from 'firebase/database';
 import { doc, updateDoc, increment } from "firebase/firestore";
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { Player } from './Lobby';
@@ -69,8 +69,6 @@ const stylesArray = [
 
 ]
 
-let gameWon = 0;
-
 export default function ActiveGame() {
   const [isGameOver, setIsGameOver] = useState(false);
   const [gameHost, setGameHost] = useState('');
@@ -80,13 +78,13 @@ export default function ActiveGame() {
   const [currentTurnIndex, setCurrentTurnIndex] = useState<number>(0);
   const { authUser } = useAuth();
   const { roomCode, updateIsSessionStarted } = useGameStore();
-  const [viewMeasurements, setViewMeasurements] = useState<Measurements>({x: 0, y: 0});
-  const [cardMeasurements, setCardMeasurements] = useState<Measurements>({x: 0, y: 0});
-  const [measurementArray, setMeasurementArray] = useState(stylesArray);
+  const [measurementArray, setMeasurementArray] = useState<Measurements[]>([]);
   const userId = authUser ? authUser.uid : '';
   const [headerHeight, setHeaderHeight] = useState(0);
-  const viewRef = useRef<View>(null);
 
+  let gameWon = 0;
+  let containerMeasurements = {x: 0, y: 0}
+  let cardMeasurements = {x: 0, y: 0}
 
   const isCurrentPlayersTurn = () => fetchedPlayers[currentTurnIndex].userId === userId;
 
@@ -141,61 +139,58 @@ export default function ActiveGame() {
     updateGameInfoInDatabase({ isGameOver: true })
   }
 
-  const setViewSize = (measurements: Measurements): Measurements => {
-    setViewMeasurements(measurements);
-    console.log("Active game got View measurements!")
-    return measurements;
+  const setPlayersLayout = (measurements: Measurements, type: 'container' | 'card') => {
+    if (type === 'container') {
+      containerMeasurements = measurements;
+    } else if (type === 'card') {
+      cardMeasurements = measurements;
+    }
+    calculateIfMeasurementsAvailable();
   }
 
-  const setCardSize = (measurements: Measurements): Measurements => {
-    setCardMeasurements(measurements);
-    console.log("Active game got Card measurements!")
-    return measurements;
-  }
 
   const calculateAvatarPositions = () => {
 
     for ( let i = 0; i < fetchedPlayers.length; i++ ) {
 
-
-      if (i == 0) {
-        stylesArray[i].x = ((((viewMeasurements.x / 2 - 30) + ( cardMeasurements.x / 2)) + viewMeasurements.x) / 2) - 20;
-        stylesArray[i].y = ((viewMeasurements.y / 2 - 30) - (cardMeasurements.y / 2)) / 2;
-      }
-
-      if (i == 1) {
-        stylesArray[i].x = ((((viewMeasurements.x / 2 - 30) + ( cardMeasurements.x / 2)) + viewMeasurements.x) / 2) - 20;
-        stylesArray[i].y = (viewMeasurements.y / 2) - 50;
+      if (i == 4) {
+        stylesArray[i].x = ((((containerMeasurements.x / 2 - 30) + ( cardMeasurements.x / 2)) + containerMeasurements.x) / 2) - 20;
+        stylesArray[i].y = ((containerMeasurements.y / 2 - 30) - (cardMeasurements.y / 2)) / 2;
       }
 
       if (i == 2) {
-        stylesArray[i].x = ((((viewMeasurements.x / 2 - 30) + ( cardMeasurements.x / 2)) + viewMeasurements.x) / 2) - 20;
-        stylesArray[i].y = ((((viewMeasurements.y / 2 - 30) + (cardMeasurements.y / 2)) + viewMeasurements.y) / 2) - 60;
-      }
-
-      if (i == 3) {
-        stylesArray[i].x = viewMeasurements.x / 2 - 30;
-        stylesArray[i].y = ((((viewMeasurements.y / 2 - 30) + (cardMeasurements.y / 2)) + viewMeasurements.y) / 2) - 10;
-      }
-
-      if (i == 4) {
-        stylesArray[i].x = (((viewMeasurements.x / 2 - 30) - (cardMeasurements.x / 2)) / 2) - 15;
-        stylesArray[i].y = ((((viewMeasurements.y / 2 - 30) + (cardMeasurements.y / 2)) + viewMeasurements.y) / 2) - 60;
-      }
-
-      if (i == 5) {
-        stylesArray[i].x = (((viewMeasurements.x / 2 - 30) - (cardMeasurements.x / 2)) / 2) - 15;
-        stylesArray[i].y = viewMeasurements.y / 2 - 50;
-      }
-
-      if (i == 6) {
-        stylesArray[i].x = (((viewMeasurements.x / 2 - 30) - (cardMeasurements.x / 2)) / 2) - 15;
-        stylesArray[i].y = ((viewMeasurements.y / 2 - 30) - (cardMeasurements.y / 2)) / 2;
+        stylesArray[i].x = ((((containerMeasurements.x / 2 - 30) + ( cardMeasurements.x / 2)) + containerMeasurements.x) / 2) - 20;
+        stylesArray[i].y = (containerMeasurements.y / 2) - 50;
       }
 
       if (i == 7) {
-        stylesArray[i].x = viewMeasurements.x / 2 - 30;
-        stylesArray[i].y = (((viewMeasurements.y / 2 - 30) - (cardMeasurements.y / 2)) / 2) - 30;
+        stylesArray[i].x = ((((containerMeasurements.x / 2 - 30) + ( cardMeasurements.x / 2)) + containerMeasurements.x) / 2) - 20;
+        stylesArray[i].y = ((((containerMeasurements.y / 2 - 30) + (cardMeasurements.y / 2)) + containerMeasurements.y) / 2) - 60;
+      }
+
+      if (i == 1) {
+        stylesArray[i].x = containerMeasurements.x / 2 - 30;
+        stylesArray[i].y = ((((containerMeasurements.y / 2 - 30) + (cardMeasurements.y / 2)) + containerMeasurements.y) / 2) - 10;
+      }
+
+      if (i == 5) {
+        stylesArray[i].x = (((containerMeasurements.x / 2 - 30) - (cardMeasurements.x / 2)) / 2) - 15;
+        stylesArray[i].y = ((((containerMeasurements.y / 2 - 30) + (cardMeasurements.y / 2)) + containerMeasurements.y) / 2) - 60;
+      }
+
+      if (i == 3) {
+        stylesArray[i].x = (((containerMeasurements.x / 2 - 30) - (cardMeasurements.x / 2)) / 2) - 15;
+        stylesArray[i].y = containerMeasurements.y / 2 - 50;
+      }
+
+      if (i == 6) {
+        stylesArray[i].x = (((containerMeasurements.x / 2 - 30) - (cardMeasurements.x / 2)) / 2) - 15;
+        stylesArray[i].y = ((containerMeasurements.y / 2 - 30) - (cardMeasurements.y / 2)) / 2;
+      }
+
+      if (i == 0) {
+        stylesArray[i].x = containerMeasurements.x / 2 - 30;
+        stylesArray[i].y = (((containerMeasurements.y / 2 - 30) - (cardMeasurements.y / 2)) / 2) - 30;
       }
     }
       setMeasurementArray(stylesArray);
@@ -219,15 +214,7 @@ export default function ActiveGame() {
 
         setCurrentTurnIndex(turnData);
         setGameHost(hostData);
-        setFetchedPlayers([ playersArray[0],
-                            {userId: "2", username: "Username2", avatar: 1, drink: 1},
-                            {userId: "3", username: "Username3", avatar: 2, drink: 2},
-                            {userId: "4", username: "Username4", avatar: 3, drink: 3},
-                            {userId: "5", username: "Username5", avatar: 4, drink: 4},
-                            {userId: "6", username: "Username6", avatar: 5, drink: 5},
-                            {userId: "7", username: "Username7", avatar: 6, drink: 6},
-                            {userId: "8", username: "Username8", avatar: 7, drink: 7},
-                            ]);
+        setFetchedPlayers(playersArray);
         setIsGameOver(gameOver);
       }
     });
@@ -235,33 +222,28 @@ export default function ActiveGame() {
     return () => unsubscribe();
   }, []);
 
-  useEffect(() => {
-    //CHANGE this to run only once when game started
-    if (fetchedPlayers) {
+  const calculateIfMeasurementsAvailable = () => {
+    if (fetchedPlayers.length !== 0 && containerMeasurements.x !== 0 && cardMeasurements.x !== 0) {
       calculateAvatarPositions();
-    }
-  })
-
-  if (fetchedPlayers.length === 0) {
-    return <LoadingScreen />
-  }
-
-  const handleOnLayout = () => {
-    if (viewRef.current) {
-      viewRef.current.measure((x, y, width, height, pageX, pageY) => {
-        setHeaderHeight(height);
-      });
     }
   };
 
-  const renderPlayers = () => {
-    
+  useEffect(() => {
+    calculateIfMeasurementsAvailable();
+  }, [fetchedPlayers]);
+
+  if (fetchedPlayers.length === 0 && measurementArray.length === 0 ) {
+    return <LoadingScreen />
   }
 
   return (
     <>
       <View style={styles.gameBackground}>
-        <View style={styles.header} ref={viewRef} onLayout={handleOnLayout}>
+        <View style={styles.header} 
+              onLayout={({ nativeEvent }) => {
+              const { x, y, width, height } = nativeEvent.layout
+              setHeaderHeight(height)
+              }}>
           <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
           <Text style={styles.gameCode}>#{roomCode}</Text>
           {isGameOver ? <></> : <Text style={styles.gameCode}>Current turn: {fetchedPlayers[currentTurnIndex].username}</Text>}
@@ -276,11 +258,12 @@ export default function ActiveGame() {
           </>
         ) : (
           <>
-            <CardStack onGameOver={handleGameOver} points={correctAnswerCount} drinks={wrongAnswerCount} setPoints={setCorrectAnswerCount} setDrinks={setWrongAnswerCount} updateTurn={() => updateGameInfoInDatabase({ currentTurn: getNextPlayerIndex(currentTurnIndex) })} isTurn={isCurrentPlayersTurn()} answeredText={setAnsweredText} viewSize={setViewSize} cardSize={setCardSize}/>
-            {fetchedPlayers.map((player, index) =>
-              <PlayerAroundTable stylesArray={measurementArray[index]} headerHeight={headerHeight} key={player.userId} player={player} />
-            )}
+            <CardStack onGameOver={handleGameOver} points={correctAnswerCount} drinks={wrongAnswerCount} setPoints={setCorrectAnswerCount} setDrinks={setWrongAnswerCount} updateTurn={() => updateGameInfoInDatabase({ currentTurn: getNextPlayerIndex(currentTurnIndex) })} isTurn={isCurrentPlayersTurn()} answeredText={setAnsweredText} setPlayersLayout={setPlayersLayout}/>
 
+            {measurementArray.length > 0 && (
+            fetchedPlayers.map((player, index) =>
+              <PlayerAroundTable stylesArray={measurementArray[index]} headerHeight={headerHeight} key={player.userId} player={player} />
+            ))}
           </>
         )}
       </View>
