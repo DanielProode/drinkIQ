@@ -56,6 +56,7 @@ drinkIQOrange: {
 tutorialView: {
     flex: 1,
     backgroundColor: BACKGROUND_COLOR,
+    alignItems: 'center',
   },
   deckButtonContainer: {
     width: 100,
@@ -70,6 +71,8 @@ tutorialView: {
     marginTop: 30,
     marginBottom: 50,
     alignItems: 'flex-start',
+    paddingRight: 20,
+    paddingLeft: 20,
   },
   buttonContainer: {
     alignItems: 'center',

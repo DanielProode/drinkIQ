@@ -2,7 +2,7 @@ import { Dimensions, Pressable, StyleSheet, Text } from 'react-native';
 
 import { AnswersArray } from './Card';
 import { ANSWER_PREFIXES } from '../constants/general';
-import { BACKGROUND_COLOR, GREY, SECONDARY_COLOR } from '../constants/styles/colors';
+import { BACKGROUND_COLOR, GREY } from '../constants/styles/colors';
 import { FONT_FAMILY_REGULAR, MEDIUM_FONT_SIZE } from '../constants/styles/typography';
 
 interface AnswerButtonProps {
@@ -29,9 +29,9 @@ export default function AnswerButton({ answer, answerIndex, isAnswered, answerSt
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: SECONDARY_COLOR,
+    backgroundColor: '#F2F2F2',
     justifyContent: 'center',
-    width: width / 1.7,
+    width: width / 1.4,
     height: 50,
     borderRadius: 5,
     borderColor: GREY,

@@ -6,22 +6,27 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { Pressable, View, StyleSheet, Text } from 'react-native';
 
 import Card from './Card';
+import PlayerAroundTable from './PlayerAroundTable';
 import LoadingScreen from '../components/LoadingScreen';
 import { BASE_CARD_IMAGE, CARD_PACKS, DEFAULT_CARD_COUNT } from '../constants/general';
 import { SECONDARY_COLOR } from '../constants/styles/colors';
 import { FONT_FAMILY_MEDIUM } from '../constants/styles/typography';
 import { FIREBASE_DB, FIREBASE_RTDB } from '../firebaseConfig.js';
+import { Player } from '../screens/Lobby';
 import useGameStore from '../store/gameStore';
 
 interface CardStackProps {
   points: number;
   drinks: number;
   isTurn: boolean;
+  fetchedPlayers: Player[];
   onGameOver: () => void;
   setPoints: Dispatch<SetStateAction<number>>;
   setDrinks: Dispatch<SetStateAction<number>>;
   updateTurn: () => void;
   answeredText: (isAnswerCorrect: boolean) => string;
+  currentTurn: string;
+  isCurrentPlayersTurn: boolean;
 };
 
 export interface QuestionsArray {
@@ -40,7 +45,7 @@ interface UpdateCardsInfoInDatabaseParams {
   isCardVisible?: boolean;
 }
 
-export default function CardStack({ drinks, points, isTurn, onGameOver, setPoints, setDrinks, updateTurn, answeredText }: CardStackProps) {
+export default function CardStack({ drinks, points, isTurn, fetchedPlayers, onGameOver, setPoints, setDrinks, updateTurn, answeredText, currentTurn, isCurrentPlayersTurn }: CardStackProps) {
   const [cardCount, setCardCount] = useState(DEFAULT_CARD_COUNT);
   const [cardImage] = useState(BASE_CARD_IMAGE);
   const [isCardVisible, setIsCardVisible] = useState(false);
@@ -76,7 +81,7 @@ export default function CardStack({ drinks, points, isTurn, onGameOver, setPoint
   };
 
   //Load questions from DB and write questions to new array
-  const loadQuestions = async () => {
+  const loadQuestions = async () => {    
     try {
       const querySnapshot = await getDocs(questionsCollection);
       const tempQuestionsArray: QuestionsArray[] = [];
@@ -89,7 +94,9 @@ export default function CardStack({ drinks, points, isTurn, onGameOver, setPoint
       console.error('Error loading questions: ', error)
       throw error;
     }
+    
   };
+
 
   //Write questions to new array
   const storeArray = async (value: QuestionsArray[]) => {
@@ -203,11 +210,8 @@ export default function CardStack({ drinks, points, isTurn, onGameOver, setPoint
     return <LoadingScreen />
   }
 
-  return (
-    <>
-      {isCardVisible && <Card handlePoints={handlePoints} toggleVisibility={toggleCardVisibility} updateTurn={updateTurn} questionElement={fetchedQuestions[cardCount]} cardsLeft={cardCount} isTurn={isTurn} answeredText={answeredText} />}
-      <View style={styles.gameView}>
-        <View style={styles.cardViewContainer}>
+  /**
+   *         <View style={styles.cardViewContainer}>
           <Pressable
             style={styles.cardViewTouchable}
             disabled={isCardVisible}
@@ -216,7 +220,50 @@ export default function CardStack({ drinks, points, isTurn, onGameOver, setPoint
             <Image style={styles.cardView} source={cardImage} />
           </Pressable>
         </View>
+   */
+
+        /*
+        {fetchedPlayers.map((player, index) => */
+
+  return (
+    <>
+      {isCardVisible && <Card handlePoints={handlePoints} toggleVisibility={toggleCardVisibility} updateTurn={updateTurn} questionElement={fetchedQuestions[cardCount]} cardsLeft={cardCount} isTurn={isTurn} answeredText={answeredText} />}
+      <View style={styles.gameView}>
+        <View style={styles.elementContainer}>
+          <View style={styles.leftSection}>
+            {fetchedPlayers[6] && <PlayerAroundTable key={6} player={fetchedPlayers[6]} currentTurn={currentTurn} />}
+            {fetchedPlayers[0] && <PlayerAroundTable key={0} player={fetchedPlayers[0]} currentTurn={currentTurn} />}
+            {fetchedPlayers[5] && <PlayerAroundTable key={5} player={fetchedPlayers[5]} currentTurn={currentTurn} />}
+          </View>
+
+          <View style={styles.middleSection}>
+            <View style={styles.middleTop}>
+              {fetchedPlayers[2] && <PlayerAroundTable key={2} player={fetchedPlayers[2]} currentTurn={currentTurn} />}
+            </View>
+
+            <Pressable
+              style={styles.cardViewTouchable}
+              disabled={isCardVisible}
+              onPress={handleCardPick}
+            >
+              <Image style={styles.cardImage} source={cardImage} />
+            </Pressable>
+
+            <View style={styles.middleBottom}>
+              {fetchedPlayers[3] && <PlayerAroundTable key={3} player={fetchedPlayers[3]} currentTurn={currentTurn} />}
+            </View>
+          </View>
+
+          <View style={styles.rightSection}>
+            {fetchedPlayers[4] && <PlayerAroundTable key={4} player={fetchedPlayers[4]} currentTurn={currentTurn} />}
+            {fetchedPlayers[1] && <PlayerAroundTable key={1} player={fetchedPlayers[1]} currentTurn={currentTurn} />}
+            {fetchedPlayers[7] && <PlayerAroundTable key={7} player={fetchedPlayers[7]} currentTurn={currentTurn} />}
+          </View>
+        </View>
+        
+
         <View style={styles.gameDataView}>
+          {isCurrentPlayersTurn ? <Text style={styles.gameDataText}>Wake up! It's your turn!</Text> : null}
           <Text style={styles.gameDataText}>Cards Left: {cardCount}</Text>
           <Text style={styles.gameDataText}>Points: {points - drinks}</Text>
           <Text style={styles.gameDataText}>Drinks: {drinks}</Text>
@@ -231,46 +278,68 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     alignItems: 'center',
+    justifyContent: 'space-evenly',
+    
+  },
+  elementContainer: {
+    flex: 6,
+    width: '95%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  leftSection: {
+    flex: 1,
+    marginLeft: '2%',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+  },
+  rightSection: {
+    flex: 1,
+    marginRight: '2%',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+  },
+  middleSection: {
+    marginTop: '10%',
+    marginBottom: '10%',
+    flex: 4,
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  middleTop: {
+    flex: 1,
+    width: '25%',
+    alignItems: 'center',
+    paddingBottom: '20%',
+  },
+  middleBottom: {
+    flex: 1,
+    width: '25%',
+    alignItems: 'center',
+    paddingTop: '20%',
   },
   cardViewContainer: {
-    marginTop: 60,
-    width: '90%',
-    height: '70%',
+    flex: 1,
+    alignContent: 'center',
     justifyContent: 'center',
   },
   cardViewTouchable: {
-    alignItems: 'center',
+    flex: 5,
     justifyContent: 'center',
-    zIndex: -1,
   },
-  cardView: {
-    height: '80%',
-    width: '80%',
-    contentFit: 'contain',
+  cardImage: {
+    height: '100%',
+    aspectRatio: 0.53,
   },
   gameDataView: {
-    marginTop: 50,
-    justifyContent: 'flex-start',
+    flex: 1,
     flexDirection: 'column',
+    justifyContent: 'center',
   },
   gameDataText: {
     color: SECONDARY_COLOR,
     fontFamily: FONT_FAMILY_MEDIUM,
     marginTop: 5,
-  },
-  avatar: {
-    flex: 1,
-    contentFit: 'contain',
-    width: '90%',
-    height: '90%',
-    alignSelf: 'center',
-  },
-  drink: {
-    position: 'absolute',
-    contentFit: 'contain',
-    width: '50%',
-    height: '50%',
-    alignSelf: 'flex-end',
-    bottom: 0,
   },
 });

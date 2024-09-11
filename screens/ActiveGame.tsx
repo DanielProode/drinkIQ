@@ -7,7 +7,6 @@ import { Player } from './Lobby';
 import Button from '../components/Button';
 import CardStack from '../components/CardStack';
 import LoadingScreen from '../components/LoadingScreen';
-import PlayerAroundTable from '../components/PlayerAroundTable';
 import { BACKGROUND_COLOR, PRIMARY_COLOR, SECONDARY_COLOR } from '../constants/styles/colors';
 import { FONT_FAMILY_REGULAR, HEADER_FONT_SIZE, LOGO_FONT_FAMILY_REGULAR, REGULAR_LOGO_FONT_SIZE } from '../constants/styles/typography';
 import { useAuth } from '../context/authContext';
@@ -32,16 +31,6 @@ export default function ActiveGame() {
   const userId = authUser ? authUser.uid : '';
   let gameWon = 0;
 
-  const stylesArray = [
-    styles.firstAvatar,
-    styles.secondAvatar,
-    styles.thirdAvatar,
-    styles.fourthAvatar,
-    styles.fifthAvatar,
-    styles.sixthAvatar,
-    styles.seventhAvatar,
-    styles.eighthAvatar,
-  ];
 
   const isCurrentPlayersTurn = () => fetchedPlayers[currentTurnIndex].userId === userId;
 
@@ -128,24 +117,22 @@ export default function ActiveGame() {
   return (
     <>
       <View style={styles.gameBackground}>
-        <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
-        <Text style={styles.gameCode}>#{roomCode}</Text>
+        <View style={styles.header}>
+          <Text>
+          <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
+          <Text style={styles.gameCode}>    #{roomCode}</Text> </Text>
+        </View>
+        
         {isGameOver ? (
           <>
-            <Text style={styles.gameText}>GAME OVER!</Text>
+            <Text style={styles.gameText}>GAME OVER</Text>
             <Text style={styles.gameText}>Score: {correctAnswerCount - wrongAnswerCount} </Text>
             <Text style={styles.gameText}>Drinks: {wrongAnswerCount} </Text>
 
             {authUser?.uid === gameHost && <Button onPress={() => { updateIsSessionStarted(false); updateGameInfoInDatabase({ isSessionStarted: false, isGameOver: false }); }} style={styles.lobbyButton} text="BACK TO LOBBY" />}
           </>
         ) : (
-          <>
-            <Text style={styles.gameCode}>Current turn: {fetchedPlayers[currentTurnIndex].username}</Text>
-            {fetchedPlayers.map((player, index) =>
-              <PlayerAroundTable stylesArray={stylesArray[index]} key={player.userId} player={player} />
-            )}
-            <CardStack onGameOver={handleGameOver} points={correctAnswerCount} drinks={wrongAnswerCount} setPoints={setCorrectAnswerCount} setDrinks={setWrongAnswerCount} updateTurn={() => updateGameInfoInDatabase({ currentTurn: getNextPlayerIndex(currentTurnIndex) })} isTurn={isCurrentPlayersTurn()} answeredText={setAnsweredText} />
-          </>
+            <CardStack isCurrentPlayersTurn={isCurrentPlayersTurn()} currentTurn={fetchedPlayers[currentTurnIndex].userId} fetchedPlayers={fetchedPlayers} onGameOver={handleGameOver} points={correctAnswerCount} drinks={wrongAnswerCount} setPoints={setCorrectAnswerCount} setDrinks={setWrongAnswerCount} updateTurn={() => updateGameInfoInDatabase({ currentTurn: getNextPlayerIndex(currentTurnIndex) })} isTurn={isCurrentPlayersTurn()} answeredText={setAnsweredText} />
         )}
       </View>
     </>
@@ -158,7 +145,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: BACKGROUND_COLOR,
   },
+  header: {
+    marginTop: 50,
+    width: '90%',
+  },
   drinkIQLogo: {
+    justifyContent: 'flex-start',
     fontFamily: LOGO_FONT_FAMILY_REGULAR,
     marginTop: 50,
     fontSize: REGULAR_LOGO_FONT_SIZE,

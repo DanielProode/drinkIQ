@@ -189,6 +189,8 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   buttonContainer: {
+    marginBottom: 50,
+    alignItems: 'center',
   },
   deck: {
     flex: 1,

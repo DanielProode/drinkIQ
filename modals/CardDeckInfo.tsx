@@ -1,10 +1,10 @@
 import { Image } from 'expo-image';
 import { arrayUnion, doc, updateDoc } from "firebase/firestore";
-import { Modal, View, Text, StyleSheet, ImageSourcePropType } from "react-native";
+import { Modal, View, Text, StyleSheet, ImageSourcePropType, ScrollView } from "react-native";
 
 import Button from "../components/Button";
-import { BACKGROUND_COLOR, BLACK, SECONDARY_COLOR } from '../constants/styles/colors';
-import { FONT_FAMILY_BOLD, FONT_FAMILY_REGULAR, HEADER_FONT_SIZE, REGULAR_FONT_SIZE } from '../constants/styles/typography';
+import { BACKGROUND_COLOR, SECONDARY_COLOR } from '../constants/styles/colors';
+import { FONT_FAMILY_BOLD, FONT_FAMILY_REGULAR, HEADER_FONT_SIZE, REGULAR_FONT_SIZE, TITLE_FONT_SIZE } from '../constants/styles/typography';
 import { useAuth } from "../context/authContext";
 import { FIREBASE_DB } from "../firebaseConfig";
 import useUserStore from "../store/userStore";
@@ -12,7 +12,7 @@ import useUserStore from "../store/userStore";
 interface CardDeckInfoProps {
   isVisible: boolean;
   onClose: () => void;
-  pack: { id: string, name: string, image: ImageSourcePropType, previewImage: ImageSourcePropType, text: string; };
+  pack: { id: string, name: string, image: ImageSourcePropType, previewImage: ImageSourcePropType, text: string, exampleQuestions: string[]; };
 };
 
 export default function CardDeckInfo({ isVisible, onClose, pack }: CardDeckInfoProps) {
@@ -42,95 +42,117 @@ export default function CardDeckInfo({ isVisible, onClose, pack }: CardDeckInfoP
   }
 
   return (
-    <Modal visible={isVisible} animationType='slide' presentationStyle='pageSheet'>
+    <Modal
+      style={styles.modalContainer}
+      visible={isVisible}
+      transparent
+      animationType="slide"
+      presentationStyle="overFullScreen"
+    >
       <View style={styles.deckImageAndText}>
+        {/* Image and pack name */}
         <View style={styles.imageView}>
           <Image style={styles.modalImage} source={pack.image} />
+          <Text style={styles.packName}>{pack.name}</Text>
         </View>
-        <Text style={styles.packName}>{pack.name}</Text>
-      </View>
-      
-      <View style={styles.modal}>
-        <View>
-          <Text style={styles.modalTextBold}>This is a small intro to the {pack.name} card pack.</Text>
+  
+        {/* Scrollable text section */}
+        <ScrollView contentContainerStyle={styles.scrollViewContent}>
+          <Text style={styles.modalTextBold}>
+            This is a small intro to the {pack.name} card pack.
+          </Text>
           <Text style={styles.modalText}>{pack.text}</Text>
-        </View>
-        {(packs_owned && packs_owned.includes(pack.id)) ? (
+          <Text style={styles.modalTextBold}>
+            Below are a few example questions from this card pack:
+          </Text>
+          {pack.exampleQuestions.map((question, index) => (
+            <Text key={index} style={styles.modalText}>
+              {question}
+            </Text>
+          ))}
+        </ScrollView>
+        
+        {/* Buttons (conditionally rendered based on ownership) */}
           <View style={styles.modalButtons}>
-            <Button text="Back" onPress={() => { onClose(); }} />
-          </View>
-        ) : (
-          <View>
-            <Text style={styles.buyText}>Buy {pack.name} for just 4.99€!</Text>
-            <View style={styles.modalButtons}>
-              <Button text="Buy pack" buttonBgColor="#707070" onPress={() => { handlePayment(pack.id); }} />
-              <Button text="Back" onPress={() => { onClose() }} />
-            </View>
+          {packs_owned && packs_owned.includes(pack.id) ? (
+            <Button text="Back" onPress={() => onClose()} />
+          ) : (
+            <View style={styles.buyPackContainer}>
+            <Text style={styles.buyText}>
+              Buy {pack.name} for just 4.99€!
+            </Text>
+              <Button
+                text="Buy pack"
+                buttonBgColor="#707070"
+                onPress={() => handlePayment(pack.id)}
+              />
+              <Button text="Back" onPress={() => onClose()} />
           </View>
         )}
       </View>
+      </View>
     </Modal>
   );
+  
 }
 
 const styles = StyleSheet.create({
+  modalContainer: {
+    flex: 1,
+  },
   deckImageAndText: {
-    backgroundColor: BACKGROUND_COLOR,
-  },
-  imageView: {
-    alignItems: 'center',
-    height: 200,
-    marginTop: 100,
-    backgroundColor: BACKGROUND_COLOR,
-  },
-  buyText: {
-    marginTop: 20,
-    marginBottom: 20,
-    fontSize: HEADER_FONT_SIZE,
-    color: SECONDARY_COLOR,
-    fontFamily: FONT_FAMILY_REGULAR,
-  },
-  packName: {
-    marginTop: 20,
-    fontFamily: FONT_FAMILY_BOLD,
-    color: SECONDARY_COLOR,
-    alignSelf: 'center',
-  },
-  modal: {
     flex: 1,
     backgroundColor: BACKGROUND_COLOR,
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: BLACK,
-    justifyContent: 'space-between',
+    padding: 20,
+  },
+  scrollViewContent: {
+    paddingVertical: 20,
+    alignItems: "center",
+  },
+  imageView: {
+    alignItems: "center",
+    paddingTop: 50,
   },
   modalImage: {
-    width: '60%',
-    height: '100%',
+    width: "65%",
+    height: undefined,
+    aspectRatio: 1,
   },
-  modalText: {
+  packName: {
     marginTop: 10,
-    marginBottom: 10,
-    fontSize: REGULAR_FONT_SIZE,
+    fontFamily: FONT_FAMILY_BOLD,
+    fontSize: TITLE_FONT_SIZE,
     color: SECONDARY_COLOR,
-    fontFamily: FONT_FAMILY_REGULAR,
+    alignSelf: "center",
   },
   modalTextBold: {
-    marginTop: 10,
+    fontFamily: FONT_FAMILY_BOLD,
+    fontSize: TITLE_FONT_SIZE,
+    color: SECONDARY_COLOR,
     marginBottom: 10,
+    textAlign: "auto",
+  },
+  modalText: {
+    fontFamily: FONT_FAMILY_REGULAR,
     fontSize: REGULAR_FONT_SIZE,
     color: SECONDARY_COLOR,
-    fontFamily: FONT_FAMILY_BOLD,
+    marginBottom: 10,
+    padding: 20,
+    textAlign: "left",
+    letterSpacing: 1.1,
   },
   modalButtons: {
-    justifyContent: 'flex-end',
-    gap: 15,
-    marginBottom: 30,
+    alignItems: "center",
+    marginTop: 20,
   },
-  buttonContainer: {
-    flexDirection: 'row',
-    gap: 40,
-    justifyContent: 'center',
-    marginTop: 50,
+  buyPackContainer: {
+    alignItems: "center",
+    gap: 10,
+  },
+  buyText: {
+    fontSize: HEADER_FONT_SIZE,
+    fontFamily: FONT_FAMILY_REGULAR,
+    color: SECONDARY_COLOR,
+    textAlign: "center",
   },
 });
