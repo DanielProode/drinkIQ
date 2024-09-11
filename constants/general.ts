@@ -1,21 +1,27 @@
 export const CARD_PACKS = [{
   id: 'estonia',
-  name: 'Estonia card pack',
+  name: 'Estonia',
   image: require('../assets/images/estonia_deck.png'),
   previewImage: require('../assets/images/estonia_deck_preview.png'),
-  text: "Embark on an Estonian Trivia Quest! This card pack awaits, offering a captivating exploration of Estonia's history, vibrant culture, sporting triumphs, diverse geography, and miscellaneous wonders. Challenge your knowledge across five categories and uncover the essence of this Baltic gem. Let the trivia adventure unveil the secrets of Estonia!",
+  text: "Embark on an Estonian Trivia Quest! This card pack awaits, offering a captivating exploration of Estonia's history, vibrant culture, sporting triumphs, diverse geography, and miscellaneous wonders. <br/>Challenge your knowledge across five categories and uncover the essence of this Baltic gem. Let the trivia adventure unveil the secrets of Estonia!",
+  exampleQuestions: ["What was the name of Ivo Linna's popular eurovison song?", "What was the highest win amount in Estonian's who wants to be a millionaire?", "What significant architectural style is prominent in Tallinn's old town?", "Estonia's longest cave, Suur-Taevaskoda, is formed primarily of what type of rock?", "What year did Taxify rebrand to Bolt?"],
+  previewText: "New on the list!",
 }, {
   id: 'football',
-  name: 'Football card pack',
+  name: 'Football',
   image: require('../assets/images/football_deck.png'),
   previewImage: require('../assets/images/football_deck_preview.png'),
   text: "Dive into the Football Enigma! This card pack beckons with questions spanning the thrilling world of football. Explore history, iconic moments, star players, teams, and miscellaneous facts. Engage in the beautiful game's trivia across various categories and unveil the excitement that defines football's rich tapestry. Game on!",
+  exampleQuestions: ["Question 1", "Question 2", "Question 3", "Question 4", "Question 5"],
+  previewText: "Must have!",
 }, {
   id: 'birds',
-  name: 'Birds card pack',
+  name: 'Birds',
   image: require('../assets/images/bird_deck.png'),
   previewImage: require('../assets/images/birds_deck_preview.png'),
   text: "Embark on a Feathered Adventure! This card pack invites you to soar through the world of birds. Uncover avian wonders in history, species, habitats, behaviors, and miscellaneous facts. Challenge your bird knowledge across diverse categories and discover the fascinating tales that flutter within this captivating card pack. Happy birding!",
+  exampleQuestions: ["Question 1", "Question 2", "Question 3", "Question 4", "Question 5"],
+  previewText: "Birds.. really? Those flying things?",
 }];
 
 export const DEFAULT_PACK = 'estonia';

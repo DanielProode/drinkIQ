@@ -1,13 +1,13 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { Image } from 'expo-image';
+import { Image, ImageBackground } from 'expo-image';
 import { onValue, ref, update } from 'firebase/database';
 import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import AnswerButton from './AnswerButton';
-import { BASE_CARD_IMAGE, CARD_PACKS, DEFAULT_CARD_COUNT } from '../constants/general';
-import { ALMOSTBLACK, GREY, LIGHTBLACK, CORRECT, WRONG, SECONDARY_COLOR } from '../constants/styles/colors';
-import { FONT_FAMILY_MEDIUM, FONT_FAMILY_REGULAR, HEADER_FONT_SIZE, MEDIUM_LOGO_FONT_SIZE, REGULAR_FONT_SIZE, TITLE_FONT_SIZE } from '../constants/styles/typography';
+import { DEFAULT_CARD_COUNT } from '../constants/general';
+import { ALMOSTBLACK, LIGHTBLACK, CORRECT, WRONG, SECONDARY_COLOR, TRANSPARENTGREY } from '../constants/styles/colors';
+import { FONT_FAMILY_MEDIUM, FONT_FAMILY_REGULAR, HEADER_FONT_SIZE, REGULAR_FONT_SIZE, TITLE_FONT_SIZE } from '../constants/styles/typography';
 import { FIREBASE_RTDB } from '../firebaseConfig';
 import useGameStore from '../store/gameStore';
 
@@ -128,10 +128,10 @@ export default function Card({ questionElement, cardsLeft, isTurn, toggleVisibil
   };
 
   return (
-    <View style={styles.backgroundBlur}>
+    <Pressable style={styles.backgroundBlur}>
       <View style={{ ...styles.cardView, pointerEvents: isTurn ? 'auto' : 'none' }}>
-        <Image source={BASE_CARD_IMAGE} style={styles.image}>
-          <View style={styles.questionBox}>
+      <ImageBackground source={require('../assets/images/card_bg2.png')} style={styles.cardImage}>
+        <View style={styles.questionBox}>
             <View style={styles.questionNumberContainer}>
               <Text style={styles.questionNumberText}>Question {DEFAULT_CARD_COUNT - cardsLeft} / {DEFAULT_CARD_COUNT} </Text>
             </View>
@@ -141,8 +141,8 @@ export default function Card({ questionElement, cardsLeft, isTurn, toggleVisibil
                 {!isAnswered && questionElement.question}
               </Text>
             </View>
-
           </View>
+
           <View style={styles.answerButtonView}>
             {renderAnswers()}
           </View>
@@ -155,51 +155,70 @@ export default function Card({ questionElement, cardsLeft, isTurn, toggleVisibil
                 ]}
                 onPress={handleCloseCard}
               >
-                <Text style={styles.nextButtonText}>→</Text>
+                <Image source={require('../assets/images/check.png')} style={styles.checkIcon}/>
               </Pressable>}
           </View>
-        </Image>
+          </ImageBackground>
       </View>
-      <View style={styles.deckCircle}>
-        <Image style={styles.deckLogo} source={CARD_PACKS[playableDeckIndex].image} />
-      </View>
-    </View>
+
+    </Pressable>
   );
 };
 
 const styles = StyleSheet.create({
-  cardView: {
-    position: 'absolute',
-    alignSelf: 'center',
-    top: 110, bottom: 110,
-    marginTop: 20,
-    width: '95%',
-    zIndex: 1,
-  },
-  questionBox: {
-    marginTop: 80,
-    width: 280,
-    height: 140,
-    backgroundColor: SECONDARY_COLOR,
-    borderRadius: 10,
-    borderWidth: 5,
-    borderColor: SECONDARY_COLOR,
-    alignSelf: 'center',
-    justifyContent: 'center',
-  },
-  questionNumberContainer: {
-    height: 40,
-  },
   backgroundBlur: {
     position: 'absolute',
     width: '100%',
     height: '100%',
+    justifyContent: 'center',
     zIndex: 1,
     backgroundColor: ALMOSTBLACK,
   },
-  image: {
-    contentFit: 'contain',
+  cardView: {
+    alignSelf: 'center',
+    width: '90%',
+    height: '85%',
+    zIndex: 1,
+    borderWidth: 5,
+    borderColor: SECONDARY_COLOR,
+    backgroundColor: TRANSPARENTGREY,
+    borderRadius: 15,
+    overflow: 'hidden',
+  },
+  cardImage: {
+    width: '100%',
     height: '100%',
+    resizeMode: 'contain',
+  },
+  questionBox: {
+    marginTop: 10,
+    height: 230,
+    width: '90%',
+    borderRadius: 10,
+    borderWidth: 5,
+    borderColor: SECONDARY_COLOR,
+    alignSelf: 'center',
+  },
+  questionNumberContainer: {
+    height: 30,
+    backgroundColor: '#F2F2F298',
+    justifyContent: 'center',
+  },
+  questionNumberText: {
+    fontSize: REGULAR_FONT_SIZE,
+    fontFamily: FONT_FAMILY_MEDIUM,
+    textAlign: 'center',
+  },
+  questionTextContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: '#F2F2F298',
+    borderColor: SECONDARY_COLOR,
+  },
+  questionText: {
+    fontSize: TITLE_FONT_SIZE,
+    fontFamily: FONT_FAMILY_REGULAR,
+    textAlign: 'center',
   },
   background: {
     position: 'absolute',
@@ -210,44 +229,34 @@ const styles = StyleSheet.create({
     bottom: 0,
     borderRadius: 20,
   },
-  questionNumberText: {
-    fontSize: REGULAR_FONT_SIZE,
-    marginTop: 20,
-    fontFamily: FONT_FAMILY_MEDIUM,
-    textAlign: 'center',
-  },
-  questionTextContainer: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  questionText: {
-    fontSize: TITLE_FONT_SIZE,
-    fontFamily: FONT_FAMILY_REGULAR,
-    textAlign: 'center',
-  },
   nextButtonContainer: {
-    alignSelf: 'flex-end',
-    marginTop: 50,
-    marginRight: '40%',
+    flex: 1,
     width: 50,
     height: 50,
+    alignSelf: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
     zIndex: 2,
   },
   nextButton: {
-    backgroundColor: SECONDARY_COLOR,
-    borderColor: GREY,
-    flex: 1,
-    borderWidth: 1,
-    borderRadius: 50,
+    backgroundColor: '#a0c172',
+    borderColor: SECONDARY_COLOR,
+    width: 150,
+    height: 50,
+    borderWidth: 4,
+    borderRadius: 10,
+    marginBottom: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   nextButtonText: {
-    fontSize: MEDIUM_LOGO_FONT_SIZE,
+    fontSize: REGULAR_FONT_SIZE,
     alignSelf: 'center',
   },
   answerButtonView: {
-    marginTop: 20,
+    flex: 4,
     alignSelf: 'center',
+    justifyContent: 'center',
   },
   answerResult: {
     alignSelf: 'center',
@@ -271,16 +280,12 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   deckLogo: {
-    contentFit: '',
     width: '100%',
     height: '100%',
     borderRadius: 80,
   },
-  wrongImage: {
-    flex: 1,
-    contentFit: 'contain',
-    width: '80%',
-    height: '80%',
-    alignSelf: 'center',
+  checkIcon: {
+    width: '70%',
+    height: '70%',
   },
 });

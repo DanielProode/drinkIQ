@@ -96,15 +96,8 @@ const styles = StyleSheet.create({
   },
   bodyContainer: {
     flex: 4,
-    marginTop: 120,
-  },
-  cardButtonContainer: {
-    marginTop: 20,
-  },
-  settingsButtonContainer: {
-    marginTop: 20,
-  },
-  tutorialButtonContainer: {
-    marginTop: 20,
+    display: 'flex',
+    justifyContent: 'center',
+    gap: 30,
   },
 });

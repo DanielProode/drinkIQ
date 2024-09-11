@@ -86,14 +86,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderRadius: 10,
   },
-  cheersIcon: {
-    position: 'absolute',
-    contentFit: 'contain',
-    width: 80,
-    height: 80,
-    right: -30,
-    opacity: 0.3,
-  },
   avatarCircles: {
     flexDirection: 'row',
     gap: 18,

@@ -114,7 +114,6 @@ const styles = StyleSheet.create({
   },
   input: {
     width: '80%',
-    height: 40,
     borderBottomWidth: 1,
     borderColor: MEDIUMGREY,
     borderRadius: 5,
@@ -130,10 +129,10 @@ const styles = StyleSheet.create({
   },
   touchableTerms: {
     flex: 1,
-    alignItems: 'center',
+    flexDirection: 'row',
+    alignItems: 'flex-end',
   },
   outerText: {
-    position: 'absolute',
     bottom: 20,
     width: 300,
     textAlign: 'center',

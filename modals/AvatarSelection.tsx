@@ -129,21 +129,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderRadius: 10,
   },
-  drink: {
-    flex: 1,
-    contentFit: 'contain',
-    width: '70%',
-    height: '70%',
-    alignSelf: 'center',
-  },
-  cheersIcon: {
-    position: 'absolute',
-    contentFit: 'contain',
-    width: 80,
-    height: 80,
-    right: -30,
-    opacity: 0.3,
-  },
   avatarCircles: {
     flexDirection: 'row',
     marginTop: 20,

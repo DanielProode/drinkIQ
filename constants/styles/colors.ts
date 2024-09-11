@@ -4,8 +4,8 @@ export const SECONDARY_COLOR = '#F2F2F2'
 export const BACKGROUND_COLOR = '#1E1E1E';
 
 // ACTIONS
-export const CORRECT = '#A0E595'
-export const WRONG = '#F07070'
+export const CORRECT = '#a0c172'
+export const WRONG = '#DC9596'
 
 // GRAYSCALE
 export const ALMOSTWHITE = '#FFFFFF95'
