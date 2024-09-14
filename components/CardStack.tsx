@@ -30,6 +30,7 @@ interface CardStackProps {
 };
 
 export interface QuestionsArray {
+  id: number;
   question: string;
   answers: AnswersArray[]
 };
@@ -134,14 +135,18 @@ export default function CardStack({ drinks, points, isTurn, fetchedPlayers, onGa
   const handleQuestionsNumber = async (value: number) => {
     try {
       const fetchedPlayedQuestionsNumber = await getPlayedQuestionNumber();
-      const addedPlayedQuestionsNumber = fetchedPlayedQuestionsNumber + value
+      let addedPlayedQuestionsNumber: number;
+      if (fetchedPlayedQuestionsNumber + value > 1000) {
+        addedPlayedQuestionsNumber = 1000;
+      } else {
+        addedPlayedQuestionsNumber = fetchedPlayedQuestionsNumber + value
+      }
       storePlayedQuestionNumber(addedPlayedQuestionsNumber);
     } catch (error) {
       console.error ('Error handling question numbers: ', error);
       throw error;
     }
   }
-
 
   const generateRandomNumberArray = (arraySize: number): number[] => {
     const array: number[] = [];
@@ -263,7 +268,7 @@ export default function CardStack({ drinks, points, isTurn, fetchedPlayers, onGa
 
   return (
     <>
-      {isCardVisible && <Card handlePoints={handlePoints} toggleVisibility={toggleCardVisibility} updateTurn={updateTurn} questionElement={fetchedQuestions[cardCount]} cardsLeft={cardCount} isTurn={isTurn} answeredText={answeredText} />}
+      {isCardVisible && <Card handlePoints={handlePoints} toggleVisibility={toggleCardVisibility} updateTurn={updateTurn} questionElement={fetchedQuestions[cardCount]} cardsLeft={cardCount} isTurn={isTurn} answeredText={answeredText} deckID={CARD_PACKS[playableDeckIndex].id} />}
       <View style={styles.gameView}>
         <View style={styles.elementContainer}>
           <View style={styles.leftSection}>

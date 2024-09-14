@@ -12,6 +12,7 @@ import { FONT_FAMILY_REGULAR, HEADER_FONT_SIZE, LOGO_FONT_FAMILY_REGULAR, REGULA
 import { useAuth } from '../context/authContext';
 import { FIREBASE_DB, FIREBASE_RTDB } from '../firebaseConfig.js';
 import useGameStore from '../store/gameStore';
+import useUserStore from '../store/userStore';
 
 interface UpdateGameInfoInDatabaseParams {
   isGameOver?: boolean;
@@ -49,6 +50,14 @@ export default function ActiveGame() {
           total_drinks: increment(wrongAnswerCount),
           games_won: increment(gameWon)
         })
+
+        // Fetch the current state from Zustand
+        const { total_points, total_drinks, games_won } = useUserStore.getState();
+
+        // Increment the values to the Zustand state as well
+        useUserStore.getState().updateTotalPoints(total_points + (correctAnswerCount - wrongAnswerCount));
+        useUserStore.getState().updateTotalDrinks(total_drinks + wrongAnswerCount);
+        useUserStore.getState().updateGamesWon(games_won + gameWon);
       }
       else {
         console.log('User object does not exist')

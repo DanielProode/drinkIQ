@@ -5,7 +5,6 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 
 import LoadingScreen from '../components/LoadingScreen';
-import { BLACK, LIGHTGREY } from '../constants/styles/colors';
 import { useAuth } from '../context/authContext';
 import ActiveGame from '../screens/ActiveGame';
 import CardDecks from '../screens/CardDecks';

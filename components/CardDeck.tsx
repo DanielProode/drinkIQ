@@ -2,14 +2,11 @@ import { Image } from 'expo-image';
 import { useEffect, useState } from "react";
 import { Pressable, View, Text, StyleSheet, ImageProps, Dimensions } from "react-native";
 
-import { ALMOSTBLACK, PRIMARY_COLOR, SECONDARY_COLOR } from '../constants/styles/colors';
-import { BIG_LOGO_FONT_SIZE, FONT_FAMILY_CARD, FONT_FAMILY_CARD_BOLD, FONT_FAMILY_CARD_SEMIBOLD, FONT_FAMILY_MEDIUM, FONT_FAMILY_REGULAR, LOGO_FONT_FAMILY_REGULAR, MEDIUM_FONT_SIZE, MEDIUM_LOGO_FONT_SIZE, REGULAR_LOGO_FONT_SIZE, TITLE_FONT_SIZE } from '../constants/styles/typography';
+import { ALMOSTBLACK, SECONDARY_COLOR } from '../constants/styles/colors';
+import { SPACING_MD, SPACING_SM, SPACING_XS } from '../constants/styles/style';
+import { FONT_FAMILY_CARD, FONT_FAMILY_CARD_BOLD, FONT_FAMILY_CARD_SEMIBOLD, REGULAR_LOGO_FONT_SIZE } from '../constants/styles/typography';
 import CardDeckInfo from "../modals/CardDeckInfo";
 import useUserStore from "../store/userStore";
-import { REGULAR_FONT_SIZE, SPACING_MD, SPACING_SM, SPACING_XS, SPACING_XXS } from '../constants/styles/style';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { CARD_PACKS } from '../constants/general';
-import useGameStore from '../store/gameStore';
 
 interface CardDeckProps {
   pack: { id: string, name: string, image: ImageProps, previewImage: ImageProps, text: string, exampleQuestions: string[], previewText: string, price: number, rating: number, playedCards: number}
@@ -17,7 +14,7 @@ interface CardDeckProps {
 
 export default function CardDeck({ pack }: CardDeckProps) {
   const [isCardDeckInfoModalVisible, setIsCardDeckInfoModalVisible] = useState(false);
-  const { packs_owned } = useUserStore();
+  const { packs_owned, packs_played } = useUserStore();
   const screenWidth = Dimensions.get('window').width;
   const itemWidth = (screenWidth - 64); // Adjust 40 for padding or margins
   const [progress, setProgress] = useState<number>(0);
@@ -26,12 +23,15 @@ export default function CardDeck({ pack }: CardDeckProps) {
     setIsCardDeckInfoModalVisible(!isCardDeckInfoModalVisible);
   };
 
+  
   //Check if played question number exists
   const getPlayedQuestionNumber = async (): Promise<number> => {
     try {
-      const jsonValue = await AsyncStorage.getItem(pack.id + "playedQuestions");
-      const playedQuestionsNumber = jsonValue != null ? JSON.parse(jsonValue) : 0;
-      return playedQuestionsNumber ? playedQuestionsNumber : 0;
+      if (packs_owned && packs_owned.includes(pack.id)) {
+        const questionsPlayed = packs_played[pack.id]?.length;
+        return questionsPlayed ? questionsPlayed : 0;
+      }
+      return 0;
     } catch (error) {
       console.error('Error reading played questions number from database: ', error)
       throw error;
@@ -50,7 +50,7 @@ export default function CardDeck({ pack }: CardDeckProps) {
     };
 
     fetchProgress();
-  }, [pack.id]); // Run the effect when the pack.id changes
+  }, [pack.id, packs_played]); // Run the effect when the pack.id changes
 
   const widthPercentage = progress / 10;
 
@@ -70,8 +70,8 @@ export default function CardDeck({ pack }: CardDeckProps) {
         }
         {(packs_owned && packs_owned.includes(pack.id)) && ( 
         <View style={styles.progressContainer}>
-        <View style={[styles.progressGreenBar, { width: widthPercentage }]}></View>
-        <View style={styles.progressWhiteBar}></View>
+        <View style={[widthPercentage === 100 ? styles.progressGoldBar : styles.progressGreenBar, { width: widthPercentage }]} />
+        <View style={styles.progressWhiteBar} />
         <Text style={styles.progressText}>{progress}/1000</Text>
         </View>
           )}
@@ -83,12 +83,12 @@ export default function CardDeck({ pack }: CardDeckProps) {
         </View>
         <View style={styles.deckInfoContainerSecond}>
         <View style={styles.deckDownloadsInfo}>
-          <Image style={styles.downloadsIcon} source={require('../assets/images/download_icon.png')}></Image>
-          <Text style={styles.deckDownloadsInfoText}>{"5"}</Text>
+          <Image style={styles.downloadsIcon} source={require('../assets/images/download_icon.png')} />
+          <Text style={styles.deckDownloadsInfoText}>5</Text>
         </View>
         <View style={styles.deckRatingInfo}>
         <Text style={styles.deckDownloadsInfoText}>{pack.rating}</Text>
-        <Image style={styles.starIcon} source={require('../assets/images/star_icon.png')}></Image>
+        <Image style={styles.starIcon} source={require('../assets/images/star_icon.png')} />
         </View>
         </View>
         </View>
@@ -144,6 +144,10 @@ const styles = StyleSheet.create({
   progressGreenBar: {
     height: '100%',
     backgroundColor: '#5CB563',
+  },
+  progressGoldBar: {
+    height: '100%',
+    backgroundColor: '#d4af37',
   },
   progressWhiteBar: {
     flex: 1,

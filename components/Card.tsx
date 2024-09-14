@@ -1,27 +1,35 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { Image, ImageBackground } from 'expo-image';
 import { onValue, ref, update } from 'firebase/database';
+import { arrayUnion, doc, updateDoc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+//import { questionsArray } from '../assets/questions.js';
+
 
 import AnswerButton from './AnswerButton';
 import { DEFAULT_CARD_COUNT } from '../constants/general';
 import { ALMOSTBLACK, LIGHTBLACK, CORRECT, WRONG, SECONDARY_COLOR, TRANSPARENTGREY } from '../constants/styles/colors';
 import { FONT_FAMILY_MEDIUM, FONT_FAMILY_REGULAR, HEADER_FONT_SIZE, REGULAR_FONT_SIZE, TITLE_FONT_SIZE } from '../constants/styles/typography';
-import { FIREBASE_RTDB } from '../firebaseConfig';
+import { useAuth } from '../context/authContext';
+import { FIREBASE_DB, FIREBASE_RTDB } from '../firebaseConfig';
 import useGameStore from '../store/gameStore';
+import useUserStore from '../store/userStore';
+// import { questionsArray } from '../assets/questions';
 
 interface CardProps {
-  questionElement: QuestionsArray;
+  questionElement: QuestionElement;
   cardsLeft: number;
   isTurn: boolean;
   toggleVisibility: () => void;
   updateTurn: () => void;
   handlePoints: (answerState: boolean) => void;
   answeredText: (isAnswerCorrect: boolean) => string;
+  deckID: string;
 };
 
-interface QuestionsArray {
+interface QuestionElement {
+  id: number;
   question: string;
   answers: AnswersArray[]
 };
@@ -42,15 +50,17 @@ const randomize = (array: AnswersArray[]) => {
   return [...array].sort(() => Math.random() - 0.5);
 }
 
-export default function Card({ questionElement, cardsLeft, isTurn, toggleVisibility, updateTurn, handlePoints, answeredText }: CardProps) {
+export default function Card({ questionElement, cardsLeft, isTurn, toggleVisibility, updateTurn, handlePoints, answeredText, deckID }: CardProps) {
     if (!questionElement) {
     return
   }
   const [isAnswered, setIsAnswered] = useState(false);
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number | null>(null);
   const [isAnswerCorrect, setIsAnswerCorrect] = useState(false);
+  const [isUpdateCalled, setIsUpdateCalled] = useState(false);
   const [randomizedAnswerArray, setRandomizedAnswerArray] = useState(() => randomize(questionElement.answers));
-  const { playableDeckIndex, roomCode } = useGameStore();
+  const { roomCode } = useGameStore();
+  const { authUser } = useAuth();
 
   const updateAnswerSelectionInDatabase = async (answerParams: UpdateAnswerSelectionInDatabaseParams) => {
     const answersRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/answerSelection`);
@@ -62,6 +72,15 @@ export default function Card({ questionElement, cardsLeft, isTurn, toggleVisibil
       console.error(`Error updating ${JSON.stringify(answerParams)} in database:`, error);
     }
   }
+
+  useEffect(() => {
+    // Ensure this function is only called once per card
+    if (isTurn && !isUpdateCalled) {
+        updatePackPlayedQuestions();
+        setIsUpdateCalled(true);
+        console.log("Setting value in Zustand!")
+    }
+}, [isTurn]); // Runs when isTurn changes
 
   const handleAnswerSelection = (answerIndex: number) => {
     if (!isAnswered) {
@@ -88,6 +107,25 @@ export default function Card({ questionElement, cardsLeft, isTurn, toggleVisibil
     if (randomizedAnswerArray.length > 0 && isTurn) updateAnswerSelectionInDatabase({ randomizedAnswerArray });
   }, []);
 
+  // Add questions to array
+
+  // const db = FIREBASE_DB;
+  // const questionsCollection = collection(db, "packs", "football", "questions");
+
+  // useEffect(() => {
+  //   async function addQuestion() {
+  //     questionsArray.forEach( async (question) => {
+  //       try {
+  //         const docRef = await addDoc(questionsCollection, question);
+  //         console.log("Document written with ID: ", docRef.id);
+  //       } catch (error) {
+  //         console.warn('Error adding to firebase:', error);
+  //       }
+  //     })
+  //     console.log("Questions imported successfully");
+  //   }
+  //   addQuestion();
+  // }, [])
 
   useEffect(() => {
     const answersRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/answerSelection`);
@@ -108,6 +146,33 @@ export default function Card({ questionElement, cardsLeft, isTurn, toggleVisibil
 
     return () => unsubscribe();
   }, []);
+
+  //Insert played question ID to pack-specific array under User object
+  const updatePackPlayedQuestions = async () => {
+    try {
+      if (authUser) {
+        const userDoc = doc(FIREBASE_DB, 'users', authUser.uid);
+        const currentPackPlayed = useUserStore.getState().packs_played[deckID] || [];
+        if (!currentPackPlayed.includes(questionElement.id)) {
+          await updateDoc(userDoc, {
+            [`packs_played.${deckID}`]: arrayUnion(questionElement.id),
+          });
+  
+          // Update Zustand state
+          useUserStore.getState().updatePacksPlayed({
+            ...useUserStore.getState().packs_played,
+            [deckID]: [...currentPackPlayed, questionElement.id],
+          });
+        }
+      } else {
+        console.log('User object does not exist');
+      }
+    } catch (error) {
+      console.error('Error updating user data: ', error);
+    }
+  };
+  
+  
 
   const renderAnswers = () => {
     return randomizedAnswerArray.map((answer, answerIndex) => {

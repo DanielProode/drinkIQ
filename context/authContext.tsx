@@ -16,7 +16,7 @@ interface AuthContextType {
   signUp: (email: string, password: string) => Promise<UserCredential>;
   signIn: (email: string, password: string) => Promise<UserCredential>;
   logOut: () => Promise<void>;
-  listenToUserData: (field?: 'username' | 'games_won' | 'total_drinks' | 'total_points' | 'packs_owned') => Unsubscribe;
+  listenToUserData: (field?: 'username' | 'games_won' | 'total_drinks' | 'total_points' | 'packs_owned' | 'packs_played') => Unsubscribe;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -27,7 +27,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const [authUser, setAuthUser] = useState<User | null>(null);
   const [isUserLoaded, setIsUserLoaded] = useState(false);
   const [isUserLoading, setIsUserLoading] = useState(false);
-  const { username, updateUsername, updateGamesWon, updateTotalDrinks, updateTotalPoints, updatePacksOwned } = useUserStore();
+  const { username, updateUsername, updateGamesWon, updateTotalDrinks, updateTotalPoints, updatePacksOwned, updatePacksPlayed } = useUserStore();
 
   const signUp = (email: string, password: string) => {
     return createUserWithEmailAndPassword(auth, email, password);
@@ -41,7 +41,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     return signOut(auth)
   };
 
-  const listenToUserData = (field?: 'username' | 'games_won' | 'total_drinks' | 'total_points' | 'packs_owned') => {
+  const listenToUserData = (field?: 'username' | 'games_won' | 'total_drinks' | 'total_points' | 'packs_owned' | 'packs_played') => {
     const userId = authUser ? authUser.uid : '';
     const userRef = doc(FIREBASE_DB, 'users', userId);
     const firestoreSnap = onSnapshot(userRef, (docSnapshot) => {
@@ -64,6 +64,9 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           case 'packs_owned':
             updatePacksOwned(docData.packs_owned);
             break;
+          case 'packs_played':
+            updatePacksPlayed(docData.packs_played);
+            break;
           default:
             // Fetch all fields if field parameter is not provided
             updateUsername(docData.username);
@@ -71,6 +74,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
             updateTotalDrinks(docData.total_drinks);
             updateTotalPoints(docData.total_points);
             updatePacksOwned(docData.packs_owned);
+            updatePacksPlayed(docData.packs_played);
         }
       }
     });
@@ -90,6 +94,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           updateTotalDrinks(docData.total_drinks);
           updateTotalPoints(docData.total_points);
           updatePacksOwned(docData.packs_owned);
+          updatePacksPlayed(docData.packs_played);
           setAuthUser(userObject);
         } else {
           console.error("User info document missing");

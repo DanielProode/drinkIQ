@@ -33,12 +33,16 @@ export default function Register() {
       const registerResponse = await signUp(email, password);
       const user = registerResponse.user;
       const usersCollection = doc(FIREBASE_DB, 'users', user.uid);
+      const cardDecksPlayed: Record<string, number[]> = {
+        [DEFAULT_PACK]: [],
+      };
       await setDoc(usersCollection, {
         username: nickname,
         games_won: 0,
         total_drinks: 0,
         total_points: 0,
-        packs_owned: [DEFAULT_PACK]
+        packs_owned: [DEFAULT_PACK],
+        packs_played: cardDecksPlayed,
       });
     } catch (error: any) {
       setError(error.message);

@@ -31,6 +31,7 @@ export default function CardDeckInfo({ isVisible, onClose, pack }: CardDeckInfoP
         const userDoc = doc(FIREBASE_DB, 'users', authUser.uid);
         await updateDoc(userDoc, {
           packs_owned: arrayUnion(pack),
+          [`packs_played.${pack}`]: arrayUnion(),
         })
       }
       else {
