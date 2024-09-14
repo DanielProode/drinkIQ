@@ -57,7 +57,7 @@ export default function Card({ questionElement, cardsLeft, isTurn, toggleVisibil
 
     try {
       await update(answersRef, answerParams);
-      console.log(`${JSON.stringify(answerParams)} updated in database`);
+      // console.log(`${JSON.stringify(answerParams)} updated in database`);
     } catch (error) {
       console.error(`Error updating ${JSON.stringify(answerParams)} in database:`, error);
     }

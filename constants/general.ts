@@ -6,6 +6,9 @@ export const CARD_PACKS = [{
   text: "Embark on an Estonian Trivia Quest! This card pack awaits, offering a captivating exploration of Estonia's history, vibrant culture, sporting triumphs, diverse geography, and miscellaneous wonders. <br/>Challenge your knowledge across five categories and uncover the essence of this Baltic gem. Let the trivia adventure unveil the secrets of Estonia!",
   exampleQuestions: ["What was the name of Ivo Linna's popular eurovison song?", "What was the highest win amount in Estonian's who wants to be a millionaire?", "What significant architectural style is prominent in Tallinn's old town?", "Estonia's longest cave, Suur-Taevaskoda, is formed primarily of what type of rock?", "What year did Taxify rebrand to Bolt?"],
   previewText: "New on the list!",
+  price: 4.55,
+  rating: 4.5,
+  playedCards: 0,
 }, {
   id: 'football',
   name: 'Football',
@@ -14,6 +17,9 @@ export const CARD_PACKS = [{
   text: "Dive into the Football Enigma! This card pack beckons with questions spanning the thrilling world of football. Explore history, iconic moments, star players, teams, and miscellaneous facts. Engage in the beautiful game's trivia across various categories and unveil the excitement that defines football's rich tapestry. Game on!",
   exampleQuestions: ["Question 1", "Question 2", "Question 3", "Question 4", "Question 5"],
   previewText: "Must have!",
+  price: 3.99,
+  rating: 3.8,
+  playedCards: 0,
 }, {
   id: 'birds',
   name: 'Birds',
@@ -22,6 +28,9 @@ export const CARD_PACKS = [{
   text: "Embark on a Feathered Adventure! This card pack invites you to soar through the world of birds. Uncover avian wonders in history, species, habitats, behaviors, and miscellaneous facts. Challenge your bird knowledge across diverse categories and discover the fascinating tales that flutter within this captivating card pack. Happy birding!",
   exampleQuestions: ["Question 1", "Question 2", "Question 3", "Question 4", "Question 5"],
   previewText: "Birds.. really? Those flying things?",
+  price: 2.85,
+  rating: 5.0,
+  playedCards: 0,
 }];
 
 export const DEFAULT_PACK = 'estonia';

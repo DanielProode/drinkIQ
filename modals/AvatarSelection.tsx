@@ -29,7 +29,7 @@ export default function AvatarSelection({ isVisible, onClose }: AvatarSelectionP
 
     try {
       await update(playerRef, { avatar, drink });
-      console.log(`Avatar and drink updated`);
+      // console.log(`Avatar and drink updated`);
     } catch (error) {
       console.error('Error updating avatar and drink in database:', error);
     }

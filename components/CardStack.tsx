@@ -94,7 +94,6 @@ export default function CardStack({ drinks, points, isTurn, fetchedPlayers, onGa
       console.error('Error loading questions: ', error)
       throw error;
     }
-    
   };
 
 
@@ -109,6 +108,41 @@ export default function CardStack({ drinks, points, isTurn, fetchedPlayers, onGa
     }
   }
 
+  //Check if played question number exists
+  const getPlayedQuestionNumber = async (): Promise<number> => {
+    try {
+      const jsonValue = await AsyncStorage.getItem(CARD_PACKS[playableDeckIndex].id + "playedQuestions");
+      const playedQuestionsNumber = jsonValue != null ? JSON.parse(jsonValue) : 0;
+      console.log("Got played number: " + playedQuestionsNumber);
+      return playedQuestionsNumber ? playedQuestionsNumber : 0;
+    } catch (error) {
+      console.error('Error reading played questions number from database: ', error)
+      throw error;
+    }
+  }
+
+  //Write played question number to local storage
+  const storePlayedQuestionNumber = async (value: number) => {
+    try {
+      await AsyncStorage.setItem(CARD_PACKS[playableDeckIndex].id + "playedQuestions", JSON.stringify(value));
+    } catch (error) {
+      console.error ('Error writing played questions number to local storage: ', error)
+      throw error;
+    }
+  }
+
+  const handleQuestionsNumber = async (value: number) => {
+    try {
+      const fetchedPlayedQuestionsNumber = await getPlayedQuestionNumber();
+      const addedPlayedQuestionsNumber = fetchedPlayedQuestionsNumber + value
+      storePlayedQuestionNumber(addedPlayedQuestionsNumber);
+    } catch (error) {
+      console.error ('Error handling question numbers: ', error);
+      throw error;
+    }
+  }
+
+
   const generateRandomNumberArray = (arraySize: number): number[] => {
     const array: number[] = [];
     for (let i = 0; i < DEFAULT_CARD_COUNT; i++) {
@@ -121,7 +155,6 @@ export default function CardStack({ drinks, points, isTurn, fetchedPlayers, onGa
         }
       }
     }
-
     return array;
   }
 
@@ -135,6 +168,9 @@ export default function CardStack({ drinks, points, isTurn, fetchedPlayers, onGa
     for (let i = 0; i < randomNumberArray.length; i++) {
       array = array.filter(element => element !== tempGameQuestionArray[i])
     }
+
+    //Subtract number from thousand (total questions) and add it to local storage (first check if such value already exists and add them both)
+    handleQuestionsNumber(randomNumberArray.length);
     storeArray(array);
     return tempGameQuestionArray;
   }

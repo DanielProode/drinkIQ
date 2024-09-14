@@ -63,7 +63,7 @@ export default function ActiveGame() {
 
     try {
       await update(roomRef, gameParams);
-      console.log(`${JSON.stringify(gameParams)} updated in database`);
+      // console.log(`${JSON.stringify(gameParams)} updated in database`);
     } catch (error) {
       console.error(`Error updating ${JSON.stringify(gameParams)} in database:`, error);
     }

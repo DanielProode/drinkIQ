@@ -5,7 +5,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 
 import LoadingScreen from '../components/LoadingScreen';
-import { LIGHTGREY } from '../constants/styles/colors';
+import { BLACK, LIGHTGREY } from '../constants/styles/colors';
 import { useAuth } from '../context/authContext';
 import ActiveGame from '../screens/ActiveGame';
 import CardDecks from '../screens/CardDecks';
@@ -50,6 +50,10 @@ export default function Router() {
     'JosefinSans-Bold': require('../assets/fonts/JosefinSans-Bold.ttf'),
     'JosefinSans-Medium': require('../assets/fonts/JosefinSans-Medium.ttf'),
     'JosefinSans-Light': require('../assets/fonts/JosefinSans-Light.ttf'),
+    'Montserrat': require('../assets/fonts/Montserrat.ttf'),
+    'Montserrat-Italic': require('../assets/fonts/Montserrat-Italic.ttf'),
+    'Montserrat-Semibold': require('../assets/fonts/Montserrat-SemiBold.ttf'),
+    'Montserrat-Bold': require('../assets/fonts/Montserrat-Bold.ttf'),
   });
 
   useEffect(() => {
@@ -71,7 +75,7 @@ export default function Router() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerTitle: '', headerTransparent: true, headerTintColor: LIGHTGREY, headerBackTitleVisible: false }}>
+      <Stack.Navigator screenOptions={{ headerTitle: '', headerTransparent: true, headerTintColor: '#F2F2F2', headerBackTitleVisible: false}}>
         {authUser === null ? (
           <>
             <Stack.Screen name="Login" component={Login} />

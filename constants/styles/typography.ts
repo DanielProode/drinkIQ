@@ -2,6 +2,10 @@
 export const FONT_FAMILY_REGULAR = 'JosefinSans-Regular'
 export const FONT_FAMILY_MEDIUM = 'JosefinSans-Medium'
 export const FONT_FAMILY_BOLD = 'JosefinSans-Bold'
+export const FONT_FAMILY_CARD = 'Montserrat'
+export const FONT_FAMILY_CARD_ITALIC = 'Montserrat-Italic'
+export const FONT_FAMILY_CARD_SEMIBOLD = 'Montserrat-Semibold'
+export const FONT_FAMILY_CARD_BOLD = 'Montserrat-Bold'
 
 // LOGO FONT FAMILY
 export const LOGO_FONT_FAMILY_REGULAR = 'JetbrainsMono-Bold'

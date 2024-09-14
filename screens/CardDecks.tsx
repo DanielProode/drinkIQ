@@ -5,9 +5,10 @@ import { FlatList, ImageProps, Pressable, StyleSheet, Text, TextInput, View } fr
 import CardDeck from '../components/CardDeck';
 import { CARD_PACKS } from '../constants/general';
 import { BACKGROUND_COLOR, PRIMARY_COLOR, SECONDARY_COLOR } from '../constants/styles/colors';
-import { FONT_FAMILY_BOLD, FONT_FAMILY_REGULAR, HEADER_FONT_SIZE, LOGO_FONT_FAMILY_REGULAR, REGULAR_LOGO_FONT_SIZE } from '../constants/styles/typography';
+import { FONT_FAMILY_BOLD, FONT_FAMILY_CARD_SEMIBOLD, FONT_FAMILY_REGULAR, HEADER_FONT_SIZE, LOGO_FONT_FAMILY_REGULAR, REGULAR_LOGO_FONT_SIZE } from '../constants/styles/typography';
 import { useAuth } from '../context/authContext';
 import useUserStore from '../store/userStore';
+import { SPACING_MD, SPACING_SM } from '../constants/styles/style';
 
 export default function CardDecks() {
   const { listenToUserData } = useAuth();
@@ -30,9 +31,9 @@ export default function CardDecks() {
     return () => unsubscribe();
   }, []);
 
-  type DeckProps = {id: string, name: string, image: ImageProps, previewImage: ImageProps, text: string, exampleQuestions: string[], previewText: string};
+  type DeckProps = {id: string, name: string, image: ImageProps, previewImage: ImageProps, text: string, exampleQuestions: string[], previewText: string, price: number, rating: number, playedCards: number};
 
-  const Deck = ({id, name, image, previewImage, text, exampleQuestions, previewText}: DeckProps) => (
+  const Deck = ({id, name, image, previewImage, text, exampleQuestions, previewText, price, rating, playedCards}: DeckProps) => (
     <CardDeck pack={{
       id,
       name,
@@ -41,6 +42,9 @@ export default function CardDecks() {
       text,
       exampleQuestions,
       previewText,
+      price,
+      rating,
+      playedCards,
     }}/>
   );
   
@@ -50,23 +54,25 @@ export default function CardDecks() {
       <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
       <View style={styles.searchContainer}>
       <View style={styles.searchBar}>
+      <Image source={require('../assets/images/search_icon.png')} style={styles.searchIcon} />
         <TextInput
         style={styles.input}
         placeholder="Search..."
+        placeholderTextColor="#F2F2F270"
         value={searchText}
         onChangeText={(text) => setSearchText(text)}
         />
-        <Pressable onPress={() => console.log("Pressed search!")}>
-
-        <Image source={require('../assets/images/magnifying-glass.png')} style={styles.searchIcon} />
+        <Pressable onPress={() => console.log("Pressed filter!")}>
+        <Image source={require('../assets/images/filter_icon.png')} style={styles.filterIcon} />
         </Pressable>
       </View>
       </View>
       <Text style={styles.categoryText}>Suggested for you</Text>
       <View style={styles.gridView}>
       <FlatList
+        showsVerticalScrollIndicator={false}
         data={sortedPacks}
-        renderItem={({item}) => <Deck id={item.id} name={item.name} image={item.image} previewImage={item.previewImage} text={item.text} exampleQuestions={item.exampleQuestions} previewText={item.previewText}/>}
+        renderItem={({item}) => <Deck id={item.id} name={item.name} image={item.image} previewImage={item.previewImage} text={item.text} exampleQuestions={item.exampleQuestions} previewText={item.previewText} price={item.price} rating={item.rating} playedCards={item.playedCards}/>}
         keyExtractor={deck => deck.id}
         contentContainerStyle={styles.flatList}
       />
@@ -76,6 +82,10 @@ export default function CardDecks() {
 }
 
 const styles = StyleSheet.create({
+  cardDeckView: {
+    flex: 1,
+    backgroundColor: '#1A262D',
+  },
   item: {
     backgroundColor: '#f9c2ff',
     padding: 20,
@@ -85,14 +95,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
   },
-  cardDeckView: {
-    flex: 1,
-    backgroundColor: BACKGROUND_COLOR,
-  },
   drinkIQLogo: {
     fontFamily: LOGO_FONT_FAMILY_REGULAR,
     marginTop: 50,
-    marginLeft: 20,
+    alignSelf: 'center',
     fontSize: REGULAR_LOGO_FONT_SIZE,
     color: SECONDARY_COLOR,
     letterSpacing: 3,
@@ -109,27 +115,34 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#F2F2F2',
     borderRadius: 25,
     paddingHorizontal: 10,
-    backgroundColor: SECONDARY_COLOR,
     height: 50,
   },
   input: {
     flex: 1,
-    fontSize: 16,
+    fontSize: 18,
     padding: 10,
     fontFamily: FONT_FAMILY_REGULAR,
+    color: '#F2F2F2',
+  },
+  placeholder: {
+    color: '#FFFFFF',
   },
   searchIcon: {
-    width: 20,
-    height: 20,
+    width: 35,
+    height: 35,
     marginLeft: 10,
   },
+  filterIcon: {
+    width: 30,
+    height: 30,
+  },
   categoryText: {
-    fontFamily: FONT_FAMILY_BOLD,
+    fontFamily: FONT_FAMILY_CARD_SEMIBOLD,
     fontSize: HEADER_FONT_SIZE,
-    color: SECONDARY_COLOR,
+    color: '#F5F5F5',
     padding: 15,
   },
   gridView: {
@@ -156,6 +169,6 @@ const styles = StyleSheet.create({
     
   },
   flatList: {
-    gap: 30,
+    gap: SPACING_SM,
   },
 });
