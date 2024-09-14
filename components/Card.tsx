@@ -4,9 +4,6 @@ import { onValue, ref, update } from 'firebase/database';
 import { arrayUnion, doc, updateDoc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-//import { questionsArray } from '../assets/questions.js';
-
-
 import AnswerButton from './AnswerButton';
 import { DEFAULT_CARD_COUNT } from '../constants/general';
 import { ALMOSTBLACK, LIGHTBLACK, CORRECT, WRONG, SECONDARY_COLOR, TRANSPARENTGREY } from '../constants/styles/colors';
@@ -15,7 +12,6 @@ import { useAuth } from '../context/authContext';
 import { FIREBASE_DB, FIREBASE_RTDB } from '../firebaseConfig';
 import useGameStore from '../store/gameStore';
 import useUserStore from '../store/userStore';
-// import { questionsArray } from '../assets/questions';
 
 interface CardProps {
   questionElement: QuestionElement;
@@ -106,26 +102,6 @@ export default function Card({ questionElement, cardsLeft, isTurn, toggleVisibil
   useEffect(() => {
     if (randomizedAnswerArray.length > 0 && isTurn) updateAnswerSelectionInDatabase({ randomizedAnswerArray });
   }, []);
-
-  // Add questions to array
-
-  // const db = FIREBASE_DB;
-  // const questionsCollection = collection(db, "packs", "football", "questions");
-
-  // useEffect(() => {
-  //   async function addQuestion() {
-  //     questionsArray.forEach( async (question) => {
-  //       try {
-  //         const docRef = await addDoc(questionsCollection, question);
-  //         console.log("Document written with ID: ", docRef.id);
-  //       } catch (error) {
-  //         console.warn('Error adding to firebase:', error);
-  //       }
-  //     })
-  //     console.log("Questions imported successfully");
-  //   }
-  //   addQuestion();
-  // }, [])
 
   useEffect(() => {
     const answersRef = ref(FIREBASE_RTDB, `rooms/${roomCode}/answerSelection`);
