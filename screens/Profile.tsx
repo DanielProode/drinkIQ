@@ -18,7 +18,7 @@ export default function Profile({ navigation }: ProfileProps) {
   return (
     <View style={styles.profileView}>
       <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
-      <Text style={styles.profileNameText}>Nickname: {username}</Text>
+      <Text style={styles.profileNameText}>Username: {username}</Text>
       <View style={styles.profileData}>
         <View style={styles.row}>
           <View style={styles.rowElement}>
