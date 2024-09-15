@@ -27,7 +27,7 @@ export default function AvatarCircle({ selectedAvatarIndex, setSelectedAvatarInd
                           isAvatar && setSelectedAvatarIndex(index); 
                           !isAvatar && setSelectedDrinkIndex(index); 
                           }}>
-          <Image style={styles.avatar} source={avatarIcon} />
+          <Image contentFit="contain" style={styles.avatar} source={avatarIcon} />
         </Pressable>
     );
     
@@ -53,7 +53,6 @@ avatarCircleSelected: {
     },
 avatar: {
     flex: 1,
-    contentFit: 'contain',
     width: '90%',
     height: '90%',
     alignSelf: 'center',

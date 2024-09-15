@@ -39,7 +39,7 @@ export default function AvatarSelection({ isVisible, onClose }: AvatarSelectionP
     <Modal visible={isVisible} animationType='slide' presentationStyle='pageSheet'>
       <View style={styles.joinGameView}>
         <View style={styles.bigCircle}>
-          <Image style={styles.avatar} source={AVATAR_ICONS[avatar]} />
+          <Image contentFit="contain" style={styles.avatar} source={AVATAR_ICONS[avatar]} />
         </View>
         <View style={styles.viewContainer}>
           <FlatList 
@@ -55,7 +55,7 @@ export default function AvatarSelection({ isVisible, onClose }: AvatarSelectionP
         </View>
         <Text style={styles.selectDrinkText}>Drink of your choice?</Text>
         <View style={styles.bigCircle}>
-          <Image style={styles.avatar} source={DRINK_ICONS[drink]} />
+          <Image contentFit="contain" style={styles.avatar} source={DRINK_ICONS[drink]} />
         </View>
         <View style={styles.viewContainer}>
 
@@ -110,7 +110,6 @@ const styles = StyleSheet.create({
   },
   avatar: {
     flex: 1,
-    contentFit: 'contain',
     width: '90%',
     height: '90%',
     alignSelf: 'center',

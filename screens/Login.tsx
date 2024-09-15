@@ -37,9 +37,12 @@ export default function Login({ navigation }: LoginProps) {
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} >
       <View style={styles.container}>
         <TermsAndConditions isVisible={isModalVisible} onClose={toggleModal} />
-        <Image style={styles.cheersIcon}
+        <View style={styles.topContainer}>
+        <Image contentFit="contain" style={styles.cheersIcon}
           source={require('../assets/images/cheers_icon.png')} />
         <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
+        </View>
+        <View style={styles.middleContainer}>
         <View style={styles.textInputContainer}>
           <TextInput
             style={styles.input}
@@ -59,10 +62,10 @@ export default function Login({ navigation }: LoginProps) {
             secureTextEntry
           />
         </View>
-        <View style={styles.buttonContainer}>
-          {error ? <Text style={styles.error}>Login failed: {error}</Text> : null}
+        {error ? <Text style={styles.error}>Login failed: {error}</Text> : null}
           <Button text='LOGIN' onPress={handleLogin} buttonBgColor="#F76D31" buttonBorderColor="#F76D31"/>
           <Pressable
+            style={styles.signUpContainer}
             onPress={() => navigation.navigate('Register')}>
             <Text style={styles.signUpText}>Don't have an account?
               <Text style={styles.innerText}> Sign Up</Text>
@@ -98,9 +101,20 @@ const styles = StyleSheet.create({
   drinkIQOrange: {
     color: PRIMARY_COLOR,
   },
+  signUpContainer: {
+    marginTop: 10,
+  },
+  middleContainer: {
+    flex: 1,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  topContainer: {
+    flex: 1,
+  },
   cheersIcon: {
     position: 'absolute',
-    contentFit: 'contain',
     width: 250,
     height: 250,
     right: 20,
@@ -108,9 +122,8 @@ const styles = StyleSheet.create({
     opacity: 0.3,
   },
   textInputContainer: {
-    marginTop: 100,
-    width: '100%',
     alignItems: 'center',
+    width: '100%',
   },
   input: {
     width: '80%',

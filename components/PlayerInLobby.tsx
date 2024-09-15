@@ -18,8 +18,8 @@ export default function PlayerInLobby({ player, currentUser, handlePress }: Play
     <>
       <Pressable style={styles.playerContainer} onPress={handlePress}>
         <View style={[styles.avatarCircle, player.userId === currentUser && styles.currentAvatarCircle]}>
-          <Image style={styles.avatar} source={AVATAR_ICONS[player.avatar]} />
-          <Image style={styles.drink} source={DRINK_ICONS[player.drink]} />
+          <Image contentFit="contain" style={styles.avatar} source={AVATAR_ICONS[player.avatar]} />
+          <Image contentFit="contain" style={styles.drink} source={DRINK_ICONS[player.drink]} />
         </View>
         <Text style={styles.name} adjustsFontSizeToFit numberOfLines={1}>{player.username}</Text>
       </Pressable>
@@ -46,7 +46,6 @@ const styles = StyleSheet.create({
   },
   avatar: {
     flex: 1,
-    contentFit: 'contain',
     width: '80%',
     height: '80%',
     alignSelf: 'center',
@@ -61,7 +60,6 @@ const styles = StyleSheet.create({
   },
   drink: {
     position: 'absolute',
-    contentFit: 'contain',
     width: '45%',
     height: '45%',
     alignSelf: 'flex-end',
