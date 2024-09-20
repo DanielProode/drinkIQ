@@ -1,7 +1,7 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Image } from 'expo-image';
 import { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableWithoutFeedback, Keyboard, Pressable } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableWithoutFeedback, Keyboard, Pressable, KeyboardAvoidingView } from 'react-native';
 
 import Button from '../components/Button';
 import { ALMOSTWHITE, BACKGROUND_COLOR, LIGHTGREY, MEDIUMGREY, PRIMARY_COLOR, TRANSPARENTGREY, SECONDARY_COLOR } from '../constants/styles/colors';
@@ -35,7 +35,7 @@ export default function Login({ navigation }: LoginProps) {
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} >
-      <View style={styles.container}>
+      <KeyboardAvoidingView style={styles.container}>
         <TermsAndConditions isVisible={isModalVisible} onClose={toggleModal} />
         <View style={styles.topContainer}>
         <Image contentFit="contain" style={styles.cheersIcon}
@@ -72,6 +72,7 @@ export default function Login({ navigation }: LoginProps) {
             </Text>
           </Pressable>
         </View>
+        <View style={styles.bottomContainer}>
         <Pressable
           style={styles.touchableTerms}
           onPress={toggleModal}>
@@ -80,7 +81,8 @@ export default function Login({ navigation }: LoginProps) {
               style={styles.innerText}> drinkIQ Terms and Conditions.</Text>
           </Text>
         </Pressable>
-      </View>
+        </View>
+      </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
 };
@@ -103,6 +105,8 @@ const styles = StyleSheet.create({
   },
   signUpContainer: {
     marginTop: 10,
+    height: 30,
+    justifyContent: 'center',
   },
   middleContainer: {
     flex: 1,
@@ -140,26 +144,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     rowGap: 30,
   },
-  touchableTerms: {
+  bottomContainer: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+  },
+  touchableTerms: {
+    bottom: 60,
   },
   outerText: {
-    bottom: 20,
     width: 300,
     textAlign: 'center',
-    marginBottom: 20,
     color: ALMOSTWHITE,
     fontFamily: FONT_FAMILY_REGULAR,
-  },
-  signUpText: {
-    color: ALMOSTWHITE,
-    fontFamily: FONT_FAMILY_REGULAR,
+    lineHeight: 20,
   },
   innerText: {
     fontFamily: FONT_FAMILY_BOLD,
     color: SECONDARY_COLOR,
+  },
+  signUpText: {
+    color: ALMOSTWHITE,
+    fontFamily: FONT_FAMILY_REGULAR,
   },
   error: {
     color: 'red',

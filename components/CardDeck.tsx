@@ -61,13 +61,14 @@ export default function CardDeck({ pack }: CardDeckProps) {
       }}>
       <View style={[styles.cardView, { width: itemWidth }]}>
         <CardDeckInfo isVisible={isCardDeckInfoModalVisible} onClose={toggleCardDeckInfoModal} pack={pack} />
-        <Image style={styles.cardImage} source={pack.image}>
         {!(packs_owned && packs_owned.includes(pack.id)) && (
           <>
         <View style={styles.overlay} />
         <Text style={styles.lockedText}>Unlock for {pack.price}€</Text>
         </>)
         }
+
+        <Image style={styles.cardImage} contentFit={'cover'}  source={pack.image}/>
         {(packs_owned && packs_owned.includes(pack.id)) && ( 
         <View style={styles.progressContainer}>
         <View style={[widthPercentage === 100 ? styles.progressGoldBar : styles.progressGreenBar, { width: widthPercentage }]} />
@@ -75,7 +76,6 @@ export default function CardDeck({ pack }: CardDeckProps) {
         <Text style={styles.progressText}>{progress}/1000</Text>
         </View>
           )}
-        </Image>
         <View style={styles.deckInfoContainer}>
         <View style={styles.deckInfoContainerFirst}>
         <Text style={styles.deckTitle}>{(pack.name + " deck").toUpperCase()}</Text>
@@ -84,7 +84,7 @@ export default function CardDeck({ pack }: CardDeckProps) {
         <View style={styles.deckInfoContainerSecond}>
         <View style={styles.deckDownloadsInfo}>
           <Image style={styles.downloadsIcon} source={require('../assets/images/download_icon.png')} />
-          <Text style={styles.deckDownloadsInfoText}>5</Text>
+          <Text style={styles.deckDownloadsInfoText}>31</Text>
         </View>
         <View style={styles.deckRatingInfo}>
         <Text style={styles.deckDownloadsInfoText}>{pack.rating}</Text>
@@ -105,19 +105,16 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   cardView: {
+    flex: 1,
     backgroundColor: '#263745',
     shadowColor: 'white',
     shadowOffset: {width: 5, height: 5},
     margin: 5,
     borderRadius: 15,
-    gap: SPACING_XS,
   },
   cardImage: {
-    flex: 1,
-    flexDirection: 'row',
     width: '100%',
     height: 150,
-    resizeMode: 'cover',
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
   },
@@ -135,23 +132,22 @@ const styles = StyleSheet.create({
   },
   progressContainer: {
     width: '100%',
-    height: SPACING_MD,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'flex-end',
   },
   progressGreenBar: {
-    height: '100%',
+    height: SPACING_MD,
     backgroundColor: '#5CB563',
   },
   progressGoldBar: {
-    height: '100%',
+    height: SPACING_MD,
     backgroundColor: '#d4af37',
   },
   progressWhiteBar: {
     flex: 1,
-    height: '100%',
+    height: SPACING_MD,
     backgroundColor: '#3D3D5C',
   },
   progressText: {
@@ -168,6 +164,8 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     paddingBottom: SPACING_SM,
+    paddingTop: SPACING_SM,
+    gap: SPACING_XS,
   },
   deckInfoContainerFirst: {
     flexDirection: 'row',

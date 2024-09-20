@@ -159,20 +159,18 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   touchableTerms: {
-
+    bottom: 60,
     alignItems: 'center',
   },
   innerText: {
     fontFamily: FONT_FAMILY_BOLD,
-    color: ALMOSTWHITE,
+    color: SECONDARY_COLOR,
   },
   outerText: {
-    position: 'absolute',
-    bottom: 20,
     width: 300,
     textAlign: 'center',
-    marginBottom: 20,
     color: ALMOSTWHITE,
     fontFamily: FONT_FAMILY_REGULAR,
+    lineHeight: 20,
   },
 });

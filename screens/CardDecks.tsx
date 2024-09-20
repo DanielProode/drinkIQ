@@ -5,7 +5,7 @@ import { FlatList, ImageProps, Pressable, StyleSheet, Text, TextInput, View } fr
 import CardDeck from '../components/CardDeck';
 import { CARD_PACKS } from '../constants/general';
 import { PRIMARY_COLOR, SECONDARY_COLOR } from '../constants/styles/colors';
-import { SPACING_SM } from '../constants/styles/style';
+import { SPACING_LG, SPACING_MD, SPACING_SM, SPACING_XXL } from '../constants/styles/style';
 import { FONT_FAMILY_CARD_SEMIBOLD, FONT_FAMILY_REGULAR, HEADER_FONT_SIZE, LOGO_FONT_FAMILY_REGULAR, REGULAR_LOGO_FONT_SIZE } from '../constants/styles/typography';
 import { useAuth } from '../context/authContext';
 import useUserStore from '../store/userStore';
@@ -169,5 +169,6 @@ const styles = StyleSheet.create({
   },
   flatList: {
     gap: SPACING_SM,
+    paddingBottom: SPACING_XXL,
   },
 });
