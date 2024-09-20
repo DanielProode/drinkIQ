@@ -172,8 +172,6 @@ export default function NewGame() {
           <TextInput
             style={styles.gameCodeInput}
             onChangeText={(text) => onChanged(text)}
-            value={roomCode}
-            onSubmitEditing={(value) => updateRoomCode(value.nativeEvent.text)}
             placeholder="XXXXXX"
             keyboardType="numeric"
             maxLength={6}

@@ -24,7 +24,7 @@ export default function MainMenu({ navigation }: MainMenuProps) {
   return (
     <View style={styles.mainView}>
       <Tutorial onClose={toggleTutorialModal} isVisible={isTutorialModalVisible} />
-      <Image style={styles.cheersIcon} source={DRINKIQ_LOGO_IMAGE} />
+      <Image contentFit="contain" style={styles.cheersIcon} source={DRINKIQ_LOGO_IMAGE} />
       <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
       <View style={styles.bodyContainer}>
         <View >
@@ -35,19 +35,19 @@ export default function MainMenu({ navigation }: MainMenuProps) {
             buttonBgColor="#F76D31"
             buttonBorderColor="#F76D31" />
         </View>
-        <View style={styles.cardButtonContainer}>
+        <View >
           <Button onPress={() => {
             navigation.navigate('CardDecks');
           }}
             text="Card Decks" />
         </View>
-        <View style={styles.tutorialButtonContainer}>
+        <View >
           <Button onPress={() => {
             toggleTutorialModal();
           }}
             text="How to play" />
         </View>
-        <View style={styles.settingsButtonContainer}>
+        <View >
           <Button onPress={() => {
             navigation.navigate('Profile');
           }}
@@ -66,7 +66,6 @@ const styles = StyleSheet.create({
   },
   cheersIcon: {
     position: 'absolute',
-    contentFit: 'contain',
     width: 250,
     height: 250,
     right: 20,

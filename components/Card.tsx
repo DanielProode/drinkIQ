@@ -74,7 +74,6 @@ export default function Card({ questionElement, cardsLeft, isTurn, toggleVisibil
     if (isTurn && !isUpdateCalled) {
         updatePackPlayedQuestions();
         setIsUpdateCalled(true);
-        console.log("Setting value in Zustand!")
     }
 }, [isTurn]); // Runs when isTurn changes
 
@@ -139,6 +138,8 @@ export default function Card({ questionElement, cardsLeft, isTurn, toggleVisibil
             ...useUserStore.getState().packs_played,
             [deckID]: [...currentPackPlayed, questionElement.id],
           });
+        } else {
+          console.log("Card number " + questionElement.id + " already exists in DB")
         }
       } else {
         console.log('User object does not exist');

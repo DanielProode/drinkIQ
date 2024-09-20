@@ -1,18 +1,23 @@
 import { onValue, ref, update } from 'firebase/database';
 import { doc, updateDoc, increment } from "firebase/firestore";
-import { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { PropsWithChildren, useEffect, useRef, useState } from 'react';
+import { Pressable, StyleSheet, Text, View, TouchableOpacity, Animated, ViewStyle } from 'react-native';
+import { Image } from 'expo-image';
+import * as Clipboard from 'expo-clipboard';
 
 import { Player } from './Lobby';
 import Button from '../components/Button';
 import CardStack from '../components/CardStack';
+import FadeOutView from '../components/FadeOutView';
 import LoadingScreen from '../components/LoadingScreen';
 import { BACKGROUND_COLOR, PRIMARY_COLOR, SECONDARY_COLOR } from '../constants/styles/colors';
-import { FONT_FAMILY_REGULAR, HEADER_FONT_SIZE, LOGO_FONT_FAMILY_REGULAR, REGULAR_LOGO_FONT_SIZE } from '../constants/styles/typography';
+import { FONT_FAMILY_BOLD, FONT_FAMILY_REGULAR, HEADER_FONT_SIZE, LOGO_FONT_FAMILY_REGULAR, MEDIUM_FONT_SIZE, REGULAR_LOGO_FONT_SIZE } from '../constants/styles/typography';
 import { useAuth } from '../context/authContext';
 import { FIREBASE_DB, FIREBASE_RTDB } from '../firebaseConfig.js';
 import useGameStore from '../store/gameStore';
 import useUserStore from '../store/userStore';
+import { SPACING_MD, SPACING_SM, SPACING_XS } from '../constants/styles/style';
+import React from 'react';
 
 interface UpdateGameInfoInDatabaseParams {
   isGameOver?: boolean;
@@ -27,6 +32,7 @@ export default function ActiveGame() {
   const [wrongAnswerCount, setWrongAnswerCount] = useState<number>(0);
   const [fetchedPlayers, setFetchedPlayers] = useState<Player[]>([]);
   const [currentTurnIndex, setCurrentTurnIndex] = useState<number>(0);
+  const [copiedToClipboard, setCopiedToClipboard] = useState(false);
   const { authUser } = useAuth();
   const { roomCode, updateIsSessionStarted } = useGameStore();
   const userId = authUser ? authUser.uid : '';
@@ -123,13 +129,34 @@ export default function ActiveGame() {
     return <LoadingScreen />
   }
 
+  const copyToClipboard = (copiedString: string) => {
+    if (!copiedToClipboard) {
+      Clipboard.setStringAsync(copiedString)
+      setCopiedToClipboard(true);
+      setTimeout(() => setCopiedToClipboard(false),
+        1500
+    )
+    }
+  }
+
   return (
     <>
       <View style={styles.gameBackground}>
         <View style={styles.header}>
-          <Text>
           <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
-          <Text style={styles.gameCode}>    #{roomCode}</Text> </Text>
+          <TouchableOpacity style={styles.roomCodeContainer} onPress={() => copyToClipboard(roomCode)}>
+            <View style={styles.bottomContainer}>
+            <Text style={styles.gameCode}>    #{roomCode}</Text> 
+              <Image style={styles.copyIcon} source={require('../assets/images/copy_icon.png')}/>
+            </View>
+            {copiedToClipboard ? 
+            <FadeOutView style={{}}>
+              <Text style={styles.copiedText}>Copied!</Text> 
+            </FadeOutView>
+            
+
+            : null }
+          </TouchableOpacity>
         </View>
         
         {isGameOver ? (
@@ -157,14 +184,24 @@ const styles = StyleSheet.create({
   header: {
     marginTop: 50,
     width: '90%',
+    alignItems: 'center',
   },
   drinkIQLogo: {
     justifyContent: 'flex-start',
     fontFamily: LOGO_FONT_FAMILY_REGULAR,
-    marginTop: 50,
     fontSize: REGULAR_LOGO_FONT_SIZE,
     color: SECONDARY_COLOR,
     letterSpacing: 3,
+  },
+  roomCodeContainer: {
+    height: 40,
+    flexDirection: 'column',
+    gap: SPACING_XS,
+    alignItems: 'center',
+  },
+  bottomContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   drinkIQOrange: {
     fontFamily: LOGO_FONT_FAMILY_REGULAR,
@@ -185,6 +222,28 @@ const styles = StyleSheet.create({
     fontSize: HEADER_FONT_SIZE,
     color: SECONDARY_COLOR,
     fontFamily: FONT_FAMILY_REGULAR,
+    alignSelf: 'center',
+  },
+  copyIcon: {
+    width: SPACING_SM,
+    height: SPACING_SM,
+    alignSelf: 'center',
+    justifyContent: 'center',
+    marginLeft: SPACING_XS,
+  },
+  copiedContainer: {
+    flexDirection: 'column',
+  },
+  copiedText: {
+    fontFamily: FONT_FAMILY_REGULAR,
+    fontSize: MEDIUM_FONT_SIZE,
+    color: SECONDARY_COLOR,
+  },
+  checkIcon: {
+    width: SPACING_SM,
+    height: SPACING_SM,
+    alignSelf: 'center',
+    justifyContent: 'center',
   },
   seventhAvatar: {
     position: 'absolute',

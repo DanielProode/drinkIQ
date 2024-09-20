@@ -27,8 +27,8 @@ export default function PlayerProfile({ profile, isVisible, onClose }: PlayerPro
             <Text style={styles.baseText}>Total points: </Text>
             
             <View style={styles.avatarCircle}>
-                <Image style={styles.avatar} source={AVATAR_ICONS[profile.avatar]} />
-                <Image style={styles.drink} source={DRINK_ICONS[profile.drink]} />
+                <Image contentFit="contain" style={styles.avatar} source={AVATAR_ICONS[profile.avatar]} />
+                <Image contentFit="contain" style={styles.drink} source={DRINK_ICONS[profile.drink]} />
             </View>
 
         </View>
@@ -65,14 +65,12 @@ const styles = StyleSheet.create({
   },
   avatar: {
     flex: 1,
-    contentFit: 'contain',
     width: '80%',
     height: '80%',
     alignSelf: 'center',
   },
   drink: {
     position: 'absolute',
-    contentFit: 'contain',
     width: '45%',
     height: '45%',
     alignSelf: 'flex-end',

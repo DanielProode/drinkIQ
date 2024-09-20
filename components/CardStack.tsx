@@ -3,7 +3,7 @@ import { Image } from 'expo-image';
 import { onValue, ref, update } from 'firebase/database';
 import { collection, getDocs } from 'firebase/firestore';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { Pressable, View, StyleSheet, Text } from 'react-native';
+import { Pressable, View, StyleSheet, Text, Vibration } from 'react-native';
 
 import Card from './Card';
 import PlayerAroundTable from './PlayerAroundTable';
@@ -14,6 +14,7 @@ import { FONT_FAMILY_MEDIUM } from '../constants/styles/typography';
 import { FIREBASE_DB, FIREBASE_RTDB } from '../firebaseConfig.js';
 import { Player } from '../screens/Lobby';
 import useGameStore from '../store/gameStore';
+import * as Haptics from 'expo-haptics';
 
 interface CardStackProps {
   points: number;
@@ -207,6 +208,12 @@ export default function CardStack({ drinks, points, isTurn, fetchedPlayers, onGa
   //     setCardImage(BASE_CARD_IMAGE);
   //   }
   // }, [cardCount]);
+
+  useEffect(() => {
+    if (isCurrentPlayersTurn) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
+    }
+},[isCurrentPlayersTurn])
 
   useEffect(() => {
     const fetchData = async () => {

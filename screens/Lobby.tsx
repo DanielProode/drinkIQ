@@ -1,13 +1,14 @@
 import { Image } from 'expo-image';
 import { onValue, ref, remove, update } from 'firebase/database';
 import { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import * as Clipboard from 'expo-clipboard';
 
 import Button from '../components/Button';
 import PlayerInLobby from '../components/PlayerInLobby';
 import { CARD_PACKS } from '../constants/general';
 import { BACKGROUND_COLOR, PRIMARY_COLOR, SECONDARY_COLOR } from '../constants/styles/colors';
-import { FONT_FAMILY_BOLD, FONT_FAMILY_REGULAR, HEADER_FONT_SIZE, LOGO_FONT_FAMILY_REGULAR, REGULAR_FONT_SIZE, REGULAR_LOGO_FONT_SIZE } from '../constants/styles/typography';
+import { FONT_FAMILY_BOLD, FONT_FAMILY_REGULAR, HEADER_FONT_SIZE, LOGO_FONT_FAMILY_REGULAR, MEDIUM_FONT_SIZE, REGULAR_FONT_SIZE, REGULAR_LOGO_FONT_SIZE } from '../constants/styles/typography';
 import { useAuth } from '../context/authContext';
 import { FIREBASE_RTDB } from '../firebaseConfig';
 import AvatarSelection from '../modals/AvatarSelection';
@@ -15,6 +16,8 @@ import CardDeckInfo from '../modals/CardDeckInfo';
 import CardDeckSelection from '../modals/CardDeckSelection';
 import PlayerProfile from '../modals/PlayerProfile';
 import useGameStore from '../store/gameStore';
+import FadeOutView from '../components/FadeOutView';
+import { SPACING_SM, SPACING_XS } from '../constants/styles/style';
 
 export interface Player {
   userId: string;
@@ -32,6 +35,7 @@ export default function Lobby() {
   const [isCardDeckInfoModalVisible, setIsCardDeckInfoModalVisible] = useState(false);
   const [fetchedPlayers, setFetchedPlayers] = useState<Player[]>([]);
   const [selectedProfile, setSelectedProfile] = useState({ username: "Placeholder", avatar: 0, drink: 0 });
+  const [copiedToClipboard, setCopiedToClipboard] = useState(false);
   const userId = authUser ? authUser.uid : '';
 
   const toggleAvatarSelectionModal = () => {
@@ -108,6 +112,16 @@ export default function Lobby() {
     return () => unsubscribe();
   }, []);
 
+  const copyToClipboard = (copiedString: string) => {
+    if (!copiedToClipboard) {
+      Clipboard.setStringAsync(copiedString)
+      setCopiedToClipboard(true);
+      setTimeout(() => setCopiedToClipboard(false),
+        1500
+    )
+    }
+  }
+
   return (
     <View style={styles.gameView}>
       <AvatarSelection isVisible={isAvatarSelectionModalVisible} onClose={toggleAvatarSelectionModal} />
@@ -116,7 +130,19 @@ export default function Lobby() {
       <CardDeckInfo isVisible={isCardDeckInfoModalVisible} onClose={toggleCardDeckSelectionModal} pack={CARD_PACKS[playableDeckIndex]} />
 
       <Text style={styles.drinkIQLogo}>Drink<Text style={styles.drinkIQOrange}>IQ</Text></Text>
-      <Text style={styles.gameCode}>#{roomCode}</Text>
+      <TouchableOpacity style={styles.roomCodeContainer} onPress={() => copyToClipboard(roomCode)}>
+            <View style={styles.bottomContainer}>
+            <Text style={styles.gameCode}>    #{roomCode}</Text> 
+              <Image style={styles.copyIcon} source={require('../assets/images/copy_icon.png')}/>
+            </View>
+            {copiedToClipboard ? 
+            <FadeOutView style={{}}>
+              <Text style={styles.copiedText}>Copied!</Text> 
+            </FadeOutView>
+            
+
+            : null }
+          </TouchableOpacity>
       <Pressable style={styles.deckImageContainer} onPress={toggleCardDeckSelectionModal}>
         <Image style={styles.deck} source={CARD_PACKS[playableDeckIndex].image} />
       </Pressable>
@@ -209,5 +235,27 @@ const styles = StyleSheet.create({
     fontSize: HEADER_FONT_SIZE,
     color: SECONDARY_COLOR,
     fontFamily: FONT_FAMILY_REGULAR,
+  },
+  roomCodeContainer: {
+    height: 40,
+    flexDirection: 'column',
+    gap: SPACING_XS,
+    alignItems: 'center',
+  },
+  bottomContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  copyIcon: {
+    width: SPACING_SM,
+    height: SPACING_SM,
+    alignSelf: 'center',
+    justifyContent: 'center',
+    marginLeft: SPACING_XS,
+  },
+  copiedText: {
+    fontFamily: FONT_FAMILY_REGULAR,
+    fontSize: MEDIUM_FONT_SIZE,
+    color: SECONDARY_COLOR,
   },
 });
